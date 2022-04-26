@@ -1,0 +1,66 @@
+[
+  {
+    "name": "Samsung Galaxy A22 5G (Grey, 128 GB)",
+    "brand": "Samsung",
+    "category": "Mobile",
+    "description": "6 GB Ram | 128 GB ROM | Expandable upto 1TB",
+    "price": "20456",
+    "image": "https://raw.githubusercontent.com/skrmain/previews/main/react-express-product-cart/Samsung-Galaxy-A22-56.png"
+  },
+  {
+    "name": "Samsung Galaxy A52s 5G(Awesome Violet, 128 GB)",
+    "brand": "Samsung",
+    "category": "Mobile",
+    "description": "8 GB RAM | 128 GB ROM | Expandable upto 1TB",
+    "price": "32490",
+    "image": "https://raw.githubusercontent.com/skrmain/previews/main/react-express-product-cart/Samsung-Galaxy-A52s-5G.png"
+  },
+  {
+    "name": "Samsung Galaxy Note 20 (Mystic Bronze, 256 GB)",
+    "brand": "Samsung",
+    "category": "Mobile",
+    "description": "8 GB RAM | 256 GB ROM",
+    "price": "61998",
+    "image": ""
+  },
+  {
+    "name": "Apple iPhone 12 (Purple, 64 GB)",
+    "brand": "Apple",
+    "category": "Mobile",
+    "description": "64 RB ROM",
+    "price": "53999",
+    "image": ""
+  },
+  {
+    "name": "Apple MacBook Air M1 (8 GB/256 GB SSD/ MACOS Big Sur)",
+    "brand": "Apple",
+    "category": "Laptop",
+    "description": "Apple M1 Processor",
+    "price": "83999",
+    "image": ""
+  },
+  {
+    "name": "Apple MacBook Pro M1 (8 GB/512 GB SSD/ Mac OS Big Sur)",
+    "brand": "Apple",
+    "category": "Laptop",
+    "description": "Apple M1 Processor",
+    "price": "1279900",
+    "image": ""
+  },
+  {
+    "name": "boAt Storm Smartwatch",
+    "brand": "boAt",
+    "category": "Smart Watch",
+    "description": "1.3 Inches Full Touch Screen",
+    "price": "1999",
+    "image": "https://raw.githubusercontent.com/skrmain/previews/main/react-express-product-cart/boAt-StormSmartwatch.png"
+  },
+  {
+    "name": "Apple Watch Series 3 GPS - 42 mm Space Grey",
+    "brand": "Apple",
+    "category": "Smart Watch",
+    "description": "GPS and Altimeter",
+    "price": "17900",
+    "image": "https://raw.githubusercontent.com/skrmain/previews/main/react-express-product-cart/Apple-WatchSeries-3-GPS.png"
+  }
+]
