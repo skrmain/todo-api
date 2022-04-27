@@ -8,14 +8,8 @@ import CartRoutes from "./apps/cart/routes";
 import dotenv from "dotenv";
 import { MONGODB_URL } from "./constants";
 
-import { serve, setup } from "swagger-ui-express";
-
-// const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require("./swagger.json");
-
 dotenv.config();
 const app = express();
-app.use("/api-docs", serve, setup(swaggerDocument));
 
 const PORT = process.env.PORT || 8000;
 
@@ -41,13 +35,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.get("/", (req, res) => res.send({ message: "dstore Server : Status: Active⚡" }));
+app.get("/", (req, res) => res.send({ status: "Active⚡" }));
 
 app.use("/user", UserRoutes);
 app.use("/product", ProductRoutes);
 app.use("/cart", CartRoutes);
 
-app.use("/uploads", express.static("uploads"));
+app.use("/images", express.static("images"));
 
 app.use((req, res) => {
   res.status(404).send({
