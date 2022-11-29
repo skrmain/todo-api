@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
+
 const app = express();
 
 app.use(cors());
@@ -14,16 +15,16 @@ app.use((req, res, next) => {
 
 // Database Connection
 mongoose
-  .connect("mongodb://localhost:27017/ecommerce", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+  .connect("mongodb://admin:admin@localhost:27017", {
+    dbName: 'test'
   })
   .then(() => {
     console.log("DB Connected");
   })
   .catch(err => {
+    console.log('Error : ', err);
     console.log("DB not Connected");
-    process.exit();
+    process.exit(0);
   });
 
 app.use("/images/", express.static("uploads"));
@@ -33,7 +34,7 @@ app.use("/products", require("./controllers/product"));
 app.use("/cart", require("./controllers/cart"));
 
 app.use((req, res) => {
-  res.status(404).json({ error: "Not Found" });
+  res.status(404).json({ error: "Invalid Path" });
 });
 
 app.listen(3000, () => {
