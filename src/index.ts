@@ -16,16 +16,12 @@ const PORT = process.env.PORT || 8000;
 const connectDB = async () => {
   try {
     const con = await mongoose.connect(MONGODB_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-      // serverSelectionTimeoutMS: 2000,
       dbName: "test",
     });
-    console.log(`⚡️[db] : Connected to '${con.connection.name}' DB`);
+    console.log(`⚡️[MongoDB] Connected to '${con.connection.name}' DB`);
   } catch (err: any) {
-    console.log("DB Error : ", err.message);
-    process.exit();
+    console.log("[MongoDB] Error : ", err.message);
+    process.exit(0);
   }
 };
 
@@ -34,6 +30,11 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
+app.use((req, res, next) => {
+  console.log(req.method, req.url, res.statusCode);
+  next();
+});
 
 app.get("/", (req, res) => res.send({ status: "Active⚡" }));
 

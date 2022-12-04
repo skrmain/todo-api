@@ -1,5 +1,19 @@
 import { Schema, model } from "mongoose";
 
+// const categorySchema = Schema({
+//   name: {
+//     type: String,
+//     required: true
+//   }
+// });
+
+// const brandSchema = Schema({
+//   name: {
+//     type: String,
+//     required: true
+//   }
+// });
+
 const ProductSchema = new Schema(
   {
     name: {
