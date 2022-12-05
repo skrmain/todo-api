@@ -47,8 +47,7 @@ export const AddProductToCartController = async (
 
     // 3. Checking if cart already exists
     const user = req.user?._id;
-    const userCart = CartModal.find({ user });
-    const userCartExists = (await userCart.countDocuments()) > 0;
+    const userCartExists = (await CartModal.find({ user }).countDocuments()) > 0;
 
     if (!userCartExists) {
       const result = await CartModal.create({
@@ -64,12 +63,7 @@ export const AddProductToCartController = async (
     }
 
     // 4. Checking if Product is already available in cart
-    const productExistsInCart =
-      (await userCart
-        .find({
-          "products.product": product,
-        })
-        .countDocuments()) <= 0;
+    const productExistsInCart = (await CartModal.find({ user }).find({"products.product": product}).countDocuments()) <= 0;
 
     // 4.1 - If Product is not available in cart
     if (productExistsInCart) {

@@ -1,15 +1,11 @@
-# estore-api
+# ExpressJS-StoreAPI
 
 ## Notes
 
 ```sh
-# - Create Folder for docker data
-mkdir -p docker-data/mongodb_data
-
 # - Start the mongodb server using docker-compose
-docker-compose up -d
+docker-compose up -d mongo
 
 # Setting Up Server
-npm install
 npm run dev
 ```
