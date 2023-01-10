@@ -1,23 +1,18 @@
-import { Router } from "express";
-import { CartAddBodyValidator, checkAuth } from "../../middleware";
+import { Router } from 'express';
+import { CartAddBodyValidator } from '../../shared/middleware';
 
 import {
   AddProductToCartController,
   CartProductListController,
   EmptyCartController,
   RemoveProductFromCartController,
-} from "./controllers";
+} from './controllers';
 
 const router = Router();
 
-router.get("/", checkAuth, CartProductListController);
-router.post(
-  "/add",
-  checkAuth,
-  CartAddBodyValidator,
-  AddProductToCartController
-);
-router.post("/remove", checkAuth, RemoveProductFromCartController);
-router.post("/empty", checkAuth, EmptyCartController);
+router.get('/', CartProductListController);
+router.post('/add', CartAddBodyValidator, AddProductToCartController);
+router.post('/remove', RemoveProductFromCartController);
+router.post('/empty', EmptyCartController);
 
 export default router;

@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
-import { sendFailResponse, sendSuccessResponse } from "../../utils";
+import { Request, Response } from 'express';
+import { sendFailResponse, sendSuccessResponse } from '../../utils';
 
-import { Product as ProductModal } from "./modals";
+import { Product as ProductModal } from './modals';
 
 export const ProductListController = async (req: Request, res: Response) => {
   try {
@@ -10,22 +10,22 @@ export const ProductListController = async (req: Request, res: Response) => {
   } catch (error: any) {
     sendFailResponse(res, {
       error: error.message,
-      message: "Failed to send Products",
+      message: 'Failed to send Products',
     });
   }
 };
 
 export const GetProductByIdController = async (req: Request, res: Response) => {
   try {
-    const productID = req.params.id?.toString() || "0";
+    const productID = req.params.id?.toString() || '0';
     const product = await ProductModal.findById(productID);
 
     if (!product) {
-      throw new Error("Product does not exists.");
+      throw new Error('Product does not exists.');
     }
 
     sendSuccessResponse(res, {
-      message: "Successful",
+      message: 'Successful',
       data: { product: product },
     });
   } catch (error: any) {
@@ -40,7 +40,7 @@ export const AddProductController = async (req: Request, res: Response) => {
     const productExists =
       (await ProductModal.find({ name: req.body.name }).countDocuments()) > 0;
     if (productExists) {
-      throw new Error("Product with same name already exists.");
+      throw new Error('Product with same name already exists.');
     }
 
     const addedProduct = (
@@ -50,13 +50,13 @@ export const AddProductController = async (req: Request, res: Response) => {
     ).toJSON();
 
     sendSuccessResponse(res, {
-      message: "Successful Added Product",
+      message: 'Successful Added Product',
       data: { product: addedProduct },
     });
   } catch (error: any) {
     sendFailResponse(res, {
       error: error.message,
-      message: "Failed to Add Products",
+      message: 'Failed to Add Products',
     });
   }
 };
