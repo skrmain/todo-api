@@ -1,95 +1,70 @@
 const { Router } = require('express');
 
-const { TodoModel } = require('./todo.models');
-const todoSchema = require('./todo.validation');
-const { sendSuccessResponse } = require('../../shared/utils');
-const { validateReqBody } = require('../../shared/middleware');
-
-// IMPORTANT: TODO: add user authorization in all routes
+const middleware = require('../../shared/middleware');
+const utils = require('../../shared/utils');
+const todoValidation = require('./todo.validation');
+const todoController = require('./todo.controller');
 
 const router = Router();
 
-router.get('/', async (req, res, next) => {
+router.post('/', middleware.validateReqBody(todoValidation.VTodoCreateUpdateSchema), async (req, res, next) => {
     try {
         if (!req.user || !req.user._id) {
             res.status(401);
             throw new Error('Login Required');
         }
-
-        const todos = await TodoModel.find({ userId: req.user._id })
-            .select({ __v: 0, userId: 0 })
-            .lean();
-        return res.send(sendSuccessResponse(todos));
-    } catch (error) {
-        return next(error);
-    }
-});
-
-router.get('/:id', async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        // NOTE: Bottom validation may be not needed
-        if (!id) {
-            res.status(400);
-            throw new Error('Invalid Request');
-        }
-
-        const todo = await TodoModel.findById(id, { __v: 0 }).lean();
-        if (!todo) {
-            res.status(404);
-            throw new Error('Does not exists.');
-        }
-        return res.send(sendSuccessResponse(todo));
-    } catch (error) {
-        return next(error);
-    }
-});
-
-router.delete('/:id', async (req, res, next) => {
-    try {
-        const todo = await TodoModel.findByIdAndDelete(req.params.id);
-        if (!todo) {
-            res.status(404);
-            throw new Error('Does not exists.');
-        }
-        return res.send(sendSuccessResponse(todo));
-    } catch (error) {
-        return next(error);
-    }
-});
-
-router.patch('/:id', validateReqBody(todoSchema), async (req, res, next) => {
-    try {
-        const { title, detail } = req.body;
-
-        const todo = await TodoModel.findByIdAndUpdate(req.params.id, { title, detail }).lean();
-        if (!todo) {
-            res.status(404);
-            throw new Error('Does not exists.');
-        }
-        return res.send({ message: 'Updated', status: 'success' });
-    } catch (error) {
-        return next(error);
-    }
-});
-
-// TODO: Explore Do we need to have Joi Validation or Mongoose Validation is fine
-router.post('/', validateReqBody(todoSchema), async (req, res, next) => {
-    // TODO: Explore Wrap Route Concept - https://codefibershq.com/blog/handling-promise-rejections-in-expressjs-nodejs-with-ease
-    try {
-        if (!req.user || !req.user._id) {
-            res.status(401);
-            throw new Error('Login Required');
-        }
-        const { title, detail } = req.body;
-        await TodoModel.create({
-            title,
-            detail,
-            userId: req.user._id,
-        });
-        res.send({ message: 'Added', status: 'success' });
+        const todo = await todoController.create({ ...req.body, userId: req.user._id });
+        res.send(utils.successResponse({ data: { _id: todo._id } }));
     } catch (error) {
         next(error);
+    }
+});
+
+router.get('/', async (req, res, next) => {
+    try {
+        const todos = await todoController.getAll({ userId: req.user._id }, '-userId');
+        return res.send(utils.successResponse({ data: todos }));
+    } catch (error) {
+        return next(error);
+    }
+});
+
+router.get('/:todoId', async (req, res, next) => {
+    try {
+        const todo = await todoController.getOne({ _id: req.params.todoId, userId: req.user._id });
+        if (!todo) {
+            res.status(404);
+            throw new Error('Does not exists.');
+        }
+        return res.send(utils.successResponse({ data: todo }));
+    } catch (error) {
+        return next(error);
+    }
+});
+
+router.patch('/:todoId', middleware.validateReqBody(todoValidation.VTodoCreateUpdateSchema), async (req, res, next) => {
+    try {
+        const result = await todoController.updateOne({ _id: req.params.todoId, userId: req.user._id }, { ...req.body });
+        if (result.modifiedCount === 0) {
+            res.status(404);
+            throw new Error('Does not exists.');
+        }
+        return res.send(utils.successResponse({ message: 'Updated' }));
+    } catch (error) {
+        return next(error);
+    }
+});
+
+router.delete('/:todoId', async (req, res, next) => {
+    try {
+        const result = await todoController.deleteOne({ _id: req.params.todoId, userId: req.user._id });
+        if (result.deletedCount === 0) {
+            res.status(404);
+            throw new Error('Does not exists.');
+        }
+        return res.send(utils.successResponse({ message: 'Successfully Deleted' }));
+    } catch (error) {
+        return next(error);
     }
 });
 

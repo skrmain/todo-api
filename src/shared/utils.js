@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
 const { sign, verify } = require('jsonwebtoken');
+const { createHmac } = require('crypto');
 
-const { MONGODB_URL, JWT_SECRET } = require('../config');
+const config = require('../config');
 
-const connectDB = async () => {
+const connectMongoDB = async () => {
     try {
-        const con = await mongoose.connect(MONGODB_URL, {
-            dbName: 'test',
-        });
+        const con = await mongoose.connect(config.mongoDbUri, { dbName: config.dbName });
         console.log(`[MongoDB] Connected to '${con.connection.name}' DB`);
     } catch (err) {
         console.log('[MongoDB] Error : ', err.message);
@@ -15,8 +14,9 @@ const connectDB = async () => {
     }
 };
 
-// TODO: add logic to handle 'message'
-const sendSuccessResponse = (data) => ({ data, status: 'success' });
+const successResponse = ({ message = 'Successful', data = {}, status = true }) => ({ data, status, message });
+
+const failResponse = ({ message = 'Fail', data = {}, status = false }) => ({ data, status, message });
 
 /**
  *
@@ -26,7 +26,7 @@ const sendSuccessResponse = (data) => ({ data, status: 'success' });
 const createToken = (data, expiry = 1) => {
     const exp = Math.floor(Date.now() / 1000) + 60 * 60 * expiry; // In Hours
 
-    return sign({ ...data, exp }, JWT_SECRET);
+    return sign({ ...data, exp }, config.jwtSecret);
 };
 
 /**
@@ -34,11 +34,20 @@ const createToken = (data, expiry = 1) => {
  * @param {string} token - value to verify
  * @returns token payload
  */
-const verifyToken = (token) => verify(token, JWT_SECRET);
+const verifyToken = (token) => verify(token, config.jwtSecret);
+
+/**
+ * To Encrypt Data using `HMAC-SHA-256`
+ * @param {string} data
+ * @returns Encrypted data
+ */
+const encrypt = (data) => createHmac('sha256', config.encryptionSecret).update(data).digest('hex');
 
 module.exports = {
-    connectDB,
-    sendSuccessResponse,
+    connectMongoDB,
+    successResponse,
+    failResponse,
     createToken,
     verifyToken,
+    encrypt,
 };

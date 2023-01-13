@@ -13,7 +13,8 @@
         "indent": 0,
         "comma-dangle": 0,
         "no-console": "off",
-        "newline-per-chained-call": "off", // TODO: Check for this in Prettier
-        "no-underscore-dangle": "off"
+        "newline-per-chained-call": "off",
+        "no-underscore-dangle": "off",
+        "max-len": "off"
     }
 }

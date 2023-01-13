@@ -1,36 +1,45 @@
 const { Router } = require('express');
 
-const { validateReqBody } = require('../../shared/middleware');
-const { createToken } = require('../../shared/utils');
-const { addUser, getUserByEmailPassword } = require('../user/user.controllers');
-const { registerVSchema, loginVSchema } = require('../user/user.validation');
+const middleware = require('../../shared/middleware');
+const utils = require('../../shared/utils');
+const userController = require('../user/user.controllers');
+const authValidation = require('./auth.validation');
 
 const router = Router();
 
-router.post('/register', validateReqBody(registerVSchema), async (req, res, next) => {
+router.post('/register', middleware.validateReqBody(authValidation.VRegisterSchema), async (req, res, next) => {
     try {
         const { username, email, password } = req.body;
+        if (await userController.exists({ username })) {
+            res.status(400);
+            throw new Error("'username' unavailable");
+        }
 
-        await addUser(username, email, password);
+        if (await userController.exists({ email })) {
+            res.status(400);
+            throw new Error("'email' unavailable");
+        }
 
-        return res.send({ message: 'User Created' });
+        await userController.create(username, email, utils.encrypt(password));
+
+        return res.send(utils.successResponse({ message: 'Registration Successful' }));
     } catch (error) {
         return next(error);
     }
 });
 
-router.post('/login', validateReqBody(loginVSchema), async (req, res, next) => {
+router.post('/login', middleware.validateReqBody(authValidation.VLoginSchema), async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
-        const user = await getUserByEmailPassword(email, password);
-
+        const user = await userController.getOne({ email, password: utils.encrypt(password) }, '-createdAt -updatedAt');
         if (!user) {
             res.status(400);
             throw new Error('Invalid Credentials');
         }
-        const token = createToken({ user: user.toObject() });
-        return res.send({ message: 'Login Successful', data: { user, token } });
+
+        const token = utils.createToken({ user });
+        return res.send(utils.successResponse({ message: 'Login Successful', data: { user, token } }));
     } catch (error) {
         return next(error);
     }

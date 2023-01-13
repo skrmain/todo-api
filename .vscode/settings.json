@@ -1,5 +1,9 @@
 {
-    "prettier.singleQuote": true,
     "editor.formatOnSave": true,
-    "prettier.printWidth": 150
+    "cSpell.words": [
+        "alphanum",
+        "Errback",
+        "maxlength",
+        "todos"
+    ]
 }

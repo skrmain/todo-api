@@ -1,10 +1,5 @@
-const { Schema, Types, default: mongoose } = require('mongoose');
-
-const STATUSES = {
-    created: 'created',
-    done: 'done',
-    deleted: 'deleted',
-};
+const { Schema, Types, model } = require('mongoose');
+const { TodoStatus, ModelNames } = require('../../shared/constants');
 
 const TodoSchema = new Schema(
     {
@@ -16,21 +11,18 @@ const TodoSchema = new Schema(
             type: String,
             required: false,
         },
+        status: {
+            type: String,
+            default: TodoStatus.created,
+            enum: Object.values(TodoStatus),
+        },
         userId: {
             type: Types.ObjectId,
             required: true,
-        },
-        status: {
-            type: String,
-            default: STATUSES.created,
-            enum: Object.values(STATUSES),
+            ref: ModelNames.user,
         },
     },
     { timestamps: true }
-    // eslint-disable-next-line prefer-arrow-callback, func-names
-).post('save', function (doc) {
-    console.log('[Todo] Saved : ', doc._id);
-});
+);
 
-module.exports.TodoModel = mongoose.model('Todo', TodoSchema);
-module.exports.STATUSES = STATUSES;
+module.exports = model(ModelNames.todo, TodoSchema);

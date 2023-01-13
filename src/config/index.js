@@ -1,12 +1,7 @@
-const PORT = process.env.PORT || 8000;
-const MONGODB_URL = process.env.MONGODB_URL || 'mongodb://admin:admin@localhost:27017';
-const JWT_SECRET = process.env.JWT_SECRET || 'secret';
-
 module.exports = {
-    PORT,
-    MONGODB_URL,
-    JWT_SECRET,
-    name: process.env.NAME,
-    version: process.env.VERSION || 'v0.1', // TODO: read from package.json
+    port: process.env.PORT || 8000,
+    jwtSecret: process.env.JWT_SECRET || 'secret',
+    mongoDbUri: process.env.MONGODB_URI || 'mongodb://admin:admin@localhost:27017',
     dbName: process.env.DB_NAME || 'test',
+    encryptionSecret: process.env.ENCRYPTION_SECRET || 'secret',
 };

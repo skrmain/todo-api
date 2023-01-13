@@ -1,19 +1,17 @@
-const { connectDB } = require('./shared/utils');
-const { PORT } = require('./config');
 const { app } = require('./server');
 
-// NOTE: Logger library to replace `console.log` - winston - https://www.npmjs.com/package/winston
-// TODO: Configure Prettier integration with ESLint
+const utils = require('./shared/utils');
+const config = require('./config');
 
-const main = async () => {
+(async () => {
     try {
-        await connectDB();
-        app.listen(PORT, () => console.log(`[Server] Listening on ${PORT}`));
+        await utils.connectMongoDB();
+        app.listen(config.port, () => console.log(`[Server] Listening on ${config.port}`));
     } catch (error) {
         console.log('[Error] ', error);
         process.exit(0);
     }
-};
+})();
 
 process.on('unhandledRejection', (error) => {
     console.log('[unhandledRejection] ', error);
@@ -24,5 +22,3 @@ process.on('uncaughtException', (error) => {
     console.log('[uncaughtException] ', error);
     process.exit(1);
 });
-
-main();
