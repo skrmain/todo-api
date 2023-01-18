@@ -1,10 +1,9 @@
 import dotenv from 'dotenv';
+dotenv.config();
 
 import { app } from './server';
 import { connectMongoDB } from './shared/utils';
 import config from './config';
-
-dotenv.config();
 
 (async () => {
   await connectMongoDB(config.mongodb_uri);

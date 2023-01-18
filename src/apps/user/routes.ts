@@ -1,22 +1,18 @@
-import { Router } from 'express';
+import { Router, Response } from 'express';
 
-import { MyRequest, MyResponse } from '../../shared/types';
-import { sendFailResponse, sendSuccessResponse } from '../../shared/utils';
+import userController from './controller';
+
+import { AuthRequest } from '../../shared/types';
+import { successResponse } from '../../shared/utils';
 
 const router = Router();
 
-router.get('/', async (req: MyRequest, res: MyResponse) => {
-  try {
-    sendSuccessResponse(res, {
-      data: { user: req.user },
-      message: 'User Detail',
-    });
-  } catch (error: any) {
-    sendFailResponse(res, {
-      error: error.toString(),
-      message: 'Try Login Again',
-    });
-  }
+router.get('/', async (req: AuthRequest, res: Response) => {
+    const user = await userController.getOne({ email: req.user?.email || '' });
+    if (!user) {
+        throw new Error('Invalid Auth Token');
+    }
+    return res.send(successResponse({ data: { user } }));
 });
 
 export default router;
