@@ -43,6 +43,22 @@ const verifyToken = (token) => verify(token, config.jwtSecret);
  */
 const encrypt = (data) => createHmac('sha256', config.encryptionSecret).update(data).digest('hex');
 
+/**
+ * To Handle `unhandledRejection` Errors
+ * - Ref: https://codefibershq.com/blog/handling-promise-rejections-in-expressjs-nodejs-with-ease
+ * - Ref: More Improvement - https://github.com/davidbanham/express-async-errors/blob/master/index.js
+ *   - Using - `express-async-errors`
+ * @param {*} fn
+ * @returns
+ */
+const asyncWrapper = (fn) => async (req, res, next) => {
+    try {
+        return await fn(req, res);
+    } catch (error) {
+        return next(error);
+    }
+};
+
 module.exports = {
     connectMongoDB,
     successResponse,
@@ -50,4 +66,5 @@ module.exports = {
     createToken,
     verifyToken,
     encrypt,
+    asyncWrapper,
 };
