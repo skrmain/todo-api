@@ -10,19 +10,6 @@ export interface AuthRequest extends Request {
     user?: User;
 }
 
-// export interface MyResponse extends Response {}
-
-// export interface RegisterModel {
-//   name: string;
-//   email: string;
-//   password: string;
-// }
-
-// export interface LoginModel {
-//   email: string;
-//   password: string;
-// }
-
 // export interface APIResponse {
 //   data?: any;
 //   message?: string;

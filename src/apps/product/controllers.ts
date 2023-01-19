@@ -1,62 +1,18 @@
-import { Request, Response } from 'express';
-import { sendFailResponse, sendSuccessResponse } from '../../utils';
+import { Product } from './modals';
 
-import { Product as ProductModal } from './modals';
+interface ProductFilter {
+    _id?: string;
+    name?: string;
+}
 
-export const ProductListController = async (req: Request, res: Response) => {
-  try {
-    const products = await ProductModal.find({});
-    sendSuccessResponse(res, { data: { products: products } });
-  } catch (error: any) {
-    sendFailResponse(res, {
-      error: error.message,
-      message: 'Failed to send Products',
-    });
-  }
-};
+const getOne = (filter: ProductFilter, select = '-__v') => Product.findOne(filter, select).lean();
 
-export const GetProductByIdController = async (req: Request, res: Response) => {
-  try {
-    const productID = req.params.id?.toString() || '0';
-    const product = await ProductModal.findById(productID);
+const count = (filter: ProductFilter) => Product.count(filter).lean();
 
-    if (!product) {
-      throw new Error('Product does not exists.');
-    }
+const exists = (filter: ProductFilter) => Product.exists(filter).lean();
 
-    sendSuccessResponse(res, {
-      message: 'Successful',
-      data: { product: product },
-    });
-  } catch (error: any) {
-    sendFailResponse(res, {
-      error: error.message,
-    });
-  }
-};
+const getAll = (filter: ProductFilter = {}, select = '-__v') => Product.find(filter, select).lean();
 
-export const AddProductController = async (req: Request, res: Response) => {
-  try {
-    const productExists =
-      (await ProductModal.find({ name: req.body.name }).countDocuments()) > 0;
-    if (productExists) {
-      throw new Error('Product with same name already exists.');
-    }
+const create = (details: ProductFilter) => Product.create(details);
 
-    const addedProduct = (
-      await ProductModal.create({
-        ...req.body,
-      })
-    ).toJSON();
-
-    sendSuccessResponse(res, {
-      message: 'Successful Added Product',
-      data: { product: addedProduct },
-    });
-  } catch (error: any) {
-    sendFailResponse(res, {
-      error: error.message,
-      message: 'Failed to Add Products',
-    });
-  }
-};
+export default { getOne, getAll, create, count, exists };

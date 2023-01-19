@@ -6,8 +6,8 @@ import { checkAuth, invalidPathHandler, requestErrorHandler, requestLogger } fro
 
 import AuthRoutes from './apps/auth/routes';
 import UserRoutes from './apps/user/routes';
-// import ProductRoutes from './apps/product/routes';
-// import CartRoutes from './apps/cart/routes';
+import ProductRoutes from './apps/product/routes';
+import CartRoutes from './apps/cart/routes';
 
 export const app = express();
 
@@ -20,8 +20,8 @@ app.use(requestLogger);
 app.get('/', (req, res) => res.send({ status: 'Active⚡' }));
 app.use('/', AuthRoutes);
 app.use('/me', checkAuth, UserRoutes);
-// app.use('/products', ProductRoutes);
-// app.use('/cart', checkAuth, CartRoutes);
+app.use('/products', ProductRoutes);
+app.use('/cart', checkAuth, CartRoutes);
 // app.use('/images', express.static('images'));
 
 app.use(invalidPathHandler);

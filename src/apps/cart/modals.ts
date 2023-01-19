@@ -1,34 +1,29 @@
-import { Schema, model, Types, Document } from "mongoose";
+import { Schema, model, Types } from 'mongoose';
 
-interface Product {
-  product: string;
-  quantity: number;
-}
+import { dbCollections } from '../../shared/constants';
 
-interface Cart extends Document {
-  user: any;
-  products: Product[];
-}
-
-const ProductInfoSchema = new Schema({
-  product: {
-    type: Types.ObjectId,
-    ref: "Product",
-    required: true,
-  },
-  quantity: Number,
-});
-
-const CartSchema: Schema = new Schema(
-  {
-    user: {
-      type: Types.ObjectId,
-      ref: "User",
-      required: true,
+const ProductInfoSchema = new Schema(
+    {
+        productId: {
+            type: Types.ObjectId,
+            ref: dbCollections.product,
+            required: true,
+        },
+        quantity: Number,
     },
-    products: [ProductInfoSchema],
-  },
-  { timestamps: true }
+    { timestamps: true }
 );
 
-export const Cart = model<Cart>("Cart", CartSchema);
+const CartSchema: Schema = new Schema(
+    {
+        userId: {
+            type: Types.ObjectId,
+            ref: dbCollections.user,
+            required: true,
+        },
+        products: [ProductInfoSchema],
+    },
+    { timestamps: true }
+);
+
+export const Cart = model(dbCollections.cart, CartSchema);
