@@ -16,10 +16,12 @@ router.post('/register', RegisterBodyValidator, validateRequestBody, async (req:
     }
 
     await userController.create({ ...req.body });
+    // TODO: send register mail with account activation link
     return res.send(successResponse({ message: 'Registration successful' }));
 });
 
 router.post('/login', LoginBodyValidator, validateRequestBody, async (req: Request, res: Response) => {
+    // TODO: Add check in other routes if account is activated or nots
     const user = await userController.getOne({ ...req.body }, '-createdAt -updatedAt');
     if (!user) {
         throw new Error('Invalid Login Credentials');
@@ -27,6 +29,27 @@ router.post('/login', LoginBodyValidator, validateRequestBody, async (req: Reque
 
     const token = createToken(user);
     return res.send(successResponse({ message: 'Login Successful', data: { token } }));
+});
+
+router.put('/forgot-password', (req: Request, res: Response) => {
+    console.log('BODY ', req.body);
+    // TODO: send email on email with password changed link, with min. expiry
+
+    return res.send({ message: 'NOT IMPLEMENTED' });
+});
+
+router.put('/set-password/:token', (req: Request, res: Response) => {
+    console.log('BODY ', req.body);
+    // TODO: To set new password
+
+    return res.send({ message: 'NOT IMPLEMENTED' });
+});
+
+router.put('/activate-account/:activationToken', (req: Request, res: Response) => {
+    console.log('BODY ', req.body);
+    // TODO: To Activate Account
+
+    return res.send({ message: 'NOT IMPLEMENTED' });
 });
 
 export default router;
