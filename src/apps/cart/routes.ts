@@ -16,6 +16,7 @@ router.get('/', async (req: AuthRequest, res: Response) => {
         throw new Error('Login Required');
     }
 
+    // TODO: add info of total price of cart products
     const cart = await cartController
         .getOne({ userId }, '-createdAt -updatedAt -products._id -products.createdAt -products.updatedAt')
         .populate('products.productId', 'name price brand');
@@ -40,7 +41,9 @@ router.post('/', async (req: AuthRequest, res: Response) => {
     return res.send(successResponse({ data: newCart.toObject() }));
 });
 
-router.post('/add', CartAddBodyValidator, validateRequestBody, async (req: AuthRequest, res: Response) => {
+router.put('/', CartAddBodyValidator, validateRequestBody, async (req: AuthRequest, res: Response) => {
+    // TODO: add limit of 10 product in cart
+    // NOTE: to add product to cart
     const userId = req.user?._id;
     if (!userId) {
         throw new Error('Login Required');
@@ -70,7 +73,9 @@ router.post('/add', CartAddBodyValidator, validateRequestBody, async (req: AuthR
     return res.send(successResponse({ message: 'Added Product to Cart' }));
 });
 
-router.post('/remove', CartAddBodyValidator, validateRequestBody, async (req: AuthRequest, res: Response) => {
+router.delete('/products/:productId', CartAddBodyValidator, validateRequestBody, async (req: AuthRequest, res: Response) => {
+    // TODO: update the Validator and read productId from param not body
+    // NOTE: to remove product from cart
     const userId = req.user?._id;
     if (!userId) {
         throw new Error('Login Required');
@@ -91,6 +96,11 @@ router.post('/remove', CartAddBodyValidator, validateRequestBody, async (req: Au
     // 2. If product quantity in cart > 1
     await cartController.updateOne({ userId, 'products.productId': productId }, { $inc: { 'products.$.quantity': -1 } });
     return res.send(successResponse({ message: 'Decreased Product Quantity' }));
+});
+
+router.post('/checkout', (req: AuthRequest, res: Response) => {
+    // TODO: to buy all products inside cart and move to orders
+    return res.send({ message: 'NOT IMPLEMENTED' });
 });
 
 router.delete('/', async (req: AuthRequest, res: Response) => {

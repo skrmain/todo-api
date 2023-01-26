@@ -15,4 +15,14 @@ router.get('/', async (req: AuthRequest, res: Response) => {
     return res.send(successResponse({ data: { user } }));
 });
 
+router.patch('/', (req: AuthRequest, res: Response) => {
+    // TODO: update user details
+    return res.send({ message: 'NOT IMPLEMENTED' });
+});
+
+router.delete('/', (req: AuthRequest, res: Response) => {
+    // TODO:  To Start process for Deleting Account, OR Deactivate, OR HARD Delete
+    return res.send({ message: 'NOT IMPLEMENTED' });
+});
+
 export default router;

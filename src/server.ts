@@ -8,6 +8,8 @@ import AuthRoutes from './apps/auth/routes';
 import UserRoutes from './apps/user/routes';
 import ProductRoutes from './apps/product/routes';
 import CartRoutes from './apps/cart/routes';
+import OrderRoutes from './apps/order/routes';
+import SavedRoutes from './apps/saved/routes';
 
 export const app = express();
 
@@ -17,11 +19,13 @@ app.use(cors());
 
 app.use(requestLogger);
 
-app.get('/', (req, res) => res.send({ status: 'Active⚡' }));
+app.get('/', (req, res) => res.send('Ok'));
 app.use('/', AuthRoutes);
 app.use('/me', checkAuth, UserRoutes);
 app.use('/products', ProductRoutes);
 app.use('/cart', checkAuth, CartRoutes);
+app.use('/orders', checkAuth, OrderRoutes);
+app.use('/saved', checkAuth, SavedRoutes);
 // app.use('/images', express.static('images'));
 
 app.use(invalidPathHandler);
