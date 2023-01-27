@@ -1,34 +1,27 @@
 {
-  "name": "file-read-upload-write",
-  "version": "1.0.0",
-  "description": "",
-  "main": "dist/index.js",
-  "scripts": {
-    "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts",
-    "build": "rm -r dist && tsc --project ./"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/express": "^4.17.13",
-    "@types/formidable": "^2.0.5",
-    "@types/multer": "^1.4.7",
-    "@types/node": "^17.0.32",
-    "nodemon": "^2.0.16",
-    "ts-node": "^10.7.0",
-    "typescript": "^4.6.4"
-  },
-  "dependencies": {
-    "express": "^4.18.1",
-    "formidable": "^2.0.1",
-    "multer": "^1.4.4",
-    "winston": "^3.7.2"
-  },
-  "nodemonConfig": {
-    "ignore": [
-      "uploads/**/*"
-    ]
-  }
+    "name": "server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "src/server.js",
+    "scripts": {
+        "start": "node src/server.js",
+        "start:dev": "nodemon src/server.ts"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.18.1",
+        "formidable": "^2.0.1",
+        "multer": "^1.4.4"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.16"
+    },
+    "nodemonConfig": {
+        "ignore": [
+            "uploads/**/*",
+            "data.json"
+        ]
+    }
 }
