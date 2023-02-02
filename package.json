@@ -4,7 +4,7 @@
     "main": "src/index.js",
     "scripts": {
         "start": "node src",
-        "dev": "nodemon src"
+        "start:dev": "nodemon src"
     },
     "keywords": [],
     "license": "ISC",

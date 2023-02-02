@@ -2,45 +2,28 @@
 
 ## Notes
 
-- Environment Variables - refer - [src/config/index.js](src/config/index.js)
-- API List with Payload - refer - [api.rest](./api.rest)
-
-- Commands
+- https://hub.docker.com/r/skrmain/expressjs-todo-api
 
 ```sh
-docker images
-docker run -p 8000:8000 -e NAME=ExpressJS-TodoAPI skrmain/expressjs-todo-api:latest
-docker-compose up -d
-
-# - Commands to Build Docker Images and Push to DockerHub
-docker build -t skrmain/expressjs-todo-api .
-docker tag skrmain/expressjs-todo-api:latest skrmain/expressjs-todo-api:VERSION
-
+# Commands to Build Docker Images and Push to DockerHub
 docker login -u USERNAME
-docker push skrmain/expressjs-todo-api:latest
-docker push skrmain/expressjs-todo-api:VERSION
+bash build_and_push.sh
 ```
 
-## Changelog
+## APIs
 
-- 0.3
-  - REFACTOR:
-    - Make consistent Import and Export Syntax
-    - Add `DocComment` in Util and Middleware, for editor auto complete
-    - Define DB Operation in respective `controller` file only
-    - Remove Unused and Extra Files
-  - CHORE: Updated `prettier`, `editorconfig` Configurations
-  - FIX:
-    - Restrict (Update & Delete) operation on `todo` can be performed by only `user` Created that.
-    - Consistent and Proper Error Handling, Proper Response Status Code
-    - Make consistent Response Structure
-  - FEAT:
-    - remove `auth` from auth routes
-    - add `password` Encryption on registration
-    - make `delete` status to `archive` for todo
-  - DOCS:
-    - Add `api.rest` - With Payloads, All Routes, Headers
-- 0.2
-  - todo, user, auth app
-- 0.1
-  - todo app without authentication
+| **auth** | **method:path**        |
+| :------: | :--------------------- |
+|          | **apps/auth**          |
+|    N     | `POST:/login`          |
+|    N     | `POST:/register`       |
+|          | **apps/user**          |
+|    Y     | `POST:/user`           |
+|          | **apps/todo**          |
+|    Y     | `POST:/todo`           |
+|    Y     | `GET:/todo`            |
+|    Y     | `GET:/todo/:todoId`    |
+|    Y     | `PATCH:/todo/:todoId`  |
+|    Y     | `DELETE:/todo/:todoId` |
+
+## [Changelog](./changelog.md)
