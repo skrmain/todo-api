@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 
 import productController from './controllers';
+import savedProductController from './../saved/controllers';
 
 import { checkAuth } from '../../shared/middleware';
 import { successResponse } from '../../shared/utils';
@@ -54,15 +55,17 @@ router.delete('/', checkAuth, async (req: AuthRequest, res: Response) => {
     return res.send({ message: 'NOT IMPLEMENTED' });
 });
 
-router.put('/:productId/save', (req: AuthRequest, res: Response) => {
-    // TODO: create saved-products model
-    // TODO: To Save Product to saved products
-    return res.send({ message: 'NOT IMPLEMENTED' });
+router.put('/:productId/save', checkAuth, async (req: AuthRequest, res: Response) => {
+    const isSaved = await savedProductController.exists({ userId: req.user?._id, productId: req.params.productId });
+    if (!isSaved) {
+        await savedProductController.create({ userId: req.user?._id, productId: req.params.productId });
+    }
+    return res.send({ message: 'Successfully Saved' });
 });
 
-router.delete('/:productId/save', (req: AuthRequest, res: Response) => {
-    // TODO: To remove Product from saved products
-    return res.send({ message: 'NOT IMPLEMENTED' });
+router.delete('/:productId/save', checkAuth, async (req: AuthRequest, res: Response) => {
+    await savedProductController.deleteOne({ userId: req.user?._id, productId: req.params.productId });
+    return res.send({ message: 'Successfully Removed' });
 });
 
 export default router;

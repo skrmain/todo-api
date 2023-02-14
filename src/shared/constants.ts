@@ -5,4 +5,5 @@ export enum dbCollections {
     user = 'users',
     product = 'products',
     cart = 'carts',
+    savedProducts = 'savedProducts',
 }
