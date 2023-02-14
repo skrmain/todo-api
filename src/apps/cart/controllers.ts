@@ -1,4 +1,4 @@
-import { Cart } from './modals';
+import { Cart } from './models';
 
 interface CartFilter {
     userId: string;

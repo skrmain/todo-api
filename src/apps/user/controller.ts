@@ -1,4 +1,4 @@
-import { User } from './modals';
+import { User } from './models';
 
 interface UserFilter {
     _id?: string;

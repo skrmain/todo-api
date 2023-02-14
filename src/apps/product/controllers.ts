@@ -1,4 +1,4 @@
-import { Product } from './modals';
+import { Product } from './models';
 
 interface ProductFilter {
     _id?: string;
