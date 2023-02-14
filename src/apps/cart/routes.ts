@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 
 import cartController from './controllers';
 import productController from './../product/controllers';
+import orderController from './../order/controllers';
 
 import { AuthRequest } from '../../shared/types';
 import { successResponse } from '../../shared/utils';
@@ -73,14 +74,13 @@ router.put('/', CartAddBodyValidator, validateRequestBody, async (req: AuthReque
     return res.send(successResponse({ message: 'Added Product to Cart' }));
 });
 
-router.delete('/products/:productId', CartAddBodyValidator, validateRequestBody, async (req: AuthRequest, res: Response) => {
-    // TODO: update the Validator and read productId from param not body
+router.delete('/products/:productId', async (req: AuthRequest, res: Response) => {
     // NOTE: to remove product from cart
     const userId = req.user?._id;
     if (!userId) {
         throw new Error('Login Required');
     }
-    const { productId } = req.body;
+    const { productId } = req.params;
 
     const cartProduct = await cartController.getOne({ userId, 'products.productId': productId });
     if (!cartProduct) {
@@ -98,9 +98,30 @@ router.delete('/products/:productId', CartAddBodyValidator, validateRequestBody,
     return res.send(successResponse({ message: 'Decreased Product Quantity' }));
 });
 
-router.post('/checkout', (req: AuthRequest, res: Response) => {
-    // TODO: to buy all products inside cart and move to orders
-    return res.send({ message: 'NOT IMPLEMENTED' });
+router.post('/checkout', async (req: AuthRequest, res: Response) => {
+    const userId = req.user?._id || '';
+    const userCart = await cartController
+        .getOne({ userId }, '-createdAt -updatedAt -products._id -products.createdAt -products.updatedAt')
+        .populate('products.productId', 'name price brand');
+
+    if (!userCart) {
+        throw new Error("Cart doesn't exists");
+    }
+
+    if (userCart.products.length === 0) {
+        throw new Error('Cart is Empty');
+    }
+
+    const productsInfo = userCart.products.map((product: any) => ({
+        productId: product.productId._id,
+        quantity: product.quantity,
+        total: product.productId.price * product.quantity,
+    }));
+
+    await orderController.create({ userId, products: productsInfo });
+    await cartController.deleteOne({ userId });
+
+    return res.send({ message: 'Successfully Ordered' });
 });
 
 router.delete('/', async (req: AuthRequest, res: Response) => {
