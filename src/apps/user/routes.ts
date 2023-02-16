@@ -4,6 +4,8 @@ import userController from './controller';
 
 import { AuthRequest } from '../../shared/types';
 import { successResponse } from '../../shared/utils';
+import { validateRequestBody } from '../../shared/middleware';
+import { UserUpdateDetailValidator } from './validator';
 
 const router = Router();
 
@@ -15,9 +17,9 @@ router.get('/', async (req: AuthRequest, res: Response) => {
     return res.send(successResponse({ data: { user } }));
 });
 
-router.patch('/', (req: AuthRequest, res: Response) => {
-    // TODO: update user details
-    return res.send({ message: 'NOT IMPLEMENTED' });
+router.patch('/', UserUpdateDetailValidator, validateRequestBody, async (req: AuthRequest, res: Response) => {
+    await userController.updateOne({ _id: req.user?._id }, { name: req.body.name });
+    return res.send(successResponse({ message: 'Details Updated' }));
 });
 
 router.delete('/', (req: AuthRequest, res: Response) => {

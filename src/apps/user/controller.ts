@@ -1,8 +1,13 @@
-import { User } from './modals';
+import { User } from './models';
 
 interface UserFilter {
-    email: string;
+    _id?: string;
+    email?: string;
     password?: string;
+}
+
+interface UserUpdateDetails {
+    name: string;
 }
 
 const getOne = (filter: UserFilter, select = '-__v -password') => User.findOne(filter, select).lean();
@@ -11,4 +16,6 @@ const getAll = (filter: UserFilter, select = '-__v -password') => User.find(filt
 
 const create = (details: UserFilter) => User.create(details);
 
-export default { getOne, getAll, create };
+const updateOne = (filter: UserFilter, details: UserUpdateDetails) => User.updateOne(filter, details).lean();
+
+export default { getOne, getAll, create, updateOne };
