@@ -19,7 +19,7 @@ router.get('/', async (req: AuthRequest, res: Response) => {
 
 router.patch('/', UserUpdateDetailValidator, validateRequestBody, async (req: AuthRequest, res: Response) => {
     await userController.updateOne({ _id: req.user?._id }, { name: req.body.name });
-    return res.send({ message: 'Details Updated', data: {} });
+    return res.send(successResponse({ message: 'Details Updated' }));
 });
 
 router.delete('/', (req: AuthRequest, res: Response) => {

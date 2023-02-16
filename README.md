@@ -17,6 +17,7 @@ npm run start:dev
 |    N     | `PUT:/forgot-password` TODO:                                  |
 |    N     | `PUT:/set-password/:token` TODO:                              |
 |    N     | `PUT:/activate-account/:activationToken` TODO:                |
+|    Y     | `POST:/token/refresh` TODO:                                   |
 |          | **apps/user**                                                 |
 |    Y     | `GET:/me`                                                     |
 |    Y     | `PATCH:/me` - To update detail                                |

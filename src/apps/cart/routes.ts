@@ -112,6 +112,7 @@ router.post('/checkout', async (req: AuthRequest, res: Response) => {
         throw new Error('Cart is Empty');
     }
 
+    // TODO: add type definition
     const productsInfo = userCart.products.map((product: any) => ({
         productId: product.productId._id,
         quantity: product.quantity,
@@ -121,7 +122,7 @@ router.post('/checkout', async (req: AuthRequest, res: Response) => {
     await orderController.create({ userId, products: productsInfo });
     await cartController.deleteOne({ userId });
 
-    return res.send({ message: 'Successfully Ordered' });
+    return res.send(successResponse({ message: 'Successfully Ordered' }));
 });
 
 router.delete('/', async (req: AuthRequest, res: Response) => {
