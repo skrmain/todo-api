@@ -4,7 +4,7 @@
     "description": "",
     "main": "build/index.js",
     "engines": {
-        "node": "16.x"
+        "node": "18.x"
     },
     "scripts": {
         "prettier:check": "prettier -c src/**/*",
