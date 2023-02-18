@@ -2,8 +2,8 @@ services:
     mongo:
         image: mongo
         restart: always
-        ports:
-            - 27017:27017
+        # ports:
+        #     - 27017:27017
         volumes:
             - ./docker-data/mongodb_data:/data/db/
         environment:
@@ -11,9 +11,11 @@ services:
             MONGO_INITDB_ROOT_PASSWORD: admin
 
     local-server:
-        build: .
+        build:
+            context: .
+            target: local-run
         ports:
-            - 8001:8000
+            - 8000:8000
         volumes:
             - ./:/app/
         environment:
@@ -22,6 +24,6 @@ services:
     remote-server:
         image: skrmain/expressjs-store-api:latest
         ports:
-            - 8000:8000
+            - 8001:8000
         environment:
             - MONGODB_URI=mongodb://admin:admin@mongo:27017/

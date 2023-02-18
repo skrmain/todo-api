@@ -3,7 +3,7 @@
 REPO=skrmain/expressjs-store-api
 
 echo "Builing : ${REPO}"
-docker build -t $REPO -f Dockerfile.build .
+docker build -t $REPO --target build-run  .
 
 echo '------'
 docker images | grep "${REPO}"
