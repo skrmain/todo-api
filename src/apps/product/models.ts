@@ -16,7 +16,18 @@ import { dbCollections } from '../../shared/constants';
 //     },
 // });
 
-const ProductSchema = new Schema(
+interface IProduct {
+    name: string;
+    price: number;
+    brand: string;
+    category: string;
+    description: string;
+    image: string;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+const ProductSchema = new Schema<IProduct>(
     {
         name: {
             type: String,
@@ -24,7 +35,7 @@ const ProductSchema = new Schema(
             trim: true,
         },
         price: {
-            type: String,
+            type: Number,
             required: true,
             trim: true,
         },
@@ -38,8 +49,12 @@ const ProductSchema = new Schema(
             required: true,
             trim: true,
         },
-        description: String,
-        image: String,
+        description: {
+            type: String,
+        },
+        image: {
+            type: String,
+        },
     },
     { timestamps: true }
 );

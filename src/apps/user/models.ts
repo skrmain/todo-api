@@ -2,7 +2,15 @@ import { Schema, model } from 'mongoose';
 
 import { dbCollections, EMAIL_REGEX } from '../../shared/constants';
 
-const UserSchema = new Schema(
+interface IUser {
+    name: string;
+    email: string;
+    password: string;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+const UserSchema = new Schema<IUser>(
     {
         name: {
             type: String,

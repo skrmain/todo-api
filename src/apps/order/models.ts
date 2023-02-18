@@ -2,10 +2,25 @@ import { Schema, model, Types } from 'mongoose';
 
 import { dbCollections } from '../../shared/constants';
 
-const ProductInfoSchema = new Schema(
+interface IProductInfo {
+    productId: Types.ObjectId;
+    quantity: number;
+    total: number;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+interface IOrder {
+    userId: Types.ObjectId;
+    products: IProductInfo[];
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+const ProductInfoSchema = new Schema<IProductInfo>(
     {
         productId: {
-            type: Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: dbCollections.product,
             required: true,
         },
@@ -21,11 +36,12 @@ const ProductInfoSchema = new Schema(
     { timestamps: true }
 );
 
-const OrderSchema = new Schema(
+const OrderSchema = new Schema<IOrder>(
     {
         userId: {
-            type: Types.ObjectId,
+            type: Schema.Types.ObjectId,
             required: true,
+            ref: dbCollections.user,
         },
         products: [ProductInfoSchema],
     },

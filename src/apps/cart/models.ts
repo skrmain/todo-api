@@ -2,26 +2,44 @@ import { Schema, model, Types } from 'mongoose';
 
 import { dbCollections } from '../../shared/constants';
 
-const ProductInfoSchema = new Schema(
+interface IProductInfo {
+    productId: Types.ObjectId;
+    quantity: number;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+interface ICart {
+    userId: Types.ObjectId;
+    products: IProductInfo[];
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+const ProductInfoSchema = new Schema<IProductInfo>(
     {
         productId: {
-            type: Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: dbCollections.product,
             required: true,
         },
-        quantity: Number,
+        quantity: {
+            type: Number,
+        },
     },
     { timestamps: true }
 );
 
-const CartSchema: Schema = new Schema(
+const CartSchema: Schema = new Schema<ICart>(
     {
         userId: {
-            type: Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: dbCollections.user,
             required: true,
         },
-        products: [ProductInfoSchema],
+        products: {
+            type: [ProductInfoSchema],
+        },
     },
     { timestamps: true }
 );
