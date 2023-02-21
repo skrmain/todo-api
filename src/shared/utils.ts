@@ -1,12 +1,12 @@
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { sign, verify } from 'jsonwebtoken';
 
 import config from '../config';
 
 // import { APIResponse } from './types';
 
-export const successResponse = ({ message = 'Successful', data = {}, status = true }) => {
-    return { status, message, data };
+export const successResponse = ({ message = 'Successful', data = {}, status = true, metaData = {} }) => {
+    return { status, message, data, ...metaData };
 };
 
 // export const sendFailResponse = (res: Response, responseData: APIResponse) => {
@@ -39,3 +39,5 @@ export const createToken = (payload: object, expiry = 1) => {
 };
 
 export const verifyToken = (token: string) => verify(token, config.jwt_secret);
+
+export const getObjectId = (id = '') => new Types.ObjectId(id);

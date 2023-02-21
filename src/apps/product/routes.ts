@@ -7,14 +7,27 @@ import { checkAuth } from '../../shared/middleware';
 import { successResponse } from '../../shared/utils';
 import { AuthRequest } from '../../shared/types';
 import { sampleProducts } from '../../shared/products.data';
+import { FilterQuery } from 'mongoose';
+import { IProduct } from './models';
 
 const router = Router();
 
 router.get('/', async (req: Request, res: Response) => {
-    // TODO: add pagination, sorting, filter, search
-    const products = await productController.getAll();
+    const { limit = 10, page = 1, search = '', sortBy = 'createdAt', sortOrder = 'desc', category = '', brand = '' } = req.query as any;
+    const filter: FilterQuery<IProduct> = {};
+    if (search) {
+        filter.name = { $regex: search };
+    }
+    if (category) {
+        filter.category = category;
+    }
+    if (brand) {
+        filter.brand = brand;
+    }
+    const products = await productController.getWithQuery(filter, { limit, page, sortBy, sortOrder });
+    const total = await productController.count(filter);
 
-    return res.send(successResponse({ data: products }));
+    return res.send(successResponse({ data: products, metaData: { page, limit, sortBy, sortOrder, total } }));
 });
 
 router.get('/:productId', async (req: Request, res: Response) => {

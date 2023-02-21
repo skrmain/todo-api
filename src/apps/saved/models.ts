@@ -3,7 +3,7 @@ import { Schema, model, Types } from 'mongoose';
 import { dbCollections } from '../../shared/constants';
 import { IBaseModel } from '../../shared/types';
 
-interface ISavedProduct extends IBaseModel {
+export interface ISavedProduct extends IBaseModel {
     userId: Types.ObjectId;
     productId: Types.ObjectId;
 }
