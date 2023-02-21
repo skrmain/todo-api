@@ -1,12 +1,11 @@
 import { Schema, model, Types } from 'mongoose';
 
 import { dbCollections } from '../../shared/constants';
+import { IBaseModel } from '../../shared/types';
 
-interface ISavedProduct {
+interface ISavedProduct extends IBaseModel {
     userId: Types.ObjectId;
     productId: Types.ObjectId;
-    createdAt?: string;
-    updatedAt?: string;
 }
 
 const SavedProductSchema = new Schema<ISavedProduct>(

@@ -1,19 +1,16 @@
 import { Schema, model, Types } from 'mongoose';
 
 import { dbCollections } from '../../shared/constants';
+import { IBaseModel } from '../../shared/types';
 
-interface IProductInfo {
+interface IProductInfo extends IBaseModel {
     productId: Types.ObjectId;
     quantity: number;
-    createdAt?: string;
-    updatedAt?: string;
 }
 
-interface ICart {
+interface ICart extends IBaseModel {
     userId: Types.ObjectId;
     products: IProductInfo[];
-    createdAt?: string;
-    updatedAt?: string;
 }
 
 const ProductInfoSchema = new Schema<IProductInfo>(

@@ -1,13 +1,12 @@
 import { Schema, model } from 'mongoose';
 
 import { dbCollections, EMAIL_REGEX } from '../../shared/constants';
+import { IBaseModel } from '../../shared/types';
 
-interface IUser {
+interface IUser extends IBaseModel {
     name: string;
     email: string;
     password: string;
-    createdAt?: string;
-    updatedAt?: string;
 }
 
 const UserSchema = new Schema<IUser>(

@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose';
 
 import { dbCollections } from '../../shared/constants';
+import { IBaseModel } from '../../shared/types';
 
 // const categorySchema = new Schema({
 //     name: {
@@ -16,15 +17,13 @@ import { dbCollections } from '../../shared/constants';
 //     },
 // });
 
-interface IProduct {
+interface IProduct extends IBaseModel {
     name: string;
     price: number;
     brand: string;
     category: string;
     description: string;
     image: string;
-    createdAt?: string;
-    updatedAt?: string;
 }
 
 const ProductSchema = new Schema<IProduct>(

@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { Types } from 'mongoose';
 
 export interface User {
     email: string;
@@ -8,6 +9,12 @@ export interface User {
 
 export interface AuthRequest extends Request {
     user?: User;
+}
+
+export interface IBaseModel {
+    _id: string | Types.ObjectId;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 // export interface APIResponse {
