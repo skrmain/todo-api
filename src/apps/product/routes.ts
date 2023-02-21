@@ -6,6 +6,7 @@ import savedProductController from './../saved/controllers';
 import { checkAuth } from '../../shared/middleware';
 import { successResponse } from '../../shared/utils';
 import { AuthRequest } from '../../shared/types';
+import { sampleProducts } from '../../shared/products.data';
 
 const router = Router();
 
@@ -66,6 +67,16 @@ router.put('/:productId/save', checkAuth, async (req: AuthRequest, res: Response
 router.delete('/:productId/save', checkAuth, async (req: AuthRequest, res: Response) => {
     await savedProductController.deleteOne({ userId: req.user?._id, productId: req.params.productId });
     return res.send({ message: 'Successfully Removed' });
+});
+
+router.post('/add-sample-products', checkAuth, async (req: AuthRequest, res: Response) => {
+    for (const product of sampleProducts) {
+        const productExists = await productController.exists({ name: product.name });
+        if (!productExists) {
+            await productController.create({ ...product });
+        }
+    }
+    return res.send(successResponse({}));
 });
 
 export default router;

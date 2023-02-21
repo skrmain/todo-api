@@ -17,13 +17,13 @@ import { IBaseModel } from '../../shared/types';
 //     },
 // });
 
-interface IProduct extends IBaseModel {
+export interface IProduct extends IBaseModel {
     name: string;
     price: number;
     brand: string;
     category: string;
-    description: string;
-    image: string;
+    description?: string;
+    image?: string;
 }
 
 const ProductSchema = new Schema<IProduct>(

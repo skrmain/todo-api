@@ -12,7 +12,7 @@ export interface AuthRequest extends Request {
 }
 
 export interface IBaseModel {
-    _id: string | Types.ObjectId;
+    _id?: string | Types.ObjectId;
     createdAt?: string;
     updatedAt?: string;
 }
