@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import { Types } from 'mongoose';
 
 import cartController from './controllers';
 import productController from './../product/controllers';
@@ -19,11 +20,12 @@ router.get('/', async (req: AuthRequest, res: Response) => {
 
     // TODO: add info of total price of cart products
     const cart = await cartController
-        .getOne({ userId }, '-createdAt -updatedAt -products._id -products.createdAt -products.updatedAt')
-        .populate('products.productId', 'name price brand');
+        .getOne({ userId }, '-createdAt -updatedAt -userId -cartProducts._id -cartProducts.createdAt -cartProducts.updatedAt')
+        .populate('cartProducts.productId', 'name price brand');
     if (!cart) {
         throw new Error('Please Create Cart First');
     }
+
     return res.send(successResponse({ data: cart }));
 });
 
@@ -64,13 +66,13 @@ router.put('/', CartAddBodyValidator, validateRequestBody, async (req: AuthReque
     }
 
     // 3. Checking if Product is already available in cart
-    const productExistsInCart = await cartController.exists({ userId, 'products.productId': productId });
+    const productExistsInCart = await cartController.exists({ userId, 'cartProducts.productId': productId });
     if (productExistsInCart) {
-        await cartController.updateOne({ userId, 'products.productId': productId }, { $inc: { 'products.$.quantity': 1 } });
+        await cartController.updateOne({ userId, 'cartProducts.productId': productId }, { $inc: { 'cartProducts.$.quantity': 1 } });
         return res.send(successResponse({ message: 'Updated Product Quantity' }));
     }
     // 4 - If Product is not available in cart
-    await cartController.updateOne({ userId }, { $push: { products: { productId, quantity: 1 } } });
+    await cartController.updateOne({ userId }, { $push: { cartProducts: { productId, quantity: 1 } } });
     return res.send(successResponse({ message: 'Added Product to Cart' }));
 });
 
@@ -86,7 +88,7 @@ router.delete('/products/:productId', async (req: AuthRequest, res: Response) =>
     if (!cartProduct) {
         throw new Error('Product not in Cart');
     }
-    const productQuantity = cartProduct.products[0].quantity;
+    const productQuantity = cartProduct.cartProducts[0].quantity;
 
     // 1. If product quantity in cart === 1
     if (productQuantity === 1) {
@@ -102,24 +104,30 @@ router.post('/checkout', async (req: AuthRequest, res: Response) => {
     const userId = req.user?._id || '';
     const userCart = await cartController
         .getOne({ userId }, '-createdAt -updatedAt -products._id -products.createdAt -products.updatedAt')
-        .populate('products.productId', 'name price brand');
+        .populate('cartProducts.productId', 'name price brand');
 
     if (!userCart) {
         throw new Error("Cart doesn't exists");
     }
 
-    if (userCart.products.length === 0) {
+    if (userCart.cartProducts.length === 0) {
         throw new Error('Cart is Empty');
     }
 
-    // TODO: add type definition
-    const productsInfo = userCart.products.map((product: any) => ({
-        productId: product.productId._id,
-        quantity: product.quantity,
-        total: product.productId.price * product.quantity,
-    }));
+    // let totalPrice = 0;
+    const productsInfo = userCart.cartProducts.map((product) => {
+        if (product.productId == null || product.productId instanceof Types.ObjectId) {
+            throw new Error('should be populated');
+        }
+        // totalPrice += product?.productId?.price * product.quantity;
+        return {
+            productId: product.productId._id,
+            quantity: product.quantity,
+            price: product.productId.price,
+        };
+    });
 
-    await orderController.create({ userId, products: productsInfo });
+    await orderController.create({ userId, orderedProducts: productsInfo });
     await cartController.deleteOne({ userId });
 
     return res.send(successResponse({ message: 'Successfully Ordered' }));

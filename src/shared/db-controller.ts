@@ -18,17 +18,17 @@ export class DbController<T> {
         this.model = model;
     }
 
-    getOne = (filter: FilterQuery<T>, select = '-__v') => this.model.findOne(filter, select).lean();
+    getOne = (filter: FilterQuery<T>, select = '') => this.model.findOne(filter, select + ' -__v').lean();
 
     count = (filter: FilterQuery<T>) => this.model.count(filter).lean();
 
     exists = (filter: FilterQuery<T>) => this.model.exists(filter).lean();
 
-    getAll = (filter: FilterQuery<T> = {}, select = '-__v') => this.model.find(filter, select).lean();
+    getAll = (filter: FilterQuery<T> = {}, select = '') => this.model.find(filter, select + ' -__v').lean();
 
-    getWithQuery = (filter: FilterQuery<T> = {}, query: IQuery, select = '-__v') => {
+    getWithQuery = (filter: FilterQuery<T> = {}, query: IQuery, select = '') => {
         return this.model
-            .find(filter, select)
+            .find(filter, select + ' -__v')
             .skip((query.page - 1) * query.limit)
             .limit(query.limit)
             .sort({
