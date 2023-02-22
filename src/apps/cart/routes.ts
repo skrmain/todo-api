@@ -114,12 +114,10 @@ router.post('/checkout', async (req: AuthRequest, res: Response) => {
         throw new Error('Cart is Empty');
     }
 
-    // let totalPrice = 0;
     const productsInfo = userCart.cartProducts.map((product) => {
         if (product.productId == null || product.productId instanceof Types.ObjectId) {
             throw new Error('should be populated');
         }
-        // totalPrice += product?.productId?.price * product.quantity;
         return {
             productId: product.productId._id,
             quantity: product.quantity,
