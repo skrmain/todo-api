@@ -70,6 +70,12 @@ router.delete('/', checkAuth, async (req: AuthRequest, res: Response) => {
 });
 
 router.put('/:productId/save', checkAuth, async (req: AuthRequest, res: Response) => {
+    const productExists = await productController.exists({ _id: req.params.productId });
+    if (!productExists) {
+        res.status(400);
+        throw new Error("Product doesn't Exists");
+    }
+
     const isSaved = await savedProductController.exists({ userId: req.user?._id, productId: req.params.productId });
     if (!isSaved) {
         await savedProductController.create({ userId: req.user?._id, productId: req.params.productId });
