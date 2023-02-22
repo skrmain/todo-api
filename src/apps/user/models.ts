@@ -1,8 +1,15 @@
 import { Schema, model } from 'mongoose';
 
 import { dbCollections, EMAIL_REGEX } from '../../shared/constants';
+import { IBaseModel } from '../../shared/types';
 
-const UserSchema = new Schema(
+interface IUser extends IBaseModel {
+    name: string;
+    email: string;
+    password: string;
+}
+
+const UserSchema = new Schema<IUser>(
     {
         name: {
             type: String,

@@ -1,19 +1,33 @@
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model, Types, PopulatedDoc, Document } from 'mongoose';
 
 import { dbCollections } from '../../shared/constants';
+import { IBaseModel } from '../../shared/types';
+import { IProduct } from '../product/models';
 
-const ProductInfoSchema = new Schema(
+interface IOrderProductInfo extends IBaseModel {
+    productId: PopulatedDoc<Document<Types.ObjectId> & IProduct>;
+    price: number;
+    quantity: number;
+}
+
+export interface IOrder extends IBaseModel {
+    userId: Types.ObjectId;
+    orderedProducts: IOrderProductInfo[];
+    // total: number;
+}
+
+const OrderProductInfoSchema = new Schema<IOrderProductInfo>(
     {
         productId: {
-            type: Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: dbCollections.product,
             required: true,
         },
-        quantity: {
+        price: {
             type: Number,
             required: true,
         },
-        total: {
+        quantity: {
             type: Number,
             required: true,
         },
@@ -21,13 +35,18 @@ const ProductInfoSchema = new Schema(
     { timestamps: true }
 );
 
-const OrderSchema = new Schema(
+const OrderSchema = new Schema<IOrder>(
     {
         userId: {
-            type: Types.ObjectId,
+            type: Schema.Types.ObjectId,
             required: true,
+            ref: dbCollections.user,
         },
-        products: [ProductInfoSchema],
+        orderedProducts: [OrderProductInfoSchema],
+        // total: {
+        //     type: Number,
+        //     required: true,
+        // },
     },
     { timestamps: true }
 );

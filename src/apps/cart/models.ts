@@ -1,27 +1,43 @@
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model, Types, PopulatedDoc, Document } from 'mongoose';
 
 import { dbCollections } from '../../shared/constants';
+import { IBaseModel } from '../../shared/types';
+import { IProduct } from '../product/models';
 
-const ProductInfoSchema = new Schema(
+interface ICartProductInfo extends IBaseModel {
+    productId: PopulatedDoc<Document<Types.ObjectId> & IProduct>;
+    quantity: number;
+}
+
+interface ICart extends IBaseModel {
+    userId: Types.ObjectId;
+    cartProducts: ICartProductInfo[];
+}
+
+const CartProductInfoSchema = new Schema<ICartProductInfo>(
     {
         productId: {
-            type: Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: dbCollections.product,
             required: true,
         },
-        quantity: Number,
+        quantity: {
+            type: Number,
+        },
     },
     { timestamps: true }
 );
 
-const CartSchema: Schema = new Schema(
+const CartSchema = new Schema<ICart>(
     {
         userId: {
-            type: Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: dbCollections.user,
             required: true,
         },
-        products: [ProductInfoSchema],
+        cartProducts: {
+            type: [CartProductInfoSchema],
+        },
     },
     { timestamps: true }
 );

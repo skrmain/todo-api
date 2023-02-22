@@ -6,14 +6,28 @@ import savedProductController from './../saved/controllers';
 import { checkAuth } from '../../shared/middleware';
 import { successResponse } from '../../shared/utils';
 import { AuthRequest } from '../../shared/types';
+import { sampleProducts } from '../../shared/products.data';
+import { FilterQuery } from 'mongoose';
+import { IProduct } from './models';
 
 const router = Router();
 
 router.get('/', async (req: Request, res: Response) => {
-    // TODO: add pagination, sorting, filter, search
-    const products = await productController.getAll();
+    const { limit = 10, page = 1, search = '', sortBy = 'createdAt', sortOrder = 'desc', category = '', brand = '' } = req.query as any;
+    const filter: FilterQuery<IProduct> = {};
+    if (search) {
+        filter.name = { $regex: search };
+    }
+    if (category) {
+        filter.category = category;
+    }
+    if (brand) {
+        filter.brand = brand;
+    }
+    const products = await productController.getWithQuery(filter, { limit, page, sortBy, sortOrder });
+    const total = await productController.count(filter);
 
-    return res.send(successResponse({ data: products }));
+    return res.send(successResponse({ data: products, metaData: { page, limit, sortBy, sortOrder, total } }));
 });
 
 router.get('/:productId', async (req: Request, res: Response) => {
@@ -56,6 +70,12 @@ router.delete('/', checkAuth, async (req: AuthRequest, res: Response) => {
 });
 
 router.put('/:productId/save', checkAuth, async (req: AuthRequest, res: Response) => {
+    const productExists = await productController.exists({ _id: req.params.productId });
+    if (!productExists) {
+        res.status(400);
+        throw new Error("Product doesn't Exists");
+    }
+
     const isSaved = await savedProductController.exists({ userId: req.user?._id, productId: req.params.productId });
     if (!isSaved) {
         await savedProductController.create({ userId: req.user?._id, productId: req.params.productId });
@@ -66,6 +86,16 @@ router.put('/:productId/save', checkAuth, async (req: AuthRequest, res: Response
 router.delete('/:productId/save', checkAuth, async (req: AuthRequest, res: Response) => {
     await savedProductController.deleteOne({ userId: req.user?._id, productId: req.params.productId });
     return res.send({ message: 'Successfully Removed' });
+});
+
+router.post('/add-sample-products', checkAuth, async (req: AuthRequest, res: Response) => {
+    for (const product of sampleProducts) {
+        const productExists = await productController.exists({ name: product.name });
+        if (!productExists) {
+            await productController.create({ ...product });
+        }
+    }
+    return res.send(successResponse({}));
 });
 
 export default router;
