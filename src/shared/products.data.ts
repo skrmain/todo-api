@@ -7,6 +7,7 @@ export const sampleProducts: IProduct[] = [
         category: 'Stationary',
         description: 'This is the best Notebook',
         price: 100,
+        images: [],
     },
     {
         name: 'Apple iPad Pro',
@@ -14,6 +15,7 @@ export const sampleProducts: IProduct[] = [
         category: 'Electronics',
         description: 'This is the best Tablet',
         price: 100000,
+        images: [],
     },
     {
         name: 'Apple iPhone 14',
@@ -21,6 +23,7 @@ export const sampleProducts: IProduct[] = [
         category: 'Electronics',
         description: 'This is the best Mobile',
         price: 80000,
+        images: [],
     },
     {
         name: 'Apple macBook Pro',
@@ -28,6 +31,7 @@ export const sampleProducts: IProduct[] = [
         category: 'Electronics',
         description: 'This is the best Laptop',
         price: 150000,
+        images: [],
     },
     {
         name: 'Dell Vostro 5568',
@@ -35,6 +39,7 @@ export const sampleProducts: IProduct[] = [
         category: 'Electronics',
         description: 'This is the best Windows Laptop',
         price: 60000,
+        images: [],
     },
     {
         name: 'Luxor Pens',
@@ -42,6 +47,7 @@ export const sampleProducts: IProduct[] = [
         category: 'Stationary',
         description: 'This are the best Pens',
         price: 100,
+        images: [],
     },
     {
         name: 'Campus Running Shoes',
@@ -49,6 +55,7 @@ export const sampleProducts: IProduct[] = [
         category: 'Sports',
         description: 'This are the best Shoes',
         price: 2000,
+        images: [],
     },
     {
         name: 'GreenSoul Office Chair',
@@ -56,6 +63,7 @@ export const sampleProducts: IProduct[] = [
         category: 'Furniture',
         description: 'This is the best Chair',
         price: 10000,
+        images: [],
     },
     {
         name: 'Apple iPad mini',
@@ -63,6 +71,7 @@ export const sampleProducts: IProduct[] = [
         category: 'Electronics',
         description: 'This is the best Tablet for Students',
         price: 50000,
+        images: [],
     },
     {
         name: 'Apple iMac air',
@@ -70,6 +79,7 @@ export const sampleProducts: IProduct[] = [
         category: 'Electronics',
         description: 'This is the best Laptop for Students, and moderate usage',
         price: 120000,
+        images: [],
     },
     {
         name: 'Apple iStudio',
@@ -77,6 +87,7 @@ export const sampleProducts: IProduct[] = [
         category: 'Electronics',
         description: 'This is the System for High Performance and Professional',
         price: 200000,
+        images: [],
     },
     {
         name: 'Dell Latitude 15',
@@ -84,5 +95,6 @@ export const sampleProducts: IProduct[] = [
         category: 'Electronics',
         description: 'This is the best Professional Windows Laptop',
         price: 200000,
+        images: [],
     },
 ];

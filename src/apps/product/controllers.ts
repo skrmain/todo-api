@@ -1,6 +1,7 @@
 import { FilterQuery, Model } from 'mongoose';
+import { readFile } from 'fs/promises';
 
-import { IProduct, Product } from './models';
+import { IProduct, IProductImages, Product } from './models';
 import { DbController } from '../../shared/db-controller';
 import { IProductDetails, IProductFilter, IProductQuery, IProductSaveDetails } from './types';
 import { InvalidHttpRequestError, NotFoundHttpRequestError } from '../../shared/custom-errors';
@@ -52,12 +53,36 @@ class ProductController<T> extends DbController<T> {
     public async addProduct(details: IProductDetails) {
         // TODO: add check if product is added by same user
         // TODO: add user type or role check
-        const productExists = await productController.exists({ name: details.name });
+        const { name, brand, category, description, price, images: _images } = details;
+        const productExists = await productController.exists({ name });
         if (productExists) {
             throw new InvalidHttpRequestError('Product with same name already exists.');
         }
 
-        return (await productController.create({ ...details })).toObject();
+        const images: IProductImages[] = [];
+
+        // TODO: add logic to clear image from `/tmp`
+        if (_images) {
+            if (_images instanceof Array)
+                for (const image of _images) {
+                    images.push({
+                        name: image.originalFilename ?? '',
+                        size: image.size,
+                        mimetype: image.mimetype ?? '',
+                        buffer: await readFile(image.filepath),
+                    });
+                }
+            else {
+                images.push({
+                    name: _images.originalFilename ?? '',
+                    size: _images.size,
+                    mimetype: _images.mimetype ?? '',
+                    buffer: await readFile(_images.filepath),
+                });
+            }
+        }
+
+        return (await productController.create({ name, brand, category, description, price, images })).toObject();
     }
 
     public async saveProduct(details: IProductSaveDetails) {
@@ -79,6 +104,10 @@ class ProductController<T> extends DbController<T> {
         const { userId, productId } = details;
         await savedProductController.deleteOne({ userId, productId });
         return true;
+    }
+
+    public async sendProductImage(details: any) {
+        return details;
     }
 }
 

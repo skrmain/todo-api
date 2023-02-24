@@ -1,4 +1,5 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
+import formidable from 'formidable';
 
 import productController from './controllers';
 
@@ -20,8 +21,33 @@ router.get('/:productId', async (req: Request<IProductIdParam>, res: Response) =
     return res.send(successResponse({ data }));
 });
 
-router.post('/', checkAuth, async (req: AuthRequest, res: Response) => {
+const form = formidable({
+    multiples: true,
+    // NOTE: To store only images
+    filter: ({ mimetype }) => (mimetype ? mimetype.includes('image') : false),
+});
+
+const handleFiles = (req: Request, res: Response, next: NextFunction) => {
+    form.parse(req, (err, fields, files) => {
+        if (err) {
+            throw new Error(err);
+        }
+
+        console.log('fil', fields);
+        console.log('files', files);
+        req.body = { ...fields, ...files };
+        next();
+        // res.send('Ok');
+    });
+};
+
+router.post('/', checkAuth, handleFiles, async (req: AuthRequest, res: Response) => {
     const data = await productController.addProduct(req.body);
+    return res.send(successResponse({ data }));
+});
+
+router.get('/:productId/images/:imageId/:imageName', async (req: AuthRequest, res: Response) => {
+    const data = await productController.sendProductImage({ ...req.params });
     return res.send(successResponse({ data }));
 });
 

@@ -1,3 +1,4 @@
+import { File } from 'formidable';
 import { ObjectId } from 'mongoose';
 
 export interface IProductQuery {
@@ -24,6 +25,7 @@ export interface IProductDetails {
     category: string;
     description: string;
     price: number;
+    images?: File | File[];
 }
 
 export interface IProductSaveDetails {
