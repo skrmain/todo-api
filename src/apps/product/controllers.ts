@@ -1,8 +1,11 @@
+import { FilterQuery, Model } from 'mongoose';
+
 import { IProduct, Product } from './models';
 import { DbController } from '../../shared/db-controller';
-import { FilterQuery, Model } from 'mongoose';
-import { IProductDetails, IProductFilter, IProductQuery } from './types';
+import { IProductDetails, IProductFilter, IProductQuery, IProductSaveDetails } from './types';
 import { InvalidHttpRequestError, NotFoundHttpRequestError } from '../../shared/custom-errors';
+
+import savedProductController from './../saved/controllers';
 
 // NOTE: Issue in adding type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,8 +40,8 @@ class ProductController<T> extends DbController<T> {
         return { data: products, metaData: { page, limit, sortBy, sortOrder, total } };
     }
 
-    public async getProduct(filter: IProductFilter) {
-        const product = await productController.getOne(filter);
+    public async getProduct(details: IProductFilter) {
+        const product = await productController.getOne(details);
         if (!product) {
             throw new NotFoundHttpRequestError("Product doesn't exists.");
         }
@@ -55,6 +58,27 @@ class ProductController<T> extends DbController<T> {
         }
 
         return (await productController.create({ ...details })).toObject();
+    }
+
+    public async saveProduct(details: IProductSaveDetails) {
+        const { userId, productId } = details;
+        const productExists = await productController.exists({ _id: productId });
+        if (!productExists) {
+            throw new NotFoundHttpRequestError("Product doesn't Exists");
+        }
+
+        const isSaved = await savedProductController.exists({ userId, productId });
+        if (isSaved) {
+            return false;
+        }
+        await savedProductController.create({ userId, productId });
+        return true;
+    }
+
+    public async removeProduct(details: IProductSaveDetails) {
+        const { userId, productId } = details;
+        await savedProductController.deleteOne({ userId, productId });
+        return true;
     }
 }
 

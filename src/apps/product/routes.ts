@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express';
 
 import productController from './controllers';
-import savedProductController from './../saved/controllers';
 
 import { checkAuth } from '../../shared/middleware';
 import { successResponse } from '../../shared/utils';
@@ -43,21 +42,12 @@ router.delete('/', checkAuth, async (req: AuthRequest, res: Response) => {
 });
 
 router.put('/:productId/save', checkAuth, async (req: AuthRequest, res: Response) => {
-    const productExists = await productController.exists({ _id: req.params.productId });
-    if (!productExists) {
-        res.status(400);
-        throw new Error("Product doesn't Exists");
-    }
-
-    const isSaved = await savedProductController.exists({ userId: req.user?._id, productId: req.params.productId });
-    if (!isSaved) {
-        await savedProductController.create({ userId: req.user?._id, productId: req.params.productId });
-    }
+    await productController.saveProduct({ productId: req.params.productId, userId: req.user?._id || '' });
     return res.send({ message: 'Successfully Saved' });
 });
 
 router.delete('/:productId/save', checkAuth, async (req: AuthRequest, res: Response) => {
-    await savedProductController.deleteOne({ userId: req.user?._id, productId: req.params.productId });
+    await productController.removeProduct({ productId: req.params.productId, userId: req.user?._id || '' });
     return res.send({ message: 'Successfully Removed' });
 });
 

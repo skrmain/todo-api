@@ -25,3 +25,8 @@ export interface IProductDetails {
     description: string;
     price: number;
 }
+
+export interface IProductSaveDetails {
+    userId: string;
+    productId: string;
+}
