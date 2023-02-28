@@ -2,8 +2,9 @@
 import { NextFunction, Request, Response, ErrorRequestHandler } from 'express';
 import { validationResult } from 'express-validator';
 import { JsonWebTokenError } from 'jsonwebtoken';
-import { HttpError, InvalidHttpRequestError, NotFoundHttpRequestError, UnauthorizedHttpRequestError } from './custom-errors';
+import formidable from 'formidable';
 
+import { HttpError, InvalidHttpRequestError, NotFoundHttpRequestError, UnauthorizedHttpRequestError } from './custom-errors';
 import { AuthRequest, User } from './types';
 import { verifyToken } from './utils';
 
@@ -48,4 +49,24 @@ export const invalidPathHandler = (req: Request, res: Response) => {
 export const requestLogger = (req: Request, res: Response, next: NextFunction) => {
     console.log(req.method, req.url, res.statusCode);
     next();
+};
+
+const form = formidable({
+    multiples: true,
+    // NOTE: To store only images
+    filter: ({ mimetype }) => (mimetype ? mimetype.includes('image') : false),
+});
+
+export const handleFiles = (req: Request, res: Response, next: NextFunction) => {
+    form.parse(req, (err, fields, files) => {
+        if (err) {
+            throw new Error(err);
+        }
+
+        // console.log('fil', fields);
+        // console.log('files', files);
+        req.body = { ...fields, ...files };
+        next();
+        // res.send('Ok');
+    });
 };

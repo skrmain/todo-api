@@ -1,9 +1,8 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import formidable from 'formidable';
+import { Router, Request, Response } from 'express';
 
 import productController from './controllers';
 
-import { checkAuth } from '../../shared/middleware';
+import { checkAuth, handleFiles } from '../../shared/middleware';
 import { successResponse } from '../../shared/utils';
 import { AuthRequest } from '../../shared/types';
 import { sampleProducts } from '../../shared/products.data';
@@ -20,26 +19,6 @@ router.get('/:productId', async (req: Request<IProductIdParam>, res: Response) =
     const data = await productController.getProduct({ _id: req.params.productId });
     return res.send(successResponse({ data }));
 });
-
-const form = formidable({
-    multiples: true,
-    // NOTE: To store only images
-    filter: ({ mimetype }) => (mimetype ? mimetype.includes('image') : false),
-});
-
-const handleFiles = (req: Request, res: Response, next: NextFunction) => {
-    form.parse(req, (err, fields, files) => {
-        if (err) {
-            throw new Error(err);
-        }
-
-        console.log('fil', fields);
-        console.log('files', files);
-        req.body = { ...fields, ...files };
-        next();
-        // res.send('Ok');
-    });
-};
 
 router.post('/', checkAuth, handleFiles, async (req: AuthRequest, res: Response) => {
     const data = await productController.addProduct(req.body);
@@ -69,12 +48,12 @@ router.delete('/', checkAuth, async (req: AuthRequest, res: Response) => {
 
 router.put('/:productId/save', checkAuth, async (req: AuthRequest, res: Response) => {
     await productController.saveProduct({ productId: req.params.productId, userId: req.user?._id || '' });
-    return res.send({ message: 'Successfully Saved' });
+    return res.send(successResponse({ message: 'Successfully Saved' }));
 });
 
 router.delete('/:productId/save', checkAuth, async (req: AuthRequest, res: Response) => {
     await productController.removeProduct({ productId: req.params.productId, userId: req.user?._id || '' });
-    return res.send({ message: 'Successfully Removed' });
+    return res.send(successResponse({ message: 'Successfully Removed' }));
 });
 
 router.post('/add-sample-products', checkAuth, async (req: AuthRequest, res: Response) => {
