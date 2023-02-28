@@ -17,13 +17,41 @@ import { IBaseModel } from '../../shared/types';
 //     },
 // });
 
+export interface IProductImages {
+    // storedName: string;
+    // storedPath: string;
+    name: string;
+    mimetype: string;
+    size: number;
+    buffer: Buffer;
+}
+
+const ProductImagesSchema = new Schema<IProductImages>({
+    name: {
+        type: String,
+        required: true,
+    },
+    size: {
+        type: Number,
+        required: true,
+    },
+    mimetype: {
+        type: String,
+        required: true,
+    },
+    buffer: {
+        type: Buffer,
+        required: true,
+    },
+});
+
 export interface IProduct extends IBaseModel {
     name: string;
     price: number;
     brand: string;
     category: string;
     description?: string;
-    image?: string;
+    images: IProductImages[];
 }
 
 const ProductSchema = new Schema<IProduct>(
@@ -51,8 +79,8 @@ const ProductSchema = new Schema<IProduct>(
         description: {
             type: String,
         },
-        image: {
-            type: String,
+        images: {
+            type: [ProductImagesSchema],
         },
     },
     { timestamps: true }
