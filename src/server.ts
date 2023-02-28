@@ -1,8 +1,9 @@
 import express from 'express';
 import cors from 'cors';
+import morgan from 'morgan';
 import 'express-async-errors';
 
-import { checkAuth, invalidPathHandler, requestErrorHandler, requestLogger } from './shared/middleware';
+import { checkAuth, invalidPathHandler, requestErrorHandler } from './shared/middleware';
 
 import AuthRoutes from './apps/auth/routes';
 import UserRoutes from './apps/user/routes';
@@ -16,8 +17,7 @@ export const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-
-app.use(requestLogger);
+app.use(morgan('tiny'));
 
 app.get('/', (req, res) => res.send('Ok'));
 app.use('/', AuthRoutes);
