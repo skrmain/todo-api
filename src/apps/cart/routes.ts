@@ -9,21 +9,19 @@ import { AuthRequest } from '../../shared/types';
 import { successResponse } from '../../shared/utils';
 import { validateRequestBody } from '../../shared/middleware';
 import { CartAddBodyValidator } from './validator';
+import { InvalidHttpRequestError } from '../../shared/custom-errors';
 
 const router = Router();
 
 router.get('/', async (req: AuthRequest, res: Response) => {
     const userId = req.user?._id;
-    if (!userId) {
-        throw new Error('Login Required');
-    }
 
     // TODO: add info of total price of cart products
     const cart = await cartController
         .getOne({ userId }, '-createdAt -updatedAt -userId -cartProducts._id -cartProducts.createdAt -cartProducts.updatedAt')
         .populate('cartProducts.productId', 'name price brand');
     if (!cart) {
-        throw new Error('Please Create Cart First');
+        throw new InvalidHttpRequestError('Please Create Cart First');
     }
 
     return res.send(successResponse({ data: cart }));
@@ -31,13 +29,10 @@ router.get('/', async (req: AuthRequest, res: Response) => {
 
 router.post('/', async (req: AuthRequest, res: Response) => {
     const userId = req.user?._id;
-    if (!userId) {
-        throw new Error('Login Required');
-    }
-
     const cartExists = await cartController.exists({ userId });
+
     if (cartExists) {
-        throw new Error('Cart already exists');
+        throw new InvalidHttpRequestError('Cart already exists');
     }
 
     const newCart = await cartController.create({ userId });
@@ -48,21 +43,18 @@ router.put('/', CartAddBodyValidator, validateRequestBody, async (req: AuthReque
     // TODO: add limit of 10 product in cart
     // NOTE: to add product to cart
     const userId = req.user?._id;
-    if (!userId) {
-        throw new Error('Login Required');
-    }
     const { productId } = req.body;
 
     // 1. Check product exists
     const productExists = await productController.exists({ _id: productId });
     if (!productExists) {
-        throw new Error('Invalid Product');
+        throw new InvalidHttpRequestError('Invalid Product');
     }
 
     // 2. Check for user cart exists
     const userCartExists = await cartController.exists({ userId });
     if (!userCartExists) {
-        throw new Error('Please Create Cart First');
+        throw new InvalidHttpRequestError('Please Create Cart First');
     }
 
     // 3. Checking if Product is already available in cart
@@ -79,14 +71,11 @@ router.put('/', CartAddBodyValidator, validateRequestBody, async (req: AuthReque
 router.delete('/products/:productId', async (req: AuthRequest, res: Response) => {
     // NOTE: to remove product from cart
     const userId = req.user?._id;
-    if (!userId) {
-        throw new Error('Login Required');
-    }
     const { productId } = req.params;
 
     const cartProduct = await cartController.getOne({ userId, 'products.productId': productId });
     if (!cartProduct) {
-        throw new Error('Product not in Cart');
+        throw new InvalidHttpRequestError('Product not in Cart');
     }
     const productQuantity = cartProduct.cartProducts[0].quantity;
 
@@ -107,11 +96,11 @@ router.post('/checkout', async (req: AuthRequest, res: Response) => {
         .populate('cartProducts.productId', 'name price brand');
 
     if (!userCart) {
-        throw new Error("Cart doesn't exists");
+        throw new InvalidHttpRequestError("Cart doesn't exists");
     }
 
     if (userCart.cartProducts.length === 0) {
-        throw new Error('Cart is Empty');
+        throw new InvalidHttpRequestError('Cart is Empty');
     }
 
     const productsInfo = userCart.cartProducts.map((product) => {
@@ -133,11 +122,8 @@ router.post('/checkout', async (req: AuthRequest, res: Response) => {
 
 router.delete('/', async (req: AuthRequest, res: Response) => {
     const userId = req.user?._id;
-    if (!userId) {
-        throw new Error('Login Required');
-    }
-
     const userCartExists = await cartController.exists({ userId });
+
     if (!userCartExists) {
         throw new Error('Cart does not exists');
     }
