@@ -25,4 +25,6 @@ const TodoSchema = new Schema(
     { timestamps: true }
 );
 
-module.exports = model(ModelNames.todo, TodoSchema);
+const TodoModel = model(ModelNames.todo, TodoSchema);
+
+module.exports = TodoModel;

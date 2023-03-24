@@ -14,4 +14,8 @@ const VLoginSchema = Joi.object({
     password: Joi.string().required().min(3).max(30),
 });
 
-module.exports = { VRegisterSchema, VLoginSchema };
+const VTokenRefreshSchema = Joi.object({
+    refresh: Joi.string().required(),
+});
+
+module.exports = { VRegisterSchema, VLoginSchema, VTokenRefreshSchema };

@@ -10,7 +10,7 @@ services:
             MONGO_INITDB_ROOT_USERNAME: admin
             MONGO_INITDB_ROOT_PASSWORD: admin
 
-    server:
+    local-server:
         build: .
         ports:
             - 8000:8000

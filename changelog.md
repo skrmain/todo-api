@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5
+
+- Add Permission Based Access Control On Todo
+- Update App Structure
+- Implement Refresh Token API
+- Add Swagger API Docs
+
 ## 0.4
 
 - CHORE:

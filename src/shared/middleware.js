@@ -6,6 +6,10 @@ const { JsonWebTokenError } = require('jsonwebtoken');
 const {
     Error: { ValidationError: MValidationError, CastError: MCastError },
 } = require('mongoose');
+const { UserTodoPermissions } = require('./constants');
+
+const todoService = require('../apps/todo/service');
+const userTodoService = require('../apps/userTodo/service');
 
 const utils = require('./utils');
 
@@ -25,6 +29,39 @@ const checkAuth = (req, res, next) => {
         const token = req.headers.authorization.split('Bearer ')[1];
         req.user = utils.verifyToken(token).user;
         return next();
+    } catch (error) {
+        return next(error);
+    }
+};
+
+const checkUserTodoPermission = (permission) => {
+    const isValid = !!Object.values(UserTodoPermissions).find((v) => v === permission);
+    if (!isValid) {
+        throw new Error('Invalid Permission Specified');
+    }
+    return async (req, res, next) => {
+        try {
+            const result = await userTodoService.exists({ userId: req.user._id, todoId: req.params.todoId, permissions: { $in: [permission] } });
+            // console.log('[result]', result);
+
+            if (result) {
+                return next();
+            }
+            return res.send('Invalid Permission');
+        } catch (error) {
+            return next(error);
+        }
+    };
+};
+
+const checkTodoExists = async (req, res, next) => {
+    try {
+        const isExist = await todoService.exists({ _id: req.params.todoId });
+        if (isExist) {
+            return next();
+        }
+        res.status(404);
+        throw new Error('Does not exists.');
     } catch (error) {
         return next(error);
     }
@@ -65,7 +102,7 @@ const handleInvalidPath = (req, res) => {
  * @param {express.Next} next
  */
 const logRequest = (req, res, next) => {
-    console.log(`[req] ${req.hostname} : ${req.method} : ${req.path}`);
+    console.log(`[${req.method}] : ${req.hostname} : ${req.url}`);
     next();
 };
 
@@ -120,4 +157,6 @@ module.exports = {
     handleError,
     logRequest,
     validateReqBody,
+    checkUserTodoPermission,
+    checkTodoExists,
 };
