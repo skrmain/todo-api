@@ -24,7 +24,7 @@ const register = async (req, res, next) => {
             throw new Error("'email' unavailable");
         }
 
-        await userService.create(username, email, encrypt(password));
+        await userService.create({ username, email, password: encrypt(password) });
 
         return res.send(successResponse({ message: 'Registration Successful' }));
     } catch (error) {

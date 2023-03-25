@@ -82,6 +82,7 @@ const updateOne = async (req, res, next) => {
 const deleteOne = async (req, res, next) => {
     try {
         await todoService.deleteOne({ _id: req.params.todoId });
+        await userTodoService.deleteMany({ todoId: req.params.todoId });
         return res.send(successResponse({ message: 'Successfully Deleted' }));
     } catch (error) {
         return next(error);

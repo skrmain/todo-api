@@ -32,6 +32,10 @@ class Database {
         return this.model.deleteOne(filter).lean();
     }
 
+    deleteMany(filter) {
+        return this.model.deleteMany(filter).lean();
+    }
+
     updateOne(filter, data) {
         return this.model.updateOne(filter, data).lean();
     }
