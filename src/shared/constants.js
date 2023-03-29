@@ -29,9 +29,28 @@ const SwaggerOptions = {
     apis: ['swagger.yaml'],
 };
 
+const SortOrder = {
+    asc: 'asc',
+    desc: 'desc',
+};
+
+const MongoSortOrder = {
+    asc: 1,
+    desc: -1,
+};
+
+const TodoSortByMapping = {
+    status: 'todoId.status',
+    createdAt: 'todoId.createdAt',
+    updatedAt: 'todoId.updatedAt',
+};
+
 module.exports = {
     TodoStatus,
     ModelNames,
     UserTodoPermissions,
     SwaggerOptions,
+    SortOrder,
+    MongoSortOrder,
+    TodoSortByMapping,
 };

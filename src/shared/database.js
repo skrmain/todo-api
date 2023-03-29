@@ -39,6 +39,19 @@ class Database {
     updateOne(filter, data) {
         return this.model.updateOne(filter, data).lean();
     }
+
+    /**
+     *
+     * @param {import('mongoose').PipelineStage[]} stages
+     * @returns
+     */
+    aggregate(stages) {
+        return this.model.aggregate(stages);
+    }
+
+    count(filter) {
+        return this.model.count(filter);
+    }
 }
 
 module.exports = Database;

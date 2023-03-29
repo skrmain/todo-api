@@ -1,3 +1,4 @@
+/* eslint-disable object-curly-newline */
 // eslint-disable-next-line no-unused-vars
 const { Request, Response, NextFunction } = require('express');
 
@@ -6,6 +7,7 @@ const { UserTodoPermissions } = require('../../shared/constants');
 
 const todoService = require('./service');
 const userTodoService = require('../userTodo/service');
+const { parseUserTodos, parseUserTodo } = require('./parser');
 
 /**
  *
@@ -36,8 +38,20 @@ const create = async (req, res, next) => {
  */
 const getAll = async (req, res, next) => {
     try {
-        const todos = await userTodoService.getAll({ userId: req.user._id }).populate('todoId');
-        return res.send(successResponse({ data: todos }));
+        const { pageNumber, pageSize, sortOrder, sortBy, status, title } = req.query;
+        const filter = {};
+
+        if (status) {
+            filter['todoId.status'] = status;
+        }
+        if (title) {
+            filter['todoId.title'] = { $regex: new RegExp(title, 'i') };
+        }
+
+        const { todos, total } = await userTodoService.getUserTodos({ userId: req.user._id, pageNumber, pageSize, sortOrder, sortBy, filter });
+        const parsedTodos = parseUserTodos(todos);
+
+        return res.send(successResponse({ data: parsedTodos, metadata: { pageNumber, pageSize, sortOrder, sortBy, total } }));
     } catch (error) {
         return next(error);
     }
@@ -51,8 +65,8 @@ const getAll = async (req, res, next) => {
  */
 const getOne = async (req, res, next) => {
     try {
-        const todo = await userTodoService.getOne({ todoId: req.params.todoId, userId: req.user._id }).populate('todoId');
-        return res.send(successResponse({ data: todo }));
+        const todo = await userTodoService.getOne({ todoId: req.params.todoId, userId: req.user._id }, '-addedBy -userId').populate('todoId');
+        return res.send(successResponse({ data: parseUserTodo(todo) }));
     } catch (error) {
         return next(error);
     }

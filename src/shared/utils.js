@@ -1,4 +1,8 @@
-const mongoose = require('mongoose');
+/* eslint-disable object-curly-newline */
+const {
+    Types: { ObjectId },
+    default: mongoose,
+} = require('mongoose');
 const { sign, verify } = require('jsonwebtoken');
 const { createHmac } = require('crypto');
 
@@ -14,7 +18,7 @@ const connectMongoDB = async () => {
     }
 };
 
-const successResponse = ({ message = 'Successful', data = {}, status = true }) => ({ data, status, message });
+const successResponse = ({ message = 'Successful', data = {}, status = true, metadata = {} }) => ({ data, status, message, metadata });
 
 const failResponse = ({ message = 'Fail', data = {}, status = false }) => ({ data, status, message });
 
@@ -59,6 +63,13 @@ const asyncWrapper = (fn) => async (req, res, next) => {
     }
 };
 
+/**
+ *
+ * @param {string?} id
+ * @returns
+ */
+const MongoDBObjectId = (id) => new ObjectId(id);
+
 module.exports = {
     connectMongoDB,
     successResponse,
@@ -67,4 +78,5 @@ module.exports = {
     verifyToken,
     encrypt,
     asyncWrapper,
+    MongoDBObjectId,
 };

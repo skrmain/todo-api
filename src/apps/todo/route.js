@@ -1,21 +1,22 @@
 const { Router } = require('express');
 
-const { validateReqBody, checkUserTodoPermission, checkTodoExists } = require('../../shared/middleware');
+// eslint-disable-next-line object-curly-newline
+const { validateReqBody, checkUserTodoPermission, checkTodoExists, validateReqQuery } = require('../../shared/middleware');
+const { TodoCreateUpdateSchemaV, TodoQueryV, UserTodoPermissionSchemaV } = require('./validation');
 
-const todoValidation = require('./validation');
 const todoController = require('./controller');
 const { UserTodoPermissions } = require('../../shared/constants');
 
 const router = Router();
 
-router.post('/', validateReqBody(todoValidation.VTodoCreateUpdateSchema), todoController.create);
-router.get('/', todoController.getAll);
+router.post('/', validateReqBody(TodoCreateUpdateSchemaV), todoController.create);
+router.get('/', validateReqQuery(TodoQueryV), todoController.getAll);
 router.get('/:todoId', checkTodoExists, checkUserTodoPermission(UserTodoPermissions.read), todoController.getOne);
 router.patch(
     '/:todoId',
     checkTodoExists,
     checkUserTodoPermission(UserTodoPermissions.write),
-    validateReqBody(todoValidation.VTodoCreateUpdateSchema),
+    validateReqBody(TodoCreateUpdateSchemaV),
     todoController.updateOne
 );
 router.delete('/:todoId', checkTodoExists, checkUserTodoPermission(UserTodoPermissions.delete), todoController.deleteOne);
@@ -24,7 +25,7 @@ router.patch(
     '/:todoId/users/:userId/permissions',
     checkTodoExists,
     checkUserTodoPermission(UserTodoPermissions.share),
-    validateReqBody(todoValidation.VUserTodoPermissionSchema),
+    validateReqBody(UserTodoPermissionSchemaV),
     todoController.addUser
 );
 router.delete('/:todoId/users/:userId/permissions', checkTodoExists, checkUserTodoPermission(UserTodoPermissions.share), todoController.removeUser);

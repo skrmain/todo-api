@@ -122,6 +122,21 @@ const validateReqBody = (schema) => (req, res, next) => {
 };
 
 /**
+ * To Validate Request Body
+ * @param {Joi.ObjectSchema} schema
+ * @returns {(req: express.Request, res: express.Response, next: express.NextFunction) => { }}
+ */
+const validateReqQuery = (schema) => (req, res, next) => {
+    const { value, error } = schema.validate(req.query);
+    if (!error) {
+        req.query = value;
+        return next();
+    }
+    res.status(400);
+    throw error;
+};
+
+/**
  * To Handle Error
  * @param {express.Errback} error
  * @param {express.Request} req
@@ -157,6 +172,7 @@ module.exports = {
     handleError,
     logRequest,
     validateReqBody,
+    validateReqQuery,
     checkUserTodoPermission,
     checkTodoExists,
 };
