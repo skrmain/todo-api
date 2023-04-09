@@ -2,7 +2,7 @@ import Joi from 'joi';
 
 import { NoteStatus, UserNotePermissions, SortOrder } from '../../shared/constants';
 
-export const NoteCreateUpdateSchemaV = Joi.object({
+export const NoteCreateUpdateSchema = Joi.object({
     title: Joi.string().trim().min(3).max(20).required(),
     detail: Joi.string().trim().allow(''),
     status: Joi.string()
@@ -10,14 +10,14 @@ export const NoteCreateUpdateSchemaV = Joi.object({
         .valid(...Object.values(NoteStatus)),
 });
 
-export const UserNotePermissionSchemaV = Joi.object({
+export const UserNotePermissionSchema = Joi.object({
     permissions: Joi.array()
         .items(...Object.values(UserNotePermissions))
         .required()
         .min(1),
 });
 
-export const NoteQueryV = Joi.object({
+export const NoteQuerySchema = Joi.object({
     pageNumber: Joi.number().min(1).default(1),
     pageSize: Joi.number().min(1).max(100).default(10),
     sortOrder: Joi.string()

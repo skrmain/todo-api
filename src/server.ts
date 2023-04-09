@@ -28,7 +28,7 @@ app.get('/', (req, res) => res.send('Ok'));
 app.use('/', AuthRoutes);
 app.use('/users', checkAuth, UserRoutes);
 app.use('/products', ProductRoutes);
-app.use('/cart', checkAuth, CartRoutes);
+app.use('/carts', checkAuth, CartRoutes);
 app.use('/orders', checkAuth, OrderRoutes);
 app.use('/saved', checkAuth, SavedRoutes);
 app.use('/notes', checkAuth, NoteRoutes);

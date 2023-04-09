@@ -17,6 +17,13 @@ export enum NoteStatus {
     archive = 'archive',
 }
 
+export enum UserStatus {
+    pending = 'pending', // not-registered
+    active = 'active', // registered
+    suspended = 'suspended', // suspended by Admin
+    deleted = 'deleted', // deleted by user
+}
+
 export enum UserNotePermissions {
     read = 'read',
     write = 'write',

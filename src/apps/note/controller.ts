@@ -30,14 +30,25 @@ export const getAllNotes = async (req: AuthRequest, res: Response) => {
         filter['noteId.title'] = { $regex: new RegExp(title, 'i') };
     }
 
-    const { notes, total } = await userNoteService.getUserNotes({ userId: req.user?._id, pageNumber, pageSize, sortOrder, sortBy, filter });
+    const { notes, total } = await userNoteService.getUserNotes({
+        userId: req.user?._id,
+        pageNumber,
+        pageSize,
+        sortOrder,
+        sortBy,
+        filter,
+    });
     const parsedNotes = parseUserNotes(notes);
 
-    return res.send(successResponse({ data: parsedNotes, metadata: { pageNumber, pageSize, sortOrder, sortBy, total } }));
+    return res.send(
+        successResponse({ data: parsedNotes, metadata: { pageNumber, pageSize, sortOrder, sortBy, total } })
+    );
 };
 
 export const getOneNote = async (req: AuthRequest, res: Response) => {
-    const note = await userNoteService.getOne({ noteId: req.params.noteId, userId: req.user?._id }, '-addedBy -userId').populate('noteId');
+    const note = await userNoteService
+        .getOne({ noteId: req.params.noteId, userId: req.user?._id }, '-addedBy -userId')
+        .populate('noteId');
     return res.send(successResponse({ data: parseUserNote(note) }));
 };
 

@@ -1,16 +1,19 @@
 import { Router } from 'express';
 
-import { validateRequestBody } from '../../shared/middleware';
-import { CartAddBodyValidator } from './validator';
+import { AddProductInCartSchema } from './validation';
 import { addProductToCart, checkout, clearCart, createCart, getCart, removeProductFromCart } from './controller';
+import { validateReqBody } from '../../shared/middleware';
 
 const router = Router();
 
-router.get('/', getCart);
-router.post('/', createCart);
-router.put('/', CartAddBodyValidator, validateRequestBody, addProductToCart);
-router.delete('/products/:productId', removeProductFromCart);
-router.post('/checkout', checkout);
-router.delete('/', clearCart);
+router
+    .route('/my')
+    .get(getCart)
+    .post(createCart)
+    .put(validateReqBody(AddProductInCartSchema), addProductToCart)
+    .delete(clearCart);
+
+router.delete('/my/products/:productId', removeProductFromCart);
+router.post('/my/checkout', checkout);
 
 export default router;

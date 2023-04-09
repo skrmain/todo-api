@@ -6,7 +6,7 @@ import { InvalidHttpRequestError, UnauthorizedHttpRequestError } from '../../sha
 import { ILoginBody, IRegisterBody } from './types';
 import { createToken, successResponse, verifyToken } from '../../shared/utils';
 
-export const register = async (req: Request<any, any, IRegisterBody>, res: Response) => {
+const register = async (req: Request<any, any, IRegisterBody>, res: Response) => {
     const details = req.body;
     const existingUser = await userService.getOne({ email: details.email });
     if (existingUser) {
@@ -18,7 +18,7 @@ export const register = async (req: Request<any, any, IRegisterBody>, res: Respo
     return res.send(successResponse({ message: 'Registration successful' }));
 };
 
-export const login = async (req: Request<any, any, ILoginBody>, res: Response) => {
+const login = async (req: Request<any, any, ILoginBody>, res: Response) => {
     const details = req.body;
 
     // TODO: Add check in other routes if account is activated or nots
@@ -32,29 +32,38 @@ export const login = async (req: Request<any, any, ILoginBody>, res: Response) =
     return res.send(successResponse({ message: 'Login Successful', data: { token, refresh } }));
 };
 
-export const forgotPassword = (req: Request, res: Response) => {
+const forgotPassword = (req: Request, res: Response) => {
     console.log('BODY ', req.body);
     // TODO: send email on email with password changed link, with min. expiry
 
     return res.send({ message: 'NOT IMPLEMENTED' });
 };
 
-export const setPassword = (req: Request, res: Response) => {
+const setPassword = (req: Request, res: Response) => {
     console.log('BODY ', req.body);
     // TODO: To set new password
 
     return res.send({ message: 'NOT IMPLEMENTED' });
 };
 
-export const activateAccount = (req: Request, res: Response) => {
+const activateAccount = (req: Request, res: Response) => {
     console.log('BODY ', req.body);
     // TODO: To Activate Account
 
     return res.send({ message: 'NOT IMPLEMENTED' });
 };
 
-export const refreshAccessToken = async (req: Request, res: Response) => {
+const refreshAccessToken = async (req: Request, res: Response) => {
     const data: any = verifyToken(req.body.refresh);
     const token = createToken(data);
     return res.send(successResponse({ data: { token } }));
+};
+
+export default {
+    register,
+    login,
+    forgotPassword,
+    setPassword,
+    activateAccount,
+    refreshAccessToken,
 };

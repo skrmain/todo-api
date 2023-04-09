@@ -19,7 +19,13 @@ export const getAllOrders = async (req: AuthRequest, res: Response) => {
         )
         .populate('orderedProducts.productId', '_id name');
 
-    return res.send(successResponse({ message: 'Fetched Successfully', data, metadata: { page, limit, sortBy, sortOrder, total: totalCount } }));
+    return res.send(
+        successResponse({
+            message: 'Fetched Successfully',
+            data,
+            metadata: { page, limit, sortBy, sortOrder, total: totalCount },
+        })
+    );
 };
 
 export const getOrderDetails = async (req: AuthRequest, res: Response) => {

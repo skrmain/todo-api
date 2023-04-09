@@ -1,11 +1,10 @@
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery } from 'mongoose';
 import { readFile } from 'fs/promises';
 
 import productService from './service';
 
-import { IProduct, IProductImages, ProductModel } from './models';
-import { Database } from '../../shared/database';
-import { IProductDetails, IProductFilter, IProductIdParam, IProductQuery, IProductSaveDetails } from './types';
+import { IProduct, IProductImages } from './models';
+import { IProductDetails, IProductIdParam, IProductQuery, IProductSaveDetails } from './types';
 import { InvalidHttpRequestError, NotFoundHttpRequestError } from '../../shared/custom-errors';
 
 import savedProductController from '../savedProduct/service';
@@ -15,7 +14,15 @@ import { AuthRequest } from '../../shared/types';
 import { sampleProducts } from '../../shared/products.data';
 
 export const getProducts = async (req: Request<unknown, unknown, unknown, IProductQuery>, res: Response) => {
-    const { limit = 10, page = 1, search = '', sortBy = 'createdAt', sortOrder = 'desc', category = '', brand = '' } = req.query;
+    const {
+        limit = 10,
+        page = 1,
+        search = '',
+        sortBy = 'createdAt',
+        sortOrder = 'desc',
+        category = '',
+        brand = '',
+    } = req.query;
     const filter: FilterQuery<IProduct> = {};
 
     if (search) {

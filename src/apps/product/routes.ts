@@ -1,6 +1,15 @@
 import { Router } from 'express';
 
-import { addProduct, deleteProduct, getProduct, getProductImage, getProducts, removeProduct, saveProduct, updateProduct } from './controller';
+import {
+    addProduct,
+    deleteProduct,
+    getProduct,
+    getProductImage,
+    getProducts,
+    removeProduct,
+    saveProduct,
+    updateProduct,
+} from './controller';
 import { checkAuth, handleFiles } from '../../shared/middleware';
 
 const router = Router();

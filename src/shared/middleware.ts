@@ -1,11 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response, ErrorRequestHandler } from 'express';
-import { validationResult } from 'express-validator';
 import { JsonWebTokenError } from 'jsonwebtoken';
 import formidable from 'formidable';
 import Joi from 'joi';
 
-import { HttpError, InvalidHttpRequestError, NotFoundHttpRequestError, UnauthorizedHttpRequestError } from './custom-errors';
+import {
+    HttpError,
+    InvalidHttpRequestError,
+    NotFoundHttpRequestError,
+    UnauthorizedHttpRequestError,
+} from './custom-errors';
 import { AuthRequest, User } from './types';
 import { verifyToken } from './utils';
 import { UserNotePermissions } from './constants';
@@ -21,15 +24,6 @@ export const checkAuth = (req: AuthRequest, res: Response, next: NextFunction) =
     const token = authorizationHeader.split('Bearer ')[1];
     req.user = <User>verifyToken(token);
     next();
-};
-
-export const validateRequestBody = (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        // TODO: check about handling this kind of error
-        throw new InvalidHttpRequestError('Invalid request body', errors.array());
-    }
-    return next();
 };
 
 export const requestErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
@@ -83,7 +77,11 @@ export const checkUserNotePermission = (permission: any) => {
     }
     return async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
-            const result = await userNoteService.exists({ userId: req.user?._id, noteId: req.params.noteId, permissions: { $in: [permission] } });
+            const result = await userNoteService.exists({
+                userId: req.user?._id,
+                noteId: req.params.noteId,
+                permissions: { $in: [permission] },
+            });
             // console.log('[result]', result);
 
             if (result) {

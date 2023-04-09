@@ -7,7 +7,7 @@ docker compose up -d mongo
 npm run start:dev
 ```
 
-## APIs
+<!-- ## APIs
 
 | **auth** | **method:path - detail**                                      |
 | :------: | :------------------------------------------------------------ |
@@ -41,4 +41,4 @@ npm run start:dev
 |    Y     | `GET:/order` - to get orders                                  |
 |    Y     | `GET:/order/:orderId` - to get a order detail                 |
 |          | **apps/saved**                                                |
-|    Y     | `GET:/saved` - to get saved products                          |
+|    Y     | `GET:/saved` - to get saved products                          | -->

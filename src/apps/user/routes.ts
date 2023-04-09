@@ -1,14 +1,16 @@
 import { Router } from 'express';
 
-import { validateRequestBody } from '../../shared/middleware';
-import { UserUpdateDetailValidator } from './validator';
-import { deleteUser, searchUsers, updateUserDetails, userDetails } from './controller';
+import userController from './controller';
+import { validateReqBody, validateReqQuery } from '../../shared/middleware';
+import { UpdateUserDetailSchema, UsersQuerySchema } from './validation';
 
 const router = Router();
 
-router.get('/me', userDetails);
-router.get('/search', searchUsers);
-router.patch('/me', UserUpdateDetailValidator, validateRequestBody, updateUserDetails);
-router.delete('/me', deleteUser);
+router.get('/', validateReqQuery(UsersQuerySchema), userController.getUsers);
+router
+    .route('/me')
+    .get(userController.getUserDetails)
+    .patch(validateReqBody(UpdateUserDetailSchema), userController.updateUserDetails)
+    .delete(userController.deleteUser);
 
 export default router;

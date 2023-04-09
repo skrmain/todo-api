@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
-import { activateAccount, forgotPassword, login, refreshAccessToken, register, setPassword } from './controller';
+import authController from './controller';
 
-import { LoginBodyValidator, RegisterBodyValidator, TokenRefreshValidator } from './validator';
-import { validateRequestBody } from '../../shared/middleware';
+import { validateReqBody } from '../../shared/middleware';
+import { LoginSchema, RegisterSchema, TokenRefreshSchema } from './validation';
 
 const router = Router();
 
@@ -16,11 +16,11 @@ const router = Router();
  *       200:
  *         description: Returns a mysterious string.
  */
-router.post('/register', RegisterBodyValidator, validateRequestBody, register);
-router.post('/login', LoginBodyValidator, validateRequestBody, login);
-router.post('/token/refresh', TokenRefreshValidator, refreshAccessToken);
-router.put('/forgot-password', forgotPassword);
-router.put('/set-password/:token', setPassword);
-router.put('/activate-account/:activationToken', activateAccount);
+router.post('/register', validateReqBody(RegisterSchema), authController.register);
+router.post('/login', validateReqBody(LoginSchema), authController.login);
+router.post('/token/refresh', validateReqBody(TokenRefreshSchema), authController.refreshAccessToken);
+router.put('/forgot-password', authController.forgotPassword);
+router.put('/set-password/:token', authController.setPassword);
+router.put('/activate-account/:activationToken', authController.activateAccount);
 
 export default router;
