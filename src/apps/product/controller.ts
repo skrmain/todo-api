@@ -8,7 +8,7 @@ import { Database } from '../../shared/database';
 import { IProductDetails, IProductFilter, IProductIdParam, IProductQuery, IProductSaveDetails } from './types';
 import { InvalidHttpRequestError, NotFoundHttpRequestError } from '../../shared/custom-errors';
 
-import savedProductController from '../saved/service';
+import savedProductController from '../savedProduct/service';
 import { Request, Response } from 'express';
 import { successResponse } from '../../shared/utils';
 import { AuthRequest } from '../../shared/types';
@@ -30,7 +30,7 @@ export const getProducts = async (req: Request<unknown, unknown, unknown, IProdu
     const products = await productService.getWithQuery(filter, { limit, page, sortBy, sortOrder });
     const total = await productService.count(filter);
 
-    return res.send(successResponse({ data: products, metaData: { page, limit, sortBy, sortOrder, total } }));
+    return res.send(successResponse({ data: products, metadata: { page, limit, sortBy, sortOrder, total } }));
 };
 
 export const getProduct = async (req: Request<IProductIdParam>, res: Response) => {

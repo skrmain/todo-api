@@ -51,5 +51,5 @@ export const getSavedProducts = async (req: AuthRequest, res: Response) => {
 
     const data = await savedProductService.aggregate(pipeline);
     const total = await savedProductService.count(filter);
-    return res.send(successResponse({ message: 'Fetched Successfully', data, metaData: { page, limit, sortBy, sortOrder, total } }));
+    return res.send(successResponse({ message: 'Fetched Successfully', data, metadata: { page, limit, sortBy, sortOrder, total } }));
 };

@@ -43,5 +43,9 @@ export class Database<T> {
 
     deleteOne = (filter: FilterQuery<T>) => this.model.deleteOne(filter).lean();
 
+    deleteMany(filter: any) {
+        return this.model.deleteMany(filter).lean();
+    }
+
     aggregate = (pipeline: PipelineStage[]) => this.model.aggregate<T>(pipeline);
 }

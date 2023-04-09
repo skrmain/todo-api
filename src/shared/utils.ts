@@ -5,8 +5,8 @@ import config from '../config';
 
 // import { APIResponse } from './types';
 
-export const successResponse = ({ message = 'Successful', data = {}, status = true, metaData = {} }) => {
-    return { status, message, data, ...metaData };
+export const successResponse = ({ message = 'Successful', data = {}, status = true, metadata = {} }) => {
+    return { status, message, data, ...metadata };
 };
 
 // export const sendFailResponse = (res: Response, responseData: APIResponse) => {

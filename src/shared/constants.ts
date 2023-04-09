@@ -7,7 +7,24 @@ export enum dbCollections {
     cart = 'carts',
     savedProduct = 'savedProducts',
     order = 'orders',
+    note = 'notes',
+    userNote = 'user_notes',
 }
+
+// TODO: convert to enum
+export const TodoStatus = {
+    created: 'created',
+    done: 'done',
+    archive: 'archive',
+};
+
+// TODO: convert to enum
+export const UserTodoPermissions = {
+    read: 'read',
+    write: 'write',
+    delete: 'delete',
+    share: 'share',
+};
 
 export const swaggerOptions = {
     failOnErrors: true, // Whether or not to throw when parsing errors. Defaults to false.
@@ -23,4 +40,20 @@ export const swaggerOptions = {
         servers: [{ url: 'http://localhost:8000' }],
     },
     apis: ['./src/apps/**/routes.ts', 'swagger.yml'],
+};
+
+export const SortOrder = {
+    asc: 'asc',
+    desc: 'desc',
+};
+
+export const MongoSortOrder = {
+    asc: 1,
+    desc: -1,
+};
+
+export const TodoSortByMapping = {
+    status: 'todoId.status',
+    createdAt: 'todoId.createdAt',
+    updatedAt: 'todoId.updatedAt',
 };

@@ -10,6 +10,10 @@ export const userDetails = async (req: AuthRequest, res: Response) => {
     return res.send(successResponse({ data: { user } }));
 };
 
+export const searchUsers = async (req: AuthRequest, res: Response) => {
+    return res.send(successResponse({ message: 'NOT IMPLEMENTED' }));
+};
+
 export const updateUserDetails = async (req: AuthRequest, res: Response) => {
     await userService.updateOne({ _id: req.user?._id }, { name: req.body.name });
     return res.send(successResponse({ message: 'Details Updated' }));
