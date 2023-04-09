@@ -8,6 +8,15 @@ import { validateRequestBody } from '../../shared/middleware';
 
 const router = Router();
 
+/**
+ * @openapi
+ * /register:
+ *   get:
+ *     description: Welcome to swagger-jsdoc!
+ *     responses:
+ *       200:
+ *         description: Returns a mysterious string.
+ */
 router.post('/register', RegisterBodyValidator, validateRequestBody, async (req: Request, res: Response) => {
     await authController.registerUser(req.body);
     return res.send(successResponse({ message: 'Registration successful' }));
