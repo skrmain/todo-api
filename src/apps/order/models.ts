@@ -51,4 +51,4 @@ const OrderSchema = new Schema<IOrder>(
     { timestamps: true }
 );
 
-export const Order = model(dbCollections.order, OrderSchema);
+export const OrderModel = model(dbCollections.order, OrderSchema);

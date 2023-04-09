@@ -12,7 +12,7 @@ export enum SortOrder {
     asc = 1,
 }
 
-export class DbController<T> {
+export class Database<T> {
     private model: Model<T>;
     constructor(model: Model<T>) {
         this.model = model;

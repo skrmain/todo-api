@@ -24,4 +24,4 @@ const SavedProductSchema = new Schema<ISavedProduct>(
     { timestamps: true }
 );
 
-export const SavedProduct = model(dbCollections.savedProduct, SavedProductSchema);
+export const SavedProductModel = model(dbCollections.savedProduct, SavedProductSchema);

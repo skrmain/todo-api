@@ -2,8 +2,8 @@ services:
     mongo:
         image: mongo
         restart: always
-        # ports:
-        #     - 27017:27017
+        ports:
+            - 27017:27017
         volumes:
             - ./docker-data/mongodb_data:/data/db/
         environment:

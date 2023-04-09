@@ -1,8 +1,7 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 
-import authController from './controllers';
+import { activateAccount, forgotPassword, login, register, setPassword } from './controller';
 
-import { successResponse } from '../../shared/utils';
 import { LoginBodyValidator, RegisterBodyValidator } from './validator';
 import { validateRequestBody } from '../../shared/middleware';
 
@@ -17,35 +16,10 @@ const router = Router();
  *       200:
  *         description: Returns a mysterious string.
  */
-router.post('/register', RegisterBodyValidator, validateRequestBody, async (req: Request, res: Response) => {
-    await authController.registerUser(req.body);
-    return res.send(successResponse({ message: 'Registration successful' }));
-});
-
-router.post('/login', LoginBodyValidator, validateRequestBody, async (req: Request, res: Response) => {
-    const token = await authController.loginUser(req.body);
-    return res.send(successResponse({ message: 'Login Successful', data: { token } }));
-});
-
-router.put('/forgot-password', (req: Request, res: Response) => {
-    console.log('BODY ', req.body);
-    // TODO: send email on email with password changed link, with min. expiry
-
-    return res.send({ message: 'NOT IMPLEMENTED' });
-});
-
-router.put('/set-password/:token', (req: Request, res: Response) => {
-    console.log('BODY ', req.body);
-    // TODO: To set new password
-
-    return res.send({ message: 'NOT IMPLEMENTED' });
-});
-
-router.put('/activate-account/:activationToken', (req: Request, res: Response) => {
-    console.log('BODY ', req.body);
-    // TODO: To Activate Account
-
-    return res.send({ message: 'NOT IMPLEMENTED' });
-});
+router.post('/register', RegisterBodyValidator, validateRequestBody, register);
+router.post('/login', LoginBodyValidator, validateRequestBody, login);
+router.put('/forgot-password', forgotPassword);
+router.put('/set-password/:token', setPassword);
+router.put('/activate-account/:activationToken', activateAccount);
 
 export default router;
