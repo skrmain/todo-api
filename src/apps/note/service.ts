@@ -1,6 +1,6 @@
 import { Database } from '../../shared/database';
-import { TodoModel } from './model';
+import { NoteModel } from './model';
 
-class TodoService<T> extends Database<T> {}
+class NoteService<T> extends Database<T> {}
 
-export default new TodoService(TodoModel);
+export default new NoteService(NoteModel);

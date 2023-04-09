@@ -11,20 +11,18 @@ export enum dbCollections {
     userNote = 'user_notes',
 }
 
-// TODO: convert to enum
-export const TodoStatus = {
-    created: 'created',
-    done: 'done',
-    archive: 'archive',
-};
+export enum NoteStatus {
+    created = 'created',
+    done = 'done',
+    archive = 'archive',
+}
 
-// TODO: convert to enum
-export const UserTodoPermissions = {
-    read: 'read',
-    write: 'write',
-    delete: 'delete',
-    share: 'share',
-};
+export enum UserNotePermissions {
+    read = 'read',
+    write = 'write',
+    delete = 'delete',
+    share = 'share',
+}
 
 export const swaggerOptions = {
     failOnErrors: true, // Whether or not to throw when parsing errors. Defaults to false.
@@ -52,8 +50,8 @@ export const MongoSortOrder = {
     desc: -1,
 };
 
-export const TodoSortByMapping = {
-    status: 'todoId.status',
-    createdAt: 'todoId.createdAt',
-    updatedAt: 'todoId.updatedAt',
+export const NoteSortByMapping = {
+    status: 'noteId.status',
+    createdAt: 'noteId.createdAt',
+    updatedAt: 'noteId.updatedAt',
 };

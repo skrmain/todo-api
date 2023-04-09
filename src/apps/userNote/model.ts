@@ -1,15 +1,15 @@
-import { dbCollections } from '../../shared/constants';
-
 import { Schema, Types, model } from 'mongoose';
-import { UserTodoPermissions } from '../../shared/constants';
 
-const UserTodoSchema = new Schema({
+import { dbCollections } from '../../shared/constants';
+import { UserNotePermissions } from '../../shared/constants';
+
+const UserNoteSchema = new Schema({
     userId: {
         type: Types.ObjectId,
         required: true,
         ref: dbCollections.user,
     },
-    todoId: {
+    noteId: {
         type: Types.ObjectId,
         required: true,
         ref: dbCollections.note,
@@ -22,8 +22,8 @@ const UserTodoSchema = new Schema({
     permissions: {
         type: [String],
         default: '',
-        enum: Object.values(UserTodoPermissions),
+        enum: Object.values(UserNotePermissions),
     },
 });
 
-export const UserTodoModel = model(dbCollections.userNote, UserTodoSchema);
+export const UserNoteModel = model(dbCollections.userNote, UserNoteSchema);

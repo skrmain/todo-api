@@ -1,4 +1,4 @@
-import { FilterQuery, Model, PipelineStage } from 'mongoose';
+import { FilterQuery, Model, PipelineStage, connect } from 'mongoose';
 
 interface IQuery {
     limit: number;
@@ -18,13 +18,27 @@ export class Database<T> {
         this.model = model;
     }
 
-    getOne = (filter: FilterQuery<T>, select = '') => this.model.findOne(filter, select + ' -__v').lean();
+    static async connect(uri: string) {
+        try {
+            const con = await connect(uri, { dbName: 'test' });
+            console.log(`⚡️[MongoDB] Connected to '${con.connection.name}' DB`);
+        } catch (error) {
+            console.log('[MongoDB] Error : ', error);
+            process.exit(1);
+        }
+    }
+
+    getOne(filter: FilterQuery<T>, select = '') {
+        return this.model.findOne(filter, select + ' -__v').lean();
+    }
 
     count = (filter: FilterQuery<T>) => this.model.count(filter).lean();
 
     exists = (filter: FilterQuery<T>) => this.model.exists(filter).lean();
 
-    getAll = (filter: FilterQuery<T> = {}, select = '') => this.model.find(filter, select + ' -__v').lean();
+    getAll(filter: FilterQuery<T> = {}, select = '') {
+        return this.model.find(filter, select + ' -__v').lean();
+    }
 
     getWithQuery = (filter: FilterQuery<T> = {}, query: IQuery, select = '') => {
         return this.model

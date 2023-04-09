@@ -1,25 +1,25 @@
 import { Database } from '../../shared/database';
 
-import { TodoSortByMapping, MongoSortOrder, dbCollections } from '../../shared/constants';
+import { NoteSortByMapping, MongoSortOrder, dbCollections } from '../../shared/constants';
 import { getObjectId } from '../../shared/utils';
-import { UserTodoModel } from './model';
+import { UserNoteModel } from './model';
 
-class UserTodoService<T> extends Database<T> {
+class UserNoteService<T> extends Database<T> {
     /**
-     * To get user Todos with Pagination, filter, sorting
+     * To get user Notes with Pagination, filter, sorting
      */
-    async getUserTodos({ userId, filter, pageNumber, pageSize, sortOrder, sortBy }: any) {
+    async getUserNotes({ userId, filter, pageNumber, pageSize, sortOrder, sortBy }: any) {
         const baseStages: any = [
             { $match: { userId: getObjectId(userId) } },
             {
                 $lookup: {
                     from: dbCollections.note,
-                    localField: 'todoId',
+                    localField: 'noteId',
                     foreignField: '_id',
-                    as: 'todoId',
+                    as: 'noteId',
                 },
             },
-            { $unwind: { path: '$todoId', preserveNullAndEmptyArrays: true } },
+            { $unwind: { path: '$noteId', preserveNullAndEmptyArrays: true } },
             { $match: filter },
         ];
 
@@ -32,15 +32,15 @@ class UserTodoService<T> extends Database<T> {
                     __v: 0,
                     addedBy: 0,
                     userId: 0,
-                    'todoId.__v': 0,
+                    'noteId.__v': 0,
                 },
             },
         ]);
         const total = (await this.aggregate(baseStages)).length;
-        const todos = await this.aggregate(paginatedStages);
+        const notes = await this.aggregate(paginatedStages);
 
-        return { total, todos };
+        return { total, notes };
     }
 }
 
-export default new UserTodoService(UserTodoModel);
+export default new UserNoteService(UserNoteModel);

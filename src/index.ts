@@ -2,11 +2,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { app } from './server';
-import { connectMongoDB } from './shared/utils';
+import { Database } from './shared/database';
 import config from './config';
 
 (async () => {
-    await connectMongoDB(config.mongodb_uri);
+    await Database.connect(config.mongodbUri);
 
     app.listen(config.port, () => {
         console.log(`⚡️[NODE_ENV]: ${config.env}`);

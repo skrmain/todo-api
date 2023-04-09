@@ -1,7 +1,7 @@
 import { Schema, Types, model } from 'mongoose';
-import { TodoStatus, dbCollections } from '../../shared/constants';
+import { NoteStatus, dbCollections } from '../../shared/constants';
 
-const TodoSchema = new Schema(
+const NoteSchema = new Schema(
     {
         title: {
             type: String,
@@ -13,8 +13,8 @@ const TodoSchema = new Schema(
         },
         status: {
             type: String,
-            default: TodoStatus.created,
-            enum: Object.values(TodoStatus),
+            default: NoteStatus.created,
+            enum: Object.values(NoteStatus),
         },
         userId: {
             type: Types.ObjectId,
@@ -25,4 +25,4 @@ const TodoSchema = new Schema(
     { timestamps: true }
 );
 
-export const TodoModel = model(dbCollections.note, TodoSchema);
+export const NoteModel = model(dbCollections.note, NoteSchema);

@@ -3,15 +3,15 @@ import { NextFunction, Request, Response, ErrorRequestHandler } from 'express';
 import { validationResult } from 'express-validator';
 import { JsonWebTokenError } from 'jsonwebtoken';
 import formidable from 'formidable';
+import Joi from 'joi';
 
 import { HttpError, InvalidHttpRequestError, NotFoundHttpRequestError, UnauthorizedHttpRequestError } from './custom-errors';
 import { AuthRequest, User } from './types';
 import { verifyToken } from './utils';
-import { UserTodoPermissions } from './constants';
+import { UserNotePermissions } from './constants';
 
-import todoService from './../apps/note/service';
-import userTodoService from './../apps/userNote/service';
-import Joi from 'joi';
+import noteService from './../apps/note/service';
+import userNoteService from './../apps/userNote/service';
 
 export const checkAuth = (req: AuthRequest, res: Response, next: NextFunction) => {
     const authorizationHeader = req.headers.authorization;
@@ -76,14 +76,14 @@ export const handleFiles = (req: Request, res: Response, next: NextFunction) => 
     });
 };
 
-export const checkUserTodoPermission = (permission: any) => {
-    const isValid = !!Object.values(UserTodoPermissions).find((v) => v === permission);
+export const checkUserNotePermission = (permission: any) => {
+    const isValid = !!Object.values(UserNotePermissions).find((v) => v === permission);
     if (!isValid) {
         throw new Error('Invalid Permission Specified');
     }
     return async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
-            const result = await userTodoService.exists({ userId: req.user?._id, todoId: req.params.todoId, permissions: { $in: [permission] } });
+            const result = await userNoteService.exists({ userId: req.user?._id, noteId: req.params.noteId, permissions: { $in: [permission] } });
             // console.log('[result]', result);
 
             if (result) {
@@ -96,9 +96,9 @@ export const checkUserTodoPermission = (permission: any) => {
     };
 };
 
-export const checkTodoExists = async (req: Request, res: Response, next: NextFunction) => {
+export const checkNoteExists = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const isExist = await todoService.exists({ _id: req.params.todoId });
+        const isExist = await noteService.exists({ _id: req.params.noteId });
         if (isExist) {
             return next();
         }

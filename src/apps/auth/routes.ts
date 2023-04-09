@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
-import { activateAccount, forgotPassword, login, register, setPassword } from './controller';
+import { activateAccount, forgotPassword, login, refreshAccessToken, register, setPassword } from './controller';
 
-import { LoginBodyValidator, RegisterBodyValidator } from './validator';
+import { LoginBodyValidator, RegisterBodyValidator, TokenRefreshValidator } from './validator';
 import { validateRequestBody } from '../../shared/middleware';
 
 const router = Router();
@@ -18,6 +18,7 @@ const router = Router();
  */
 router.post('/register', RegisterBodyValidator, validateRequestBody, register);
 router.post('/login', LoginBodyValidator, validateRequestBody, login);
+router.post('/token/refresh', TokenRefreshValidator, refreshAccessToken);
 router.put('/forgot-password', forgotPassword);
 router.put('/set-password/:token', setPassword);
 router.put('/activate-account/:activationToken', activateAccount);

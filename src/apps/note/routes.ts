@@ -1,33 +1,33 @@
 import { Router } from 'express';
 
 // eslint-disable-next-line object-curly-newline
-import { validateReqBody, checkUserTodoPermission, checkTodoExists, validateReqQuery } from '../../shared/middleware';
-import { TodoCreateUpdateSchemaV, TodoQueryV, UserTodoPermissionSchemaV } from './validation';
+import { validateReqBody, checkUserNotePermission, checkNoteExists, validateReqQuery } from '../../shared/middleware';
+import { NoteCreateUpdateSchemaV, NoteQueryV, UserNotePermissionSchemaV } from './validation';
 
-import todoController from './controller';
-import { UserTodoPermissions } from '../../shared/constants';
+import { UserNotePermissions } from '../../shared/constants';
+import { addUserToNote, createNote, deleteOneNote, getAllNotes, getOneNote, removeUserFromNote, updateOneNote } from './controller';
 
 const router = Router();
 
-router.post('/', validateReqBody(TodoCreateUpdateSchemaV), todoController.create);
-router.get('/', validateReqQuery(TodoQueryV), todoController.getAll);
-router.get('/:todoId', checkTodoExists, checkUserTodoPermission(UserTodoPermissions.read), todoController.getOne);
+router.post('/', validateReqBody(NoteCreateUpdateSchemaV), createNote);
+router.get('/', validateReqQuery(NoteQueryV), getAllNotes);
+router.get('/:noteId', checkNoteExists, checkUserNotePermission(UserNotePermissions.read), getOneNote);
 router.patch(
-    '/:todoId',
-    checkTodoExists,
-    checkUserTodoPermission(UserTodoPermissions.write),
-    validateReqBody(TodoCreateUpdateSchemaV),
-    todoController.updateOne
+    '/:noteId',
+    checkNoteExists,
+    checkUserNotePermission(UserNotePermissions.write),
+    validateReqBody(NoteCreateUpdateSchemaV),
+    updateOneNote
 );
-router.delete('/:todoId', checkTodoExists, checkUserTodoPermission(UserTodoPermissions.delete), todoController.deleteOne);
+router.delete('/:noteId', checkNoteExists, checkUserNotePermission(UserNotePermissions.delete), deleteOneNote);
 
 router.patch(
-    '/:todoId/users/:userId/permissions',
-    checkTodoExists,
-    checkUserTodoPermission(UserTodoPermissions.share),
-    validateReqBody(UserTodoPermissionSchemaV),
-    todoController.addUser
+    '/:noteId/users/:userId/permissions',
+    checkNoteExists,
+    checkUserNotePermission(UserNotePermissions.share),
+    validateReqBody(UserNotePermissionSchemaV),
+    addUserToNote
 );
-router.delete('/:todoId/users/:userId/permissions', checkTodoExists, checkUserTodoPermission(UserTodoPermissions.share), todoController.removeUser);
+router.delete('/:noteId/users/:userId/permissions', checkNoteExists, checkUserNotePermission(UserNotePermissions.share), removeUserFromNote);
 
 export default router;

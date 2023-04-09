@@ -1,23 +1,23 @@
 import Joi from 'joi';
 
-import { TodoStatus, UserTodoPermissions, SortOrder } from '../../shared/constants';
+import { NoteStatus, UserNotePermissions, SortOrder } from '../../shared/constants';
 
-export const TodoCreateUpdateSchemaV = Joi.object({
+export const NoteCreateUpdateSchemaV = Joi.object({
     title: Joi.string().trim().min(3).max(20).required(),
     detail: Joi.string().trim().allow(''),
     status: Joi.string()
         .trim()
-        .valid(...Object.values(TodoStatus)),
+        .valid(...Object.values(NoteStatus)),
 });
 
-export const UserTodoPermissionSchemaV = Joi.object({
+export const UserNotePermissionSchemaV = Joi.object({
     permissions: Joi.array()
-        .items(...Object.values(UserTodoPermissions))
+        .items(...Object.values(UserNotePermissions))
         .required()
         .min(1),
 });
 
-export const TodoQueryV = Joi.object({
+export const NoteQueryV = Joi.object({
     pageNumber: Joi.number().min(1).default(1),
     pageSize: Joi.number().min(1).max(100).default(10),
     sortOrder: Joi.string()
@@ -26,6 +26,6 @@ export const TodoQueryV = Joi.object({
     sortBy: Joi.string()
         .valid(...['status', 'createdAt', 'updatedAt'])
         .default('updatedAt'),
-    status: Joi.string().valid(...Object.values(TodoStatus)),
+    status: Joi.string().valid(...Object.values(NoteStatus)),
     title: Joi.string(),
 });

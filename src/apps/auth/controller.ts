@@ -4,7 +4,7 @@ import userService from '../user/service';
 
 import { InvalidHttpRequestError, UnauthorizedHttpRequestError } from '../../shared/custom-errors';
 import { ILoginBody, IRegisterBody } from './types';
-import { createToken, successResponse } from '../../shared/utils';
+import { createToken, successResponse, verifyToken } from '../../shared/utils';
 
 export const register = async (req: Request<any, any, IRegisterBody>, res: Response) => {
     const details = req.body;
@@ -28,7 +28,8 @@ export const login = async (req: Request<any, any, ILoginBody>, res: Response) =
     }
 
     const token = createToken(user);
-    return res.send(successResponse({ message: 'Login Successful', data: { token } }));
+    const refresh = createToken(user, 24 * 30);
+    return res.send(successResponse({ message: 'Login Successful', data: { token, refresh } }));
 };
 
 export const forgotPassword = (req: Request, res: Response) => {
@@ -50,4 +51,10 @@ export const activateAccount = (req: Request, res: Response) => {
     // TODO: To Activate Account
 
     return res.send({ message: 'NOT IMPLEMENTED' });
+};
+
+export const refreshAccessToken = async (req: Request, res: Response) => {
+    const data: any = verifyToken(req.body.refresh);
+    const token = createToken(data);
+    return res.send(successResponse({ data: { token } }));
 };

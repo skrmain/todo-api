@@ -11,7 +11,8 @@ export const userDetails = async (req: AuthRequest, res: Response) => {
 };
 
 export const searchUsers = async (req: AuthRequest, res: Response) => {
-    return res.send(successResponse({ message: 'NOT IMPLEMENTED' }));
+    const users = await userService.getAll({ name: { $regex: req.query.name } }, '-email -createdAt -updatedAt');
+    return res.send(successResponse({ data: users }));
 };
 
 export const updateUserDetails = async (req: AuthRequest, res: Response) => {
