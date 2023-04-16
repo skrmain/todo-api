@@ -1,4 +1,5 @@
 import { FilterQuery, Model, PipelineStage, connect } from 'mongoose';
+import logger from './logger';
 
 interface IQuery {
     limit: number;
@@ -21,9 +22,9 @@ export class Database<T> {
     static async connect(uri: string) {
         try {
             const con = await connect(uri, { dbName: 'test' });
-            console.log(`⚡️[MongoDB] Connected to '${con.connection.name}' DB`);
+            logger.verbose(`⚡️[MongoDB] Connected to '${con.connection.name}' DB`);
         } catch (error) {
-            console.log('[MongoDB] Error : ', error);
+            logger.error('[MongoDB] Error 🙈 ', { error });
             process.exit(1);
         }
     }

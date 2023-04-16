@@ -15,6 +15,7 @@ import { UserNotePermissions } from './constants';
 
 import noteService from './../apps/note/service';
 import userNoteService from './../apps/userNote/service';
+import logger from './logger';
 
 export const checkAuth = (req: AuthRequest, res: Response, next: NextFunction) => {
     const authorizationHeader = req.headers.authorization;
@@ -27,7 +28,7 @@ export const checkAuth = (req: AuthRequest, res: Response, next: NextFunction) =
 };
 
 export const requestErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
-    console.log('[error]', error);
+    logger.error('[error] - requestErrorHandler', { error });
     let statusCode = res.statusCode < 400 ? 500 : res.statusCode;
     let errorDetail;
     if (error instanceof HttpError) {
@@ -45,11 +46,6 @@ export const invalidPathHandler = (req: Request, res: Response) => {
     throw new NotFoundHttpRequestError(`Invalid Path. This path does not Exists. '${req.path}'`);
 };
 
-export const requestLogger = (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.method, req.url, res.statusCode);
-    next();
-};
-
 const form = formidable({
     multiples: true,
     // NOTE: To store only images
@@ -62,11 +58,8 @@ export const handleFiles = (req: Request, res: Response, next: NextFunction) => 
             throw new Error(err);
         }
 
-        // console.log('fil', fields);
-        // console.log('files', files);
         req.body = { ...fields, ...files };
         next();
-        // res.send('Ok');
     });
 };
 
@@ -82,7 +75,6 @@ export const checkUserNotePermission = (permission: any) => {
                 noteId: req.params.noteId,
                 permissions: { $in: [permission] },
             });
-            // console.log('[result]', result);
 
             if (result) {
                 return next();

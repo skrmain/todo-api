@@ -15,6 +15,7 @@ import CartRoutes from './apps/cart/routes';
 import OrderRoutes from './apps/order/routes';
 import SavedRoutes from './apps/savedProduct/routes';
 import NoteRoutes from './apps/note/routes';
+import logger from './shared/logger';
 
 export const app = express();
 const openApiSpecification = swaggerJsdoc(swaggerOptions);
@@ -22,7 +23,7 @@ const openApiSpecification = swaggerJsdoc(swaggerOptions);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use(morgan('tiny'));
+app.use(morgan('combined', { stream: { write: (message) => logger.info(message) } }));
 
 app.get('/', (req, res) => res.send('Ok'));
 app.use('/', AuthRoutes);

@@ -14,7 +14,10 @@ export const getCart = async (req: AuthRequest, res: Response) => {
 
     // TODO: add info of total price of cart products
     const cart = await cartService
-        .getOne({ userId }, '-createdAt -updatedAt -userId -cartProducts._id -cartProducts.createdAt -cartProducts.updatedAt')
+        .getOne(
+            { userId },
+            '-createdAt -updatedAt -userId -cartProducts._id -cartProducts.createdAt -cartProducts.updatedAt'
+        )
         .populate('cartProducts.productId', 'name price brand');
     if (!cart) {
         throw new InvalidHttpRequestError('Please Create Cart First');
@@ -56,7 +59,10 @@ export const addProductToCart = async (req: AuthRequest, res: Response) => {
     // 3. Checking if Product is already available in cart
     const productExistsInCart = await cartService.exists({ userId, 'cartProducts.productId': productId });
     if (productExistsInCart) {
-        await cartService.updateOne({ userId, 'cartProducts.productId': productId }, { $inc: { 'cartProducts.$.quantity': 1 } });
+        await cartService.updateOne(
+            { userId, 'cartProducts.productId': productId },
+            { $inc: { 'cartProducts.$.quantity': 1 } }
+        );
         return res.send(successResponse({ message: 'Updated Product Quantity' }));
     }
     // 4 - If Product is not available in cart
