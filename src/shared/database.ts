@@ -1,4 +1,5 @@
-import { FilterQuery, Model, PipelineStage } from 'mongoose';
+import { FilterQuery, Model, PipelineStage, connect } from 'mongoose';
+import logger from './logger';
 
 interface IQuery {
     limit: number;
@@ -12,19 +13,33 @@ export enum SortOrder {
     asc = 1,
 }
 
-export class DbController<T> {
+export class Database<T> {
     private model: Model<T>;
     constructor(model: Model<T>) {
         this.model = model;
     }
 
-    getOne = (filter: FilterQuery<T>, select = '') => this.model.findOne(filter, select + ' -__v').lean();
+    static async connect(uri: string) {
+        try {
+            const con = await connect(uri, { dbName: 'test' });
+            logger.verbose(`⚡️[MongoDB] Connected to '${con.connection.name}' DB`);
+        } catch (error) {
+            logger.error('[MongoDB] Error 🙈 ', { error });
+            process.exit(1);
+        }
+    }
+
+    getOne(filter: FilterQuery<T>, select = '') {
+        return this.model.findOne(filter, select + ' -__v').lean();
+    }
 
     count = (filter: FilterQuery<T>) => this.model.count(filter).lean();
 
     exists = (filter: FilterQuery<T>) => this.model.exists(filter).lean();
 
-    getAll = (filter: FilterQuery<T> = {}, select = '') => this.model.find(filter, select + ' -__v').lean();
+    getAll(filter: FilterQuery<T> = {}, select = '') {
+        return this.model.find(filter, select + ' -__v').lean();
+    }
 
     getWithQuery = (filter: FilterQuery<T> = {}, query: IQuery, select = '') => {
         return this.model
@@ -42,6 +57,10 @@ export class DbController<T> {
     updateOne = (filter: FilterQuery<T>, details: object) => this.model.updateOne(filter, details).lean();
 
     deleteOne = (filter: FilterQuery<T>) => this.model.deleteOne(filter).lean();
+
+    deleteMany(filter: any) {
+        return this.model.deleteMany(filter).lean();
+    }
 
     aggregate = (pipeline: PipelineStage[]) => this.model.aggregate<T>(pipeline);
 }

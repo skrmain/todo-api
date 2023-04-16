@@ -1,42 +1,26 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 
-import authController from './controllers';
+import authController from './controller';
 
-import { successResponse } from '../../shared/utils';
-import { LoginBodyValidator, RegisterBodyValidator } from './validator';
-import { validateRequestBody } from '../../shared/middleware';
+import { validateReqBody } from '../../shared/middleware';
+import { LoginSchema, RegisterSchema, TokenRefreshSchema } from './validation';
 
 const router = Router();
 
-router.post('/register', RegisterBodyValidator, validateRequestBody, async (req: Request, res: Response) => {
-    await authController.registerUser(req.body);
-    return res.send(successResponse({ message: 'Registration successful' }));
-});
-
-router.post('/login', LoginBodyValidator, validateRequestBody, async (req: Request, res: Response) => {
-    const token = await authController.loginUser(req.body);
-    return res.send(successResponse({ message: 'Login Successful', data: { token } }));
-});
-
-router.put('/forgot-password', (req: Request, res: Response) => {
-    console.log('BODY ', req.body);
-    // TODO: send email on email with password changed link, with min. expiry
-
-    return res.send({ message: 'NOT IMPLEMENTED' });
-});
-
-router.put('/set-password/:token', (req: Request, res: Response) => {
-    console.log('BODY ', req.body);
-    // TODO: To set new password
-
-    return res.send({ message: 'NOT IMPLEMENTED' });
-});
-
-router.put('/activate-account/:activationToken', (req: Request, res: Response) => {
-    console.log('BODY ', req.body);
-    // TODO: To Activate Account
-
-    return res.send({ message: 'NOT IMPLEMENTED' });
-});
+/**
+ * @openapi
+ * /register:
+ *   get:
+ *     description: Welcome to swagger-jsdoc!
+ *     responses:
+ *       200:
+ *         description: Returns a mysterious string.
+ */
+router.post('/register', validateReqBody(RegisterSchema), authController.register);
+router.post('/login', validateReqBody(LoginSchema), authController.login);
+router.post('/token/refresh', validateReqBody(TokenRefreshSchema), authController.refreshAccessToken);
+router.put('/forgot-password', authController.forgotPassword);
+router.put('/set-password/:token', authController.setPassword);
+router.put('/activate-account/:activationToken', authController.activateAccount);
 
 export default router;

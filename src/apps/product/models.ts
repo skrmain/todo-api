@@ -86,4 +86,4 @@ const ProductSchema = new Schema<IProduct>(
     { timestamps: true }
 );
 
-export const Product = model(dbCollections.product, ProductSchema);
+export const ProductModel = model(dbCollections.product, ProductSchema);

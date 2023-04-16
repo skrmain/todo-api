@@ -1,15 +1,14 @@
-import { Router, Response } from 'express';
+import { Response } from 'express';
 import { FilterQuery, PipelineStage } from 'mongoose';
 
+import savedProductService from './service';
+
 import { dbCollections } from '../../shared/constants';
-import { AuthRequest } from '../../shared/types';
-import { getObjectId, successResponse } from '../../shared/utils';
-import savedProductController from './controllers';
 import { ISavedProduct } from './models';
+import { getObjectId, successResponse } from '../../shared/utils';
+import { AuthRequest } from '../../shared/types';
 
-const router = Router();
-
-router.get('/', async (req: AuthRequest, res: Response) => {
+export const getSavedProducts = async (req: AuthRequest, res: Response) => {
     // TODO: add search saved products by name
     const { limit = 10, page = 1, sortBy = 'createdAt', sortOrder = 'desc' } = req.query as any;
     const filter: FilterQuery<ISavedProduct> = { userId: getObjectId(req.user?._id) || '' };
@@ -50,9 +49,9 @@ router.get('/', async (req: AuthRequest, res: Response) => {
         },
     ];
 
-    const data = await savedProductController.aggregate(pipeline);
-    const total = await savedProductController.count(filter);
-    return res.send(successResponse({ message: 'Fetched Successfully', data, metaData: { page, limit, sortBy, sortOrder, total } }));
-});
-
-export default router;
+    const data = await savedProductService.aggregate(pipeline);
+    const total = await savedProductService.count(filter);
+    return res.send(
+        successResponse({ message: 'Fetched Successfully', data, metadata: { page, limit, sortBy, sortOrder, total } })
+    );
+};
