@@ -1,6 +1,6 @@
-import { Database } from '../../shared/database';
+import { MongooseOperationsWrapper } from '../../shared/mongoose-operations-wrapper';
 import { SavedProductModel } from './models';
 
-class SavedProductService<T> extends Database<T> {}
+class SavedProductService<T> extends MongooseOperationsWrapper<T> {}
 
 export default new SavedProductService(SavedProductModel);

@@ -1,10 +1,10 @@
-import { Database } from '../../shared/database';
+import { MongooseOperationsWrapper } from '../../shared/mongoose-operations-wrapper';
 
 import { NoteSortByMapping, MongoSortOrder, dbCollections } from '../../shared/constants';
 import { getObjectId } from '../../shared/utils';
 import { UserNoteModel } from './model';
 
-class UserNoteService<T> extends Database<T> {
+class UserNoteService<T> extends MongooseOperationsWrapper<T> {
     /**
      * To get user Notes with Pagination, filter, sorting
      */

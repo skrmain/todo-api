@@ -1,6 +1,6 @@
 import { CartModel } from './models';
-import { Database } from '../../shared/database';
+import { MongooseOperationsWrapper } from '../../shared/mongoose-operations-wrapper';
 
-class CartService<T> extends Database<T> {}
+class CartService<T> extends MongooseOperationsWrapper<T> {}
 
 export default new CartService(CartModel);

@@ -1,9 +1,9 @@
 import { UserModel } from './models';
 import { FilterQuery } from 'mongoose';
 
-import { Database } from '../../shared/database';
+import { MongooseOperationsWrapper } from '../../shared/mongoose-operations-wrapper';
 
-class UserService<T> extends Database<T> {
+class UserService<T> extends MongooseOperationsWrapper<T> {
     getOne(filter: FilterQuery<T>, select = '') {
         return super.getOne(filter, `-password -__v ${select}`);
     }

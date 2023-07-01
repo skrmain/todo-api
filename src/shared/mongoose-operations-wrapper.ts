@@ -1,4 +1,5 @@
 import { FilterQuery, Model, PipelineStage, connect } from 'mongoose';
+
 import logger from './logger';
 
 interface IQuery {
@@ -13,10 +14,10 @@ export enum SortOrder {
     asc = 1,
 }
 
-export class Database<T> {
-    private model: Model<T>;
+export class MongooseOperationsWrapper<T> {
+    private _model: Model<T>;
     constructor(model: Model<T>) {
-        this.model = model;
+        this._model = model;
     }
 
     static async connect(uri: string) {
@@ -30,19 +31,19 @@ export class Database<T> {
     }
 
     getOne(filter: FilterQuery<T>, select = '') {
-        return this.model.findOne(filter, select + ' -__v').lean();
+        return this._model.findOne(filter, select + ' -__v').lean();
     }
 
-    count = (filter: FilterQuery<T>) => this.model.count(filter).lean();
+    count = (filter: FilterQuery<T>) => this._model.count(filter).lean();
 
-    exists = (filter: FilterQuery<T>) => this.model.exists(filter).lean();
+    exists = (filter: FilterQuery<T>) => this._model.exists(filter).lean();
 
     getAll(filter: FilterQuery<T> = {}, select = '') {
-        return this.model.find(filter, select + ' -__v').lean();
+        return this._model.find(filter, select + ' -__v').lean();
     }
 
     getWithQuery = (filter: FilterQuery<T> = {}, query: IQuery, select = '') => {
-        return this.model
+        return this._model
             .find(filter, select + ' -__v')
             .skip((query.page - 1) * query.limit)
             .limit(query.limit)
@@ -52,15 +53,15 @@ export class Database<T> {
             .lean();
     };
 
-    create = (details: FilterQuery<T>) => this.model.create(details);
+    create = (details: FilterQuery<T>) => this._model.create(details);
 
-    updateOne = (filter: FilterQuery<T>, details: object) => this.model.updateOne(filter, details).lean();
+    updateOne = (filter: FilterQuery<T>, details: object) => this._model.updateOne(filter, details).lean();
 
-    deleteOne = (filter: FilterQuery<T>) => this.model.deleteOne(filter).lean();
+    deleteOne = (filter: FilterQuery<T>) => this._model.deleteOne(filter).lean();
 
     deleteMany(filter: any) {
-        return this.model.deleteMany(filter).lean();
+        return this._model.deleteMany(filter).lean();
     }
 
-    aggregate = (pipeline: PipelineStage[]) => this.model.aggregate<T>(pipeline);
+    aggregate = (pipeline: PipelineStage[]) => this._model.aggregate<T>(pipeline);
 }
