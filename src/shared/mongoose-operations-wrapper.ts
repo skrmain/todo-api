@@ -1,6 +1,4 @@
-import { FilterQuery, Model, PipelineStage, connect } from 'mongoose';
-
-import logger from './logger';
+import { FilterQuery, Model, PipelineStage } from 'mongoose';
 
 interface IQuery {
     limit: number;
@@ -18,16 +16,6 @@ export class MongooseOperationsWrapper<T> {
     private _model: Model<T>;
     constructor(model: Model<T>) {
         this._model = model;
-    }
-
-    static async connect(uri: string) {
-        try {
-            const con = await connect(uri, { dbName: 'test' });
-            logger.verbose(`⚡️[MongoDB] Connected to '${con.connection.name}' DB`);
-        } catch (error) {
-            logger.error('[MongoDB] Error 🙈 ', { error });
-            process.exit(1);
-        }
     }
 
     getOne(filter: FilterQuery<T>, select = '') {

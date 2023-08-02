@@ -1,16 +1,19 @@
+import { connect } from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
 
 import { app } from './server';
-import { MongooseOperationsWrapper } from './shared/mongoose-operations-wrapper';
 import config from './config';
 import logger from './shared/logger';
 
-// NOTE: Not needed
-// logger.defaultMeta = { ...logger.defaultMeta, fileName: __filename };
-
 (async () => {
-    await MongooseOperationsWrapper.connect(config.mongodbUri);
+    try {
+        const con = await connect(config.mongodbUri, { dbName: 'test' });
+        logger.verbose(`⚡️[MongoDB] Connected to '${con.connection.name}' DB`);
+    } catch (error) {
+        logger.error('[MongoDB] Error 🙈 ', { error });
+        process.exit(1);
+    }
 
     app.listen(config.port, () => {
         logger.verbose(`⚡️[NODE_ENV]: ${config.env}`);
