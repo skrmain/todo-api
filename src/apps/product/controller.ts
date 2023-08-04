@@ -34,7 +34,7 @@ export const getProducts = async (req: Request<unknown, unknown, unknown, IProdu
     if (brand) {
         filter.brand = brand;
     }
-    const products = await productService.getWithQuery(filter, { limit, page, sortBy, sortOrder });
+    const products = await productService.getMany(filter, '', { limit, page, sortBy, sortOrder });
     const total = await productService.count(filter);
 
     return res.send(successResponse({ data: products, metadata: { page, limit, sortBy, sortOrder, total } }));

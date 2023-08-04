@@ -1,15 +1,14 @@
-import { FilterQuery, Model, PipelineStage } from 'mongoose';
+import { FilterQuery, Model, PipelineStage, SortOrder } from 'mongoose';
 
 interface IQuery {
     limit: number;
     page: number;
     sortBy: string;
-    sortOrder: 'desc' | 'asc';
-}
-
-export enum SortOrder {
-    desc = -1,
-    asc = 1,
+    sortOrder: SortOrder;
+    populateParams: {
+        populate: string | string[];
+        select: string;
+    };
 }
 
 export class MongooseOperationsWrapper<T> {
@@ -22,6 +21,26 @@ export class MongooseOperationsWrapper<T> {
         return this._model.findOne(filter, select + ' -__v').lean();
     }
 
+    getMany(filter: FilterQuery<T>, select = '', options: Partial<IQuery> = {}) {
+        const { limit, page, sortBy, sortOrder, populateParams } = options;
+
+        const _query = this._model.find(filter, select + ' -__v');
+
+        if (limit && page) {
+            _query.skip((page - 1) * limit).limit(limit);
+        }
+        if (sortBy && sortOrder) {
+            _query.sort({
+                [sortBy]: sortOrder,
+            });
+        }
+        if (populateParams?.populate || populateParams?.select) {
+            _query.populate(populateParams.populate, populateParams.select);
+        }
+
+        return _query.lean().exec();
+    }
+
     count = (filter: FilterQuery<T>) => this._model.count(filter).lean();
 
     exists = (filter: FilterQuery<T>) => this._model.exists(filter).lean();
@@ -30,16 +49,17 @@ export class MongooseOperationsWrapper<T> {
         return this._model.find(filter, select + ' -__v').lean();
     }
 
-    getWithQuery = (filter: FilterQuery<T> = {}, query: IQuery, select = '') => {
-        return this._model
-            .find(filter, select + ' -__v')
-            .skip((query.page - 1) * query.limit)
-            .limit(query.limit)
-            .sort({
-                [query.sortBy]: SortOrder[query.sortOrder],
-            })
-            .lean();
-    };
+    // NOTE: Note In Use
+    // getWithQuery = (filter: FilterQuery<T> = {}, query: IQuery, select = '') => {
+    //     return this._model
+    //         .find(filter, select + ' -__v')
+    //         .skip((query.page - 1) * query.limit)
+    //         .limit(query.limit)
+    //         .sort({
+    //             [query.sortBy]: query.sortOrder,
+    //         })
+    //         .lean();
+    // };
 
     create = (details: FilterQuery<T>) => this._model.create(details);
 
@@ -47,9 +67,7 @@ export class MongooseOperationsWrapper<T> {
 
     deleteOne = (filter: FilterQuery<T>) => this._model.deleteOne(filter).lean();
 
-    deleteMany(filter: any) {
-        return this._model.deleteMany(filter).lean();
-    }
+    deleteMany = (filter: any) => this._model.deleteMany(filter).lean();
 
     aggregate = (pipeline: PipelineStage[]) => this._model.aggregate<T>(pipeline);
 }

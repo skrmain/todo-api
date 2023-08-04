@@ -11,13 +11,12 @@ export const getAllOrders = async (req: AuthRequest, res: Response) => {
     const { limit = 10, page = 1, sortBy = 'createdAt', sortOrder = 'desc' } = req.query as any;
     const filter: FilterQuery<IOrder> = { userId: getObjectId(req.user?._id) || '' };
     const totalCount = await orderService.count(filter);
-    const data = await orderService
-        .getWithQuery(
-            filter,
-            { limit, page, sortBy, sortOrder },
-            '-userId -orderedProducts._id -orderedProducts.createdAt -orderedProducts.updatedAt'
-        )
-        .populate('orderedProducts.productId', '_id name');
+    const populateParams = { populate: 'orderedProducts.productId', select: '_id name' };
+    const data = await orderService.getMany(
+        filter,
+        '-userId -orderedProducts._id -orderedProducts.createdAt -orderedProducts.updatedAt',
+        { limit, page, sortBy, sortOrder, populateParams }
+    );
 
     return res.send(
         successResponse({
