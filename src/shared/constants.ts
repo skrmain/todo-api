@@ -9,6 +9,7 @@ export enum dbCollections {
     order = 'orders',
     note = 'notes',
     userNote = 'user_notes',
+    permissions = 'permissions',
 }
 
 export enum NoteStatus {
