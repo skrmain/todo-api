@@ -2,7 +2,7 @@ import { Schema, model, Types, PopulatedDoc, Document } from 'mongoose';
 
 import { dbCollections } from '../../shared/constants';
 import { IBaseModel } from '../../shared/types';
-import { IProduct } from '../product/models';
+import { IProduct } from '../product/product.models';
 
 interface ICartProductInfo extends IBaseModel {
     productId: PopulatedDoc<Document<Types.ObjectId> & IProduct>;

@@ -7,7 +7,7 @@ export interface User {
     _id: string;
 }
 
-export interface AuthRequest extends Request {
+export interface AuthRequest<P = any, ResB = any, ReqB = any, Q = any> extends Request<P, ResB, ReqB, Q> {
     user?: User;
 }
 

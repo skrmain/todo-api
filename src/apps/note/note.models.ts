@@ -1,4 +1,5 @@
 import { Schema, Types, model } from 'mongoose';
+
 import { NoteStatus, dbCollections } from '../../shared/constants';
 
 const NoteSchema = new Schema(

@@ -1,7 +1,7 @@
-import { UserModel } from './models';
 import { FilterQuery } from 'mongoose';
 
 import { MongooseOperationsWrapper } from '../../shared/mongoose-operations-wrapper';
+import { UserModel } from './user.models';
 
 class UserService<T> extends MongooseOperationsWrapper<T> {
     getOne(filter: FilterQuery<T>, select = '') {

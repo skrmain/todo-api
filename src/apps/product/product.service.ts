@@ -1,5 +1,5 @@
 import { MongooseOperationsWrapper } from '../../shared/mongoose-operations-wrapper';
-import { ProductModel } from './models';
+import { ProductModel } from './product.models';
 
 class ProductService<T> extends MongooseOperationsWrapper<T> {}
 

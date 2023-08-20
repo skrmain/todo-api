@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 
-import noteService from './service';
+import noteService from './note.service';
 import userNoteService from '../userNote/service';
 
 import { successResponse } from '../../shared/utils';
 import { UserNotePermissions } from '../../shared/constants';
-import { parseUserNotes, parseUserNote } from './parser';
+import { parseUserNotes, parseUserNote } from './note.parser';
 import { AuthRequest } from '../../shared/types';
 
 export const createNote = async (req: AuthRequest, res: Response) => {

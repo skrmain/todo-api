@@ -1,8 +1,13 @@
 import { Router } from 'express';
 
-// eslint-disable-next-line object-curly-newline
-import { validateReqBody, checkUserNotePermission, checkNoteExists, validateReqQuery } from '../../shared/middleware';
-import { NoteCreateUpdateSchema, NoteQuerySchema, UserNotePermissionSchema } from './validation';
+import {
+    validateReqBody,
+    checkUserNotePermission,
+    checkNoteExists,
+    validateReqQuery,
+    validateReqParams,
+} from '../../shared/middleware';
+import { NoteCreateUpdateSchema, NoteIdSchema, NoteQuerySchema, UserNotePermissionSchema } from './note.validations';
 
 import { UserNotePermissions } from '../../shared/constants';
 import {
@@ -13,7 +18,7 @@ import {
     getOneNote,
     removeUserFromNote,
     updateOneNote,
-} from './controller';
+} from './note.controllers';
 
 const router = Router();
 
@@ -24,7 +29,7 @@ router
 
 router
     .route('/:noteId')
-    .all(checkNoteExists)
+    .all(checkNoteExists, validateReqParams(NoteIdSchema))
     .get(checkUserNotePermission(UserNotePermissions.read), getOneNote)
     .patch(checkUserNotePermission(UserNotePermissions.write), validateReqBody(NoteCreateUpdateSchema), updateOneNote)
     .delete(checkUserNotePermission(UserNotePermissions.delete), deleteOneNote);

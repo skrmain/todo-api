@@ -1,6 +1,8 @@
 import Joi from 'joi';
 
 import { NoteStatus, UserNotePermissions, SortOrder } from '../../shared/constants';
+import { ValidateObjectId } from '../../shared/utils';
+import { getPaginationParams, getSortingParams } from '../../shared/common.validations';
 
 export const NoteCreateUpdateSchema = Joi.object({
     title: Joi.string().trim().min(3).max(20).required(),
@@ -18,14 +20,12 @@ export const UserNotePermissionSchema = Joi.object({
 });
 
 export const NoteQuerySchema = Joi.object({
-    pageNumber: Joi.number().min(1).default(1),
-    pageSize: Joi.number().min(1).max(100).default(10),
-    sortOrder: Joi.string()
-        .valid(...Object.values(SortOrder))
-        .default(SortOrder.desc),
-    sortBy: Joi.string()
-        .valid(...['status', 'createdAt', 'updatedAt'])
-        .default('updatedAt'),
+    ...getPaginationParams(),
+    ...getSortingParams(['status']),
     status: Joi.string().valid(...Object.values(NoteStatus)),
     title: Joi.string(),
+});
+
+export const NoteIdSchema = Joi.object({
+    noteId: Joi.string().custom(ValidateObjectId),
 });

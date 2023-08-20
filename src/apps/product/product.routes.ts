@@ -10,14 +10,24 @@ import {
     removeProduct,
     saveProduct,
     updateProduct,
-} from './controller';
-import { checkAuth, handleFiles } from '../../shared/middleware';
+} from './product.controllers';
+import { checkAuth, handleFiles, validateReqBody, validateReqParams, validateReqQuery } from '../../shared/middleware';
+import { ProductCreateSchema, ProductIdSchema, ProductQuerySchema } from './product.validations';
 
 const router = Router();
 
-router.route('/').get(getProducts).post(checkAuth, handleFiles, addProduct);
+router
+    .route('/')
+    .get(validateReqQuery(ProductQuerySchema), getProducts)
+    .post(validateReqBody(ProductCreateSchema), checkAuth, handleFiles, addProduct);
 
-router.route('/:productId').get(getProduct).patch(checkAuth, updateProduct).delete(checkAuth, deleteProduct);
+router
+    .route('/:productId')
+    .all(validateReqParams(ProductIdSchema))
+    .get(getProduct)
+    .patch(checkAuth, updateProduct)
+    .delete(checkAuth, deleteProduct);
+
 router.get('/:productId/images/:imageId/:imageName', getProductImage);
 
 // NOTE: have it here only, but if we have Model which is used for multiple Models then have in respective route file

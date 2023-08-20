@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { AuthRequest } from '../../shared/types';
 
 import cartService from './service';
-import productService from '../product/service';
+import productService from '../product/product.service';
 import orderController from '../order/service';
 
 import { InvalidHttpRequestError } from '../../shared/custom-errors';

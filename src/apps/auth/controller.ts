@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import userService from '../user/service';
+import userService from '../user/user.service';
 
 import { InvalidHttpRequestError, UnauthorizedHttpRequestError } from '../../shared/custom-errors';
 import { ILoginBody, IRegisterBody } from './types';

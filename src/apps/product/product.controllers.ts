@@ -1,10 +1,10 @@
 import { FilterQuery } from 'mongoose';
 import { readFile } from 'fs/promises';
 
-import productService from './service';
+import productService from './product.service';
 
-import { IProduct, IProductImages } from './models';
-import { IProductDetails, IProductIdParam, IProductQuery, IProductSaveDetails } from './types';
+import { IProduct, IProductImages } from './product.models';
+import { IProductDetails, IProductIdParam, IProductQuery, IProductSaveDetails } from './product.types';
 import { InvalidHttpRequestError, NotFoundHttpRequestError } from '../../shared/custom-errors';
 
 import savedProductController from '../savedProduct/service';
@@ -13,7 +13,7 @@ import { successResponse } from '../../shared/utils';
 import { AuthRequest } from '../../shared/types';
 import { sampleProducts } from '../../shared/products.data';
 
-export const getProducts = async (req: Request<unknown, unknown, unknown, IProductQuery>, res: Response) => {
+export const getProducts = async (req: Request<unknown, unknown, unknown, IProductQuery | any>, res: Response) => {
     const {
         limit = 10,
         page = 1,
@@ -48,7 +48,7 @@ export const getProduct = async (req: Request<IProductIdParam>, res: Response) =
     return res.send(successResponse({ data }));
 };
 
-export const addProduct = async (req: Request<any, any, IProductDetails>, res: Response) => {
+export const addProduct = async (req: AuthRequest<any, any, IProductDetails>, res: Response) => {
     const details = req.body;
 
     // TODO: add check if product is added by same user
@@ -82,7 +82,9 @@ export const addProduct = async (req: Request<any, any, IProductDetails>, res: R
         }
     }
 
-    const data = (await productService.create({ name, brand, category, description, price, images })).toObject();
+    const data = (
+        await productService.create({ name, brand, category, description, price, images, userId: req.user?._id })
+    ).toObject();
 
     return res.send(successResponse({ data }));
 };

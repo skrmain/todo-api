@@ -3,6 +3,7 @@ import mongoose, { Types } from 'mongoose';
 import { sign, verify } from 'jsonwebtoken';
 
 import config from '../config';
+import { CustomHelpers } from 'joi';
 
 // import { APIResponse } from './types';
 
@@ -46,5 +47,14 @@ export const asyncWrapper = (fn: any) => async (req: any, res: any, next: any) =
         return await fn(req, res);
     } catch (error) {
         return next(error);
+    }
+};
+
+export const ValidateObjectId = (value: any, helper: CustomHelpers) => {
+    try {
+        getObjectId(value);
+        return true;
+    } catch (error) {
+        return helper.message({ custom: error instanceof Error ? error.message : 'Invalid ObjectId' });
     }
 };

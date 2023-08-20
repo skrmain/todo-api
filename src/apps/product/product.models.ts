@@ -1,25 +1,9 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Types } from 'mongoose';
 
 import { dbCollections } from '../../shared/constants';
 import { IBaseModel } from '../../shared/types';
 
-// const categorySchema = new Schema({
-//     name: {
-//         type: String,
-//         required: true,
-//     },
-// });
-
-// const brandSchema = new Schema({
-//     name: {
-//         type: String,
-//         required: true,
-//     },
-// });
-
 export interface IProductImages {
-    // storedName: string;
-    // storedPath: string;
     name: string;
     mimetype: string;
     size: number;
@@ -52,6 +36,7 @@ export interface IProduct extends IBaseModel {
     category: string;
     description?: string;
     images: IProductImages[];
+    userId: any;
 }
 
 const ProductSchema = new Schema<IProduct>(
@@ -81,6 +66,11 @@ const ProductSchema = new Schema<IProduct>(
         },
         images: {
             type: [ProductImagesSchema],
+        },
+        userId: {
+            type: Types.ObjectId,
+            required: true,
+            ref: dbCollections.user,
         },
     },
     { timestamps: true }

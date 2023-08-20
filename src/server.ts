@@ -9,12 +9,12 @@ import { checkAuth, invalidPathHandler, parseJson, requestErrorHandler } from '.
 import { swaggerOptions } from './shared/constants';
 
 import AuthRoutes from './apps/auth/routes';
-import UserRoutes from './apps/user/routes';
-import ProductRoutes from './apps/product/routes';
+import UserRoutes from './apps/user/user.routes';
+import ProductRoutes from './apps/product/product.routes';
 import CartRoutes from './apps/cart/routes';
 import OrderRoutes from './apps/order/routes';
 import SavedRoutes from './apps/savedProduct/routes';
-import NoteRoutes from './apps/note/routes';
+import NoteRoutes from './apps/note/note.routes';
 import logger from './shared/logger';
 import { asyncWrapper } from './shared/utils';
 

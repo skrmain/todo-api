@@ -22,5 +22,7 @@ router.post('/token/refresh', validateReqBody(TokenRefreshSchema), authControlle
 router.put('/forgot-password', authController.forgotPassword);
 router.put('/set-password/:token', authController.setPassword);
 router.put('/activate-account/:activationToken', authController.activateAccount);
+router.get('/user'); // TODO: for user information
+router.patch('/user'); // TODO: for updating user information
 
 export default router;

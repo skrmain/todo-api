@@ -13,7 +13,7 @@ import { AuthRequest, User } from './types';
 import { verifyToken } from './utils';
 import { UserNotePermissions } from './constants';
 
-import noteService from './../apps/note/service';
+import noteService from '../apps/note/note.service';
 import userNoteService from './../apps/userNote/service';
 import logger from './logger';
 
@@ -131,6 +131,16 @@ export const validateReqQuery = (schema: Joi.ObjectSchema) => (req: Request, res
     const { value, error } = schema.validate(req.query);
     if (!error) {
         req.query = value;
+        return next();
+    }
+    res.status(400);
+    throw error;
+};
+
+export const validateReqParams = (schema: Joi.ObjectSchema) => (req: Request, res: Response, next: NextFunction) => {
+    const { value, error } = schema.validate(req.params);
+    if (!error) {
+        req.params = value;
         return next();
     }
     res.status(400);
