@@ -5,7 +5,7 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import 'express-async-errors';
 
-import { checkAuth, invalidPathHandler, requestErrorHandler } from './shared/middleware';
+import { checkAuth, invalidPathHandler, parseJson, requestErrorHandler } from './shared/middleware';
 import { swaggerOptions } from './shared/constants';
 
 import AuthRoutes from './apps/auth/routes';
@@ -16,11 +16,12 @@ import OrderRoutes from './apps/order/routes';
 import SavedRoutes from './apps/savedProduct/routes';
 import NoteRoutes from './apps/note/routes';
 import logger from './shared/logger';
+import { asyncWrapper } from './shared/utils';
 
 export const app = express();
 const openApiSpecification = swaggerJsdoc(swaggerOptions);
 
-app.use(express.json());
+app.use(parseJson);
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan('combined', { stream: { write: (message) => logger.info(message) } }));
@@ -33,6 +34,13 @@ app.use('/carts', checkAuth, CartRoutes);
 app.use('/orders', checkAuth, OrderRoutes);
 app.use('/saved', checkAuth, SavedRoutes);
 app.use('/notes', checkAuth, NoteRoutes);
+app.get(
+    '/async-error',
+    // eslint-disable-next-line no-unused-vars
+    asyncWrapper(async (req: any, res: any) => {
+        throw new Error('Invalid Path');
+    })
+);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiSpecification));
 // app.use('/images', express.static('images'));
 

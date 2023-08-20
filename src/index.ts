@@ -20,3 +20,13 @@ import logger from './shared/logger';
         logger.verbose(`⚡️[Server]: Listening at ${config.port}`);
     });
 })();
+
+process.on('unhandledRejection', (error) => {
+    console.log('[unhandledRejection] ', error);
+    process.exit(1);
+});
+
+process.on('uncaughtException', (error) => {
+    console.log('[uncaughtException] ', error);
+    process.exit(1);
+});
