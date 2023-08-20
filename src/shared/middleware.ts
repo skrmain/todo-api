@@ -11,11 +11,10 @@ import {
 } from './custom-errors';
 import { AuthRequest, User } from './types';
 import { verifyToken } from './utils';
-import { UserNotePermissions } from './constants';
 
 import noteService from '../apps/note/note.service';
-import userNoteService from './../apps/userNote/service';
 import logger from './logger';
+import { MongooseOperationsWrapper } from './mongoose-operations-wrapper';
 
 export const checkAuth = (req: AuthRequest, res: Response, next: NextFunction) => {
     const authorizationHeader = req.headers.authorization;
@@ -81,32 +80,15 @@ export const handleFiles = (req: Request, res: Response, next: NextFunction) => 
     });
 };
 
-export const checkUserNotePermission = (permission: any) => {
-    const isValid = !!Object.values(UserNotePermissions).find((v) => v === permission);
-    if (!isValid) {
-        throw new Error('Invalid Permission Specified');
-    }
-    return async (req: AuthRequest, res: Response, next: NextFunction) => {
-        try {
-            const result = await userNoteService.exists({
-                userId: req.user?._id,
-                noteId: req.params.noteId,
-                permissions: { $in: [permission] },
-            });
-
-            if (result) {
-                return next();
-            }
-            return res.send('Invalid Permission');
-        } catch (error) {
-            return next(error);
-        }
-    };
-};
-
-export const checkNoteExists = async (req: Request, res: Response, next: NextFunction) => {
+export const exists = async (
+    service: MongooseOperationsWrapper<any>,
+    entityId: string,
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     try {
-        const isExist = await noteService.exists({ _id: req.params.noteId });
+        const isExist = await service.exists({ _id: entityId });
         if (isExist) {
             return next();
         }
@@ -140,7 +122,7 @@ export const validateReqQuery = (schema: Joi.ObjectSchema) => (req: Request, res
 export const validateReqParams = (schema: Joi.ObjectSchema) => (req: Request, res: Response, next: NextFunction) => {
     const { value, error } = schema.validate(req.params);
     if (!error) {
-        req.params = value;
+        // req.params = value;
         return next();
     }
     res.status(400);

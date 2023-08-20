@@ -1,25 +1,27 @@
 import { Request, Response } from 'express';
 
 import noteService from './note.service';
-import userNoteService from '../userNote/service';
+import permissionService from '../permission/permission.service';
 
 import { successResponse } from '../../shared/utils';
 import { UserNotePermissions } from '../../shared/constants';
 import { parseUserNotes, parseUserNote } from './note.parser';
 import { AuthRequest } from '../../shared/types';
 
-export const createNote = async (req: AuthRequest, res: Response) => {
-    const note = await noteService.create({ ...req.body, userId: req.user?._id });
-    await userNoteService.create({
-        userId: req.user?._id,
-        noteId: note._id,
+export const create = async (req: AuthRequest, res: Response) => {
+    const userId = req.user?._id;
+    const note = await noteService.create({ ...req.body, userId });
+    await permissionService.create({
+        userId,
+        entity: 'note',
+        entityId: note._id,
+        lastUpdatedBy: req.user?._id,
         permissions: [...Object.values(UserNotePermissions)],
-        addedBy: req.user?._id,
     });
     return res.send(successResponse({ data: { _id: note._id } }));
 };
 
-export const getAllNotes = async (req: AuthRequest, res: Response) => {
+export const getAll = async (req: AuthRequest, res: Response) => {
     const { pageNumber, pageSize, sortOrder, sortBy, status, title } = req.query as any;
     const filter: any = {};
 
@@ -30,7 +32,7 @@ export const getAllNotes = async (req: AuthRequest, res: Response) => {
         filter['noteId.title'] = { $regex: new RegExp(title, 'i') };
     }
 
-    const { notes, total } = await userNoteService.getUserNotes({
+    const { notes, total } = await noteService.getUserNotes({
         userId: req.user?._id,
         pageNumber,
         pageSize,
@@ -45,21 +47,20 @@ export const getAllNotes = async (req: AuthRequest, res: Response) => {
     );
 };
 
-export const getOneNote = async (req: AuthRequest, res: Response) => {
-    const note = await userNoteService
-        .getOne({ noteId: req.params.noteId, userId: req.user?._id }, '-addedBy -userId')
-        .populate('noteId');
-    return res.send(successResponse({ data: parseUserNote(note) }));
+export const getOne = async (req: AuthRequest, res: Response) => {
+    const note = await noteService.getOne({ _id: req.params.noteId }, '-userId');
+    const permissions = await permissionService.getOne({ entityId: req.params.noteId, userId: req.user?._id });
+    return res.send(successResponse({ data: parseUserNote({ noteId: note, permissions: permissions?.permissions }) }));
 };
 
-export const updateOneNote = async (req: Request, res: Response) => {
+export const updateOne = async (req: Request, res: Response) => {
     await noteService.updateOne({ _id: req.params.noteId }, { ...req.body });
     return res.send(successResponse({ message: 'Updated' }));
 };
 
-export const deleteOneNote = async (req: Request, res: Response) => {
+export const deleteOne = async (req: Request, res: Response) => {
     await noteService.deleteOne({ _id: req.params.noteId });
-    await userNoteService.deleteMany({ noteId: req.params.noteId });
+    await permissionService.deleteMany({ entityId: req.params.noteId });
     return res.send(successResponse({ message: 'Successfully Deleted' }));
 };
 
@@ -67,26 +68,18 @@ export const addUserToNote = async (req: AuthRequest, res: Response) => {
     if (req.user?._id.toString() === req.params.userId.toString()) {
         throw new Error('Invalid Operation');
     }
-    const userNote = await userNoteService.getOne({
-        noteId: req.params.noteId,
+    const userNote = await permissionService.getOne({
+        entityId: req.params.noteId,
         userId: req.params.userId,
     });
     if (userNote) {
-        await userNoteService.updateOne(
-            {
-                _id: userNote._id,
-            },
-            {
-                $set: {
-                    permissions: [...req.body.permissions],
-                },
-            }
-        );
+        await permissionService.updateOne({ _id: userNote._id }, { $set: { permissions: [...req.body.permissions] } });
     } else {
-        await userNoteService.create({
-            noteId: req.params.noteId,
+        await permissionService.create({
+            entityId: req.params.noteId,
+            entity: 'note',
             userId: req.params.userId,
-            addedBy: req.user?._id,
+            lastUpdatedBy: req.user?._id,
             permissions: [...req.body.permissions],
         });
     }
@@ -94,6 +87,6 @@ export const addUserToNote = async (req: AuthRequest, res: Response) => {
 };
 
 export const removeUserFromNote = async (req: Request, res: Response) => {
-    await userNoteService.deleteOne({ noteId: req.params.noteId, userId: req.params.userId });
+    await permissionService.deleteOne({ entityId: req.params.noteId, userId: req.params.userId });
     return res.send(successResponse({ message: 'User Successfully Removed' }));
 };

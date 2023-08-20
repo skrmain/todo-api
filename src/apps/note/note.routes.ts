@@ -1,43 +1,34 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 
-import {
-    validateReqBody,
-    checkUserNotePermission,
-    checkNoteExists,
-    validateReqQuery,
-    validateReqParams,
-} from '../../shared/middleware';
+import { validateReqBody, exists, validateReqQuery, validateReqParams } from '../../shared/middleware';
 import { NoteCreateUpdateSchema, NoteIdSchema, NoteQuerySchema, UserNotePermissionSchema } from './note.validations';
 
 import { UserNotePermissions } from '../../shared/constants';
-import {
-    addUserToNote,
-    createNote,
-    deleteOneNote,
-    getAllNotes,
-    getOneNote,
-    removeUserFromNote,
-    updateOneNote,
-} from './note.controllers';
+import { addUserToNote, create, deleteOne, getAll, getOne, removeUserFromNote, updateOne } from './note.controllers';
+import { checkPermission } from '../permission/permission.middlewares';
+import noteService from './note.service';
 
 const router = Router();
 
-router
-    .route('/')
-    .post(validateReqBody(NoteCreateUpdateSchema), createNote)
-    .get(validateReqQuery(NoteQuerySchema), getAllNotes);
+const noteExists = (req: Request, res: Response, next: NextFunction) =>
+    exists(noteService, req.params.noteId, req, res, next);
+
+const checkNotePermission = (permission: any) => (req: Request, res: Response, next: NextFunction) =>
+    checkPermission(permission, req.params.noteId, req, res, next);
+
+router.route('/').post(validateReqBody(NoteCreateUpdateSchema), create).get(validateReqQuery(NoteQuerySchema), getAll);
 
 router
     .route('/:noteId')
-    .all(checkNoteExists, validateReqParams(NoteIdSchema))
-    .get(checkUserNotePermission(UserNotePermissions.read), getOneNote)
-    .patch(checkUserNotePermission(UserNotePermissions.write), validateReqBody(NoteCreateUpdateSchema), updateOneNote)
-    .delete(checkUserNotePermission(UserNotePermissions.delete), deleteOneNote);
+    .all(validateReqParams(NoteIdSchema), noteExists)
+    .get(checkNotePermission(UserNotePermissions.read), getOne)
+    .patch(checkNotePermission(UserNotePermissions.write), validateReqBody(NoteCreateUpdateSchema), updateOne)
+    .delete(checkNotePermission(UserNotePermissions.delete), deleteOne);
 
 router
     .route('/:noteId/users/:userId/permissions')
-    .all(checkNoteExists)
-    .patch(checkUserNotePermission(UserNotePermissions.share), validateReqBody(UserNotePermissionSchema), addUserToNote)
-    .delete(checkUserNotePermission(UserNotePermissions.share), removeUserFromNote);
+    .all(noteExists)
+    .patch(checkNotePermission(UserNotePermissions.share), validateReqBody(UserNotePermissionSchema), addUserToNote)
+    .delete(checkNotePermission(UserNotePermissions.share), removeUserFromNote);
 
 export default router;
