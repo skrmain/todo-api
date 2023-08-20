@@ -1,3 +1,4 @@
+import { createHmac } from 'crypto';
 import mongoose, { Types } from 'mongoose';
 import { sign, verify } from 'jsonwebtoken';
 
@@ -29,3 +30,21 @@ export const createToken = (payload: object, expiry = 1) => {
 export const verifyToken = (token: string) => verify(token, config.jwtSecret);
 
 export const getObjectId = (id = '') => new Types.ObjectId(id);
+
+export const encrypt = (data: any) => createHmac('sha256', config.encryptionSecret).update(data).digest('hex');
+
+/**
+ * To Handle `unhandledRejection` Errors
+ * - Ref: https://codefibershq.com/blog/handling-promise-rejections-in-expressjs-nodejs-with-ease
+ * - Ref: More Improvement - https://github.com/davidbanham/express-async-errors/blob/master/index.js
+ *   - Using - `express-async-errors`
+ * @param {*} fn
+ * @returns
+ */
+export const asyncWrapper = (fn: any) => async (req: any, res: any, next: any) => {
+    try {
+        return await fn(req, res);
+    } catch (error) {
+        return next(error);
+    }
+};

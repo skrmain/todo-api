@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, ErrorRequestHandler } from 'express';
+import { NextFunction, Request, Response, ErrorRequestHandler, json } from 'express';
 import { JsonWebTokenError } from 'jsonwebtoken';
 import formidable from 'formidable';
 import Joi from 'joi';
@@ -39,6 +39,24 @@ export const requestErrorHandler: ErrorRequestHandler = (error, req, res, next) 
         statusCode = nError.status;
         error.message = nError.message;
     }
+    // if (error instanceof MValidationError) {
+    //     res.status(400);
+    //     error.fullMessage = error.message;
+    //     error.message = 'Invalid Input';
+    // } else if (error instanceof JsonWebTokenError) {
+    //     res.status(401);
+    //     error.fullMessage = error.message;
+    //     error.message = 'Invalid Token';
+    // } else if (error instanceof MCastError) {
+    //     res.status(400);
+    //     error.fullMessage = error.message;
+    //     error.message = 'Invalid Id';
+    // }
+
+    // const statusCode = res.statusCode >= 400 ? res.statusCode : 500;
+    // console.log('[handleError] ', error.message);
+    // return res.status(statusCode).send({ message: error.message, status: false });
+
     return res.status(statusCode).send({ status: false, message: error.message, error: errorDetail });
 };
 
@@ -117,4 +135,16 @@ export const validateReqQuery = (schema: Joi.ObjectSchema) => (req: Request, res
     }
     res.status(400);
     throw error;
+};
+
+export const parseJson = (req: Request, res: Response, next: NextFunction) => {
+    json()(req, res, (error) => {
+        if (!error) {
+            return next();
+        }
+        res.status(400);
+        error.fullMessage = error.message;
+        error.message = 'Invalid data format.';
+        return next(error);
+    });
 };

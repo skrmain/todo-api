@@ -12,5 +12,6 @@ router
     .get(userController.getUserDetails)
     .patch(validateReqBody(UpdateUserDetailSchema), userController.updateUserDetails)
     .delete(userController.deleteUser);
+// TODO: Add search route
 
 export default router;

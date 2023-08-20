@@ -27,9 +27,18 @@ const deleteUser = (req: AuthRequest, res: Response) => {
     return res.send({ message: 'NOT IMPLEMENTED' });
 };
 
+const usersSearch = async (req: AuthRequest, res: Response) => {
+    const users = await userService.getAll(
+        { username: { $regex: req.query.username } },
+        '-email -createdAt -updatedAt'
+    );
+    return res.send(successResponse({ data: users }));
+};
+
 export default {
     getUserDetails,
     getUsers,
     updateUserDetails,
     deleteUser,
+    usersSearch,
 };

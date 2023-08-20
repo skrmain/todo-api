@@ -13,6 +13,7 @@ const register = async (req: Request<any, any, IRegisterBody>, res: Response) =>
         throw new InvalidHttpRequestError('Invalid Email');
     }
 
+    // TODO: Add password Encryption
     await userService.create({ ...details });
     // TODO: send register mail with account activation link
     return res.send(successResponse({ message: 'Registration successful' }));
@@ -21,6 +22,7 @@ const register = async (req: Request<any, any, IRegisterBody>, res: Response) =>
 const login = async (req: Request<any, any, ILoginBody>, res: Response) => {
     const details = req.body;
 
+    // TODO: Add password Encryption
     // TODO: Add check in other routes if account is activated or nots
     const user = await userService.getOne({ ...details }, '-createdAt -updatedAt');
     if (!user) {
