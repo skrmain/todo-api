@@ -18,6 +18,8 @@ const router = Router();
  */
 router.post('/register', validateReqBody(RegisterSchema), authController.register);
 router.post('/login', validateReqBody(LoginSchema), authController.login);
+router.get('/authorize-url', authController.getAuthorizeUrl);
+router.post('/callback', authController.callback);
 router.post('/token/refresh', validateReqBody(TokenRefreshSchema), authController.refreshAccessToken);
 router.put('/forgot-password', authController.forgotPassword);
 router.put('/set-password/:token', authController.setPassword);
