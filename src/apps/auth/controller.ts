@@ -8,7 +8,7 @@ import { ILoginBody, IRegisterBody } from './types';
 import { createToken, successResponse, verifyToken } from '../../shared/utils';
 import { googleOAuthCred } from '../../config';
 
-const register = async (req: Request<any, any, IRegisterBody>, res: Response) => {
+export const register = async (req: Request<any, any, IRegisterBody>, res: Response) => {
     const details = req.body;
     const existingUser = await userService.getOne({ email: details.email });
     if (existingUser) {
@@ -21,7 +21,7 @@ const register = async (req: Request<any, any, IRegisterBody>, res: Response) =>
     return res.send(successResponse({ message: 'Registration successful' }));
 };
 
-const login = async (req: Request<any, any, ILoginBody>, res: Response) => {
+export const login = async (req: Request<any, any, ILoginBody>, res: Response) => {
     const details = req.body;
 
     // TODO: Add password Encryption
@@ -36,35 +36,14 @@ const login = async (req: Request<any, any, ILoginBody>, res: Response) => {
     return res.send(successResponse({ message: 'Login Successful', data: { token, refresh } }));
 };
 
-const forgotPassword = (req: Request, res: Response) => {
-    console.log('BODY ', req.body);
-    // TODO: send email on email with password changed link, with min. expiry
-
-    return res.send({ message: 'NOT IMPLEMENTED' });
-};
-
-const setPassword = (req: Request, res: Response) => {
-    console.log('BODY ', req.body);
-    // TODO: To set new password
-
-    return res.send({ message: 'NOT IMPLEMENTED' });
-};
-
-const activateAccount = (req: Request, res: Response) => {
-    console.log('BODY ', req.body);
-    // TODO: To Activate Account
-
-    return res.send({ message: 'NOT IMPLEMENTED' });
-};
-
-const refreshAccessToken = async (req: Request, res: Response) => {
+export const refreshAccessToken = async (req: Request, res: Response) => {
     const data: any = verifyToken(req.body.refresh);
     const token = createToken(data);
     return res.send(successResponse({ data: { token } }));
 };
 
 // TODO:
-const getAuthorizeUrl = async (req: Request, res: Response) => {
+export const getAuthorizeUrl = async (req: Request, res: Response) => {
     const oAuthClient = new OAuth2Client({
         clientId: googleOAuthCred.web.client_id,
         clientSecret: googleOAuthCred.web.client_secret,
@@ -80,7 +59,7 @@ const getAuthorizeUrl = async (req: Request, res: Response) => {
 };
 
 // TODO:
-const callback = async (req: Request, res: Response) => {
+export const callback = async (req: Request, res: Response) => {
     console.log('Req.Query', req.query);
     const { code } = req.query;
 
@@ -104,15 +83,4 @@ const callback = async (req: Request, res: Response) => {
     const tokenInfo = await oAuthClient.getTokenInfo(re.tokens.access_token);
 
     return res.send(successResponse({ message: 'Success' }));
-};
-
-export default {
-    register,
-    login,
-    forgotPassword,
-    setPassword,
-    activateAccount,
-    refreshAccessToken,
-    getAuthorizeUrl,
-    callback,
 };

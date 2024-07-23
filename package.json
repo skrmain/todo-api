@@ -1,18 +1,14 @@
 {
-    "name": "server",
+    "name": "todo-api",
     "version": "0.1.0",
     "description": "",
     "main": "build/index.js",
-    "engines": {
-        "node": "18.x"
-    },
     "scripts": {
         "prettier:check": "prettier -c src/**/*",
         "lint:check": "eslint --ext .js,.ts src",
-        "start:dev": "nodemon src/index.ts",
+        "dev": "nodemon src/index.ts",
         "start": "node build",
-        "build": "tsc --project ./",
-        "prepare": "husky install"
+        "build": "tsc --project ./"
     },
     "keywords": [],
     "author": "",

@@ -37,7 +37,7 @@ export const swaggerOptions = {
     swagger: '2.0',
     definition: {
         openapi: '3.1.0',
-        swagger: '2.0',
+        // swagger: '2.0',
         info: {
             title: 'ExpressJS-StoreAPI',
             version: '0.1.0',

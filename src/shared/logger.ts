@@ -3,7 +3,7 @@ import DailyRotateFile from 'winston-daily-rotate-file';
 
 const { combine, timestamp, json } = format;
 
-const dailyRotateTransport: DailyRotateFile = new DailyRotateFile({
+const DailyRotateTransport: DailyRotateFile = new DailyRotateFile({
     filename: 'logs/%DATE%.log',
     // datePattern: 'YYYY-MM-DD-HH-MM',
     // zippedArchive: true,
@@ -15,12 +15,7 @@ const dailyRotateTransport: DailyRotateFile = new DailyRotateFile({
 const logger = winston.createLogger({
     level: 'silly',
     format: combine(timestamp(), json()),
-    defaultMeta: { service: 'store-service' },
-    transports: [
-        // new winston.transports.File({ filename: `logs/${todayDate}.log` }),
-        new winston.transports.Console(),
-        dailyRotateTransport,
-    ],
+    transports: [new winston.transports.Console(), DailyRotateTransport],
 });
 
 // logger.error('TMP Error', new Error('My Error'));
