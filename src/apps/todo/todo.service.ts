@@ -2,7 +2,7 @@ import { dbCollections } from '../../shared/constants';
 import { MongooseOperationsWrapper } from '../../shared/mongoose-operations-wrapper';
 import { getObjectId } from '../../shared/utils';
 import permissionService from '../permission/permission.service';
-import { NoteModel } from './note.models';
+import { NoteModel } from './todo.models';
 
 class NoteService<T> extends MongooseOperationsWrapper<T> {
     async getUserNotes({ userId, filter, pageNumber, pageSize, sortOrder, sortBy }: any) {
@@ -10,7 +10,7 @@ class NoteService<T> extends MongooseOperationsWrapper<T> {
             { $match: { userId: getObjectId(userId), entity: 'note' } },
             {
                 $lookup: {
-                    from: dbCollections.note,
+                    from: dbCollections.todo,
                     localField: 'entityId',
                     foreignField: '_id',
                     as: 'noteId',

@@ -14,11 +14,3 @@ export const updateUserDetails = async (req: AuthRequest, res: Response) => {
     await userService.updateOne({ _id: req.user?._id }, { name: req.body.name });
     return res.send(successResponse({ message: 'Details Updated' }));
 };
-
-export const usersSearch = async (req: AuthRequest, res: Response) => {
-    const users = await userService.getAll(
-        { username: { $regex: req.query.username } },
-        '-email -createdAt -updatedAt'
-    );
-    return res.send(successResponse({ data: users }));
-};

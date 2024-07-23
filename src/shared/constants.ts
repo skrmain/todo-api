@@ -3,12 +3,8 @@ export const EMAIL_REGEX =
 
 export enum dbCollections {
     user = 'users',
-    product = 'products',
-    cart = 'carts',
-    savedProduct = 'savedProducts',
-    order = 'orders',
-    note = 'notes',
-    userNote = 'user_notes',
+    todo = 'todos',
+    userTodos = 'user_todos',
     permissions = 'permissions',
 }
 

@@ -26,4 +26,4 @@ const NoteSchema = new Schema(
     { timestamps: true }
 );
 
-export const NoteModel = model(dbCollections.note, NoteSchema);
+export const NoteModel = model(dbCollections.todo, NoteSchema);

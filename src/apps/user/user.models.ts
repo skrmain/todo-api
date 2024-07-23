@@ -1,9 +1,11 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Types } from 'mongoose';
 
 import { dbCollections, EMAIL_REGEX, UserStatus } from '../../shared/constants';
-import { IBaseModel } from '../../shared/types';
 
-interface IUser extends IBaseModel {
+interface User {
+    _id?: string | Types.ObjectId;
+    createdAt?: string;
+    updatedAt?: string;
     name: string;
     email: string;
     password: string;
@@ -11,7 +13,7 @@ interface IUser extends IBaseModel {
     isEmailVerified: boolean;
 }
 
-const UserSchema = new Schema<IUser>(
+const UserSchema = new Schema<User>(
     {
         name: {
             type: String,

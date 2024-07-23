@@ -1,9 +1,7 @@
+import config from './config';
 import { connect } from 'mongoose';
-import dotenv from 'dotenv';
-dotenv.config();
 
 import { app } from './server';
-import config from './config';
 import logger from './shared/logger';
 
 (async () => {

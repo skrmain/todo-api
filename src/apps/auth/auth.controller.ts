@@ -1,14 +1,25 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 
 import userService from '../user/user.service';
 
 import { InvalidHttpRequestError, UnauthorizedHttpRequestError } from '../../shared/custom-errors';
-import { ILoginBody, IRegisterBody } from './types';
 import { createToken, successResponse, verifyToken } from '../../shared/utils';
 import { googleOAuthCred } from '../../config';
+import { AuthRequest, User } from '../../shared/types';
 
-export const register = async (req: Request<any, any, IRegisterBody>, res: Response) => {
+export interface RegisterBody {
+    name: string;
+    email: string;
+    password: string;
+}
+
+export interface LoginBody {
+    email: string;
+    password: string;
+}
+
+export const register = async (req: Request<any, any, RegisterBody>, res: Response) => {
     const details = req.body;
     const existingUser = await userService.getOne({ email: details.email });
     if (existingUser) {
@@ -21,7 +32,7 @@ export const register = async (req: Request<any, any, IRegisterBody>, res: Respo
     return res.send(successResponse({ message: 'Registration successful' }));
 };
 
-export const login = async (req: Request<any, any, ILoginBody>, res: Response) => {
+export const login = async (req: Request<any, any, LoginBody>, res: Response) => {
     const details = req.body;
 
     // TODO: Add password Encryption
@@ -40,6 +51,16 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
     const data: any = verifyToken(req.body.refresh);
     const token = createToken(data);
     return res.send(successResponse({ data: { token } }));
+};
+
+export const checkAuth = (req: AuthRequest, res: Response, next: NextFunction) => {
+    const authorizationHeader = req.headers.authorization;
+    if (!authorizationHeader) {
+        throw new UnauthorizedHttpRequestError('Authorization Token missing in headers');
+    }
+    const token = authorizationHeader.split('Bearer ')[1];
+    req.user = <User>verifyToken(token);
+    next();
 };
 
 // TODO:

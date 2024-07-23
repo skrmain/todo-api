@@ -49,18 +49,6 @@ export class MongooseOperationsWrapper<T> {
         return this._model.find(filter, select + ' -__v').lean();
     }
 
-    // NOTE: Note In Use
-    // getWithQuery = (filter: FilterQuery<T> = {}, query: IQuery, select = '') => {
-    //     return this._model
-    //         .find(filter, select + ' -__v')
-    //         .skip((query.page - 1) * query.limit)
-    //         .limit(query.limit)
-    //         .sort({
-    //             [query.sortBy]: query.sortOrder,
-    //         })
-    //         .lean();
-    // };
-
     create = (details: FilterQuery<T>) => this._model.create(details);
 
     updateOne = (filter: FilterQuery<T>, details: object) => this._model.updateOne(filter, details).lean();

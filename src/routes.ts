@@ -6,7 +6,7 @@ import {
     NoteIdSchema,
     NoteQuerySchema,
     UserNotePermissionSchema,
-} from './apps/note/note.validations';
+} from './apps/todo/todo.validations';
 
 import { UserNotePermissions } from './shared/constants';
 import {
@@ -17,16 +17,16 @@ import {
     getOne,
     removeUserFromNote,
     updateOne,
-} from './apps/note/note.controllers';
+} from './apps/todo/todo.controllers';
 import { checkPermission } from './apps/permission/permission.middlewares';
-import { register, login, refreshAccessToken, getAuthorizeUrl, callback } from './apps/auth/controller';
+import { register, login, refreshAccessToken, getAuthorizeUrl, callback, checkAuth } from './apps/auth/auth.controller';
 
-import { checkAuth, validateReqBody } from './shared/middleware';
-import { LoginSchema, RegisterSchema, TokenRefreshSchema } from './apps/auth/validation';
+import { validateReqBody } from './shared/middleware';
+import { LoginSchema, RegisterSchema, TokenRefreshSchema } from './apps/auth/auth.validations';
 import { getUserDetails, updateUserDetails } from './apps/user/user.controllers';
 import { UpdateUserDetailSchema } from './apps/user/user.validations';
 
-import noteService from './apps/note/note.service';
+import noteService from './apps/todo/todo.service';
 
 const router = Router();
 

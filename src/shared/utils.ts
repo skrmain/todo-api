@@ -1,5 +1,5 @@
 import { createHmac } from 'crypto';
-import mongoose, { Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { sign, verify } from 'jsonwebtoken';
 
 import config from '../config';

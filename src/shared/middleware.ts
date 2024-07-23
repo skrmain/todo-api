@@ -3,28 +3,9 @@ import { JsonWebTokenError } from 'jsonwebtoken';
 import formidable from 'formidable';
 import Joi from 'joi';
 
-import {
-    HttpError,
-    InvalidHttpRequestError,
-    NotFoundHttpRequestError,
-    UnauthorizedHttpRequestError,
-} from './custom-errors';
-import { AuthRequest, User } from './types';
-import { verifyToken } from './utils';
-
-import noteService from '../apps/note/note.service';
+import { HttpError, InvalidHttpRequestError, NotFoundHttpRequestError } from './custom-errors';
 import logger from './logger';
 import { MongooseOperationsWrapper } from './mongoose-operations-wrapper';
-
-export const checkAuth = (req: AuthRequest, res: Response, next: NextFunction) => {
-    const authorizationHeader = req.headers.authorization;
-    if (!authorizationHeader) {
-        throw new UnauthorizedHttpRequestError('Authorization Token missing in headers');
-    }
-    const token = authorizationHeader.split('Bearer ')[1];
-    req.user = <User>verifyToken(token);
-    next();
-};
 
 export const requestErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
     logger.error('[error] - requestErrorHandler', { error });
