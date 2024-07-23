@@ -5,11 +5,11 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import 'express-async-errors';
 
-import { invalidPathHandler, parseJson, requestErrorHandler } from './shared/middleware';
-import { swaggerOptions } from './shared/constants';
+import { invalidPathHandler, parseJson, requestErrorHandler } from './common/middleware';
+import { swaggerOptions } from './common/constants';
 
 import Routes from './routes';
-import logger from './shared/logger';
+import logger from './common/logger';
 
 export const app = express();
 

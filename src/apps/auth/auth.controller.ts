@@ -3,10 +3,10 @@ import { OAuth2Client } from 'google-auth-library';
 
 import userService from '../user/user.service';
 
-import { InvalidHttpRequestError, UnauthorizedHttpRequestError } from '../../shared/custom-errors';
-import { createToken, successResponse, verifyToken } from '../../shared/utils';
+import { InvalidHttpRequestError, UnauthorizedHttpRequestError } from '../../common/custom-errors';
+import { createToken, successResponse, verifyToken } from '../../common/utils';
 import { googleOAuthCred } from '../../config';
-import { AuthRequest, User } from '../../shared/types';
+import { AuthRequest, User } from '../../common/types';
 
 export interface RegisterBody {
     name: string;

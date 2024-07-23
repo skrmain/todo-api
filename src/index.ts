@@ -2,21 +2,19 @@ import config from './config';
 import { connect } from 'mongoose';
 
 import { app } from './server';
-import logger from './shared/logger';
+import logger from './common/logger';
 
 (async () => {
     try {
-        const con = await connect(config.mongodbUri, { dbName: 'test' });
+        logger.verbose(`⚡️[MongoDB] Connecting to DB ${config.dbName}`);
+        const con = await connect(config.mongodbUri, { dbName: config.dbName });
         logger.verbose(`⚡️[MongoDB] Connected to '${con.connection.name}' DB`);
+
+        app.listen(config.port, () => logger.verbose(`⚡️[Server]: Listening at ${config.port}`));
     } catch (error) {
-        logger.error('[MongoDB] Error 🙈 ', { error });
+        logger.error('Error 🙈', { error });
         process.exit(1);
     }
-
-    app.listen(config.port, () => {
-        logger.verbose(`⚡️[NODE_ENV]: ${config.env}`);
-        logger.verbose(`⚡️[Server]: Listening at ${config.port}`);
-    });
 })();
 
 process.on('unhandledRejection', (error) => {

@@ -1,31 +1,31 @@
 import Joi from 'joi';
 
-import { NoteStatus, UserNotePermissions, SortOrder } from '../../shared/constants';
-import { ValidateObjectId } from '../../shared/utils';
-import { getPaginationParams, getSortingParams } from '../../shared/common.validations';
+import { TodoStatus, UserTodoPermissions, SortOrder } from '../../common/constants';
+import { ValidateObjectId } from '../../common/utils';
+import { getPaginationParams, getSortingParams } from '../../common/common.validations';
 
-export const NoteCreateUpdateSchema = Joi.object({
+export const TodoCreateUpdateSchema = Joi.object({
     title: Joi.string().trim().min(3).max(20).required(),
     detail: Joi.string().trim().allow(''),
     status: Joi.string()
         .trim()
-        .valid(...Object.values(NoteStatus)),
+        .valid(...Object.values(TodoStatus)),
 });
 
-export const UserNotePermissionSchema = Joi.object({
+export const UserTodoPermissionSchema = Joi.object({
     permissions: Joi.array()
-        .items(...Object.values(UserNotePermissions))
+        .items(...Object.values(UserTodoPermissions))
         .required()
         .min(1),
 });
 
-export const NoteQuerySchema = Joi.object({
+export const TodoQuerySchema = Joi.object({
     ...getPaginationParams(),
     ...getSortingParams(['status']),
-    status: Joi.string().valid(...Object.values(NoteStatus)),
+    status: Joi.string().valid(...Object.values(TodoStatus)),
     title: Joi.string(),
 });
 
-export const NoteIdSchema = Joi.object({
-    noteId: Joi.string().custom(ValidateObjectId),
+export const TodoIdSchema = Joi.object({
+    todoId: Joi.string().custom(ValidateObjectId),
 });

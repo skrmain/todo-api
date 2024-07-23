@@ -1,17 +1,17 @@
 import { NextFunction, Response } from 'express';
 
-import { AuthRequest } from '../../shared/types';
-import { UserNotePermissions } from '../../shared/constants';
+import { AuthRequest } from '../../common/types';
+import { UserTodoPermissions } from '../../common/constants';
 import permissionService from './permission.service';
 
 export const checkPermission = async (
-    permission: UserNotePermissions,
+    permission: UserTodoPermissions,
     entityId: string,
     req: AuthRequest,
     res: Response,
     next: NextFunction
 ) => {
-    const isValid = !!Object.values(UserNotePermissions).find((v) => v === permission);
+    const isValid = !!Object.values(UserTodoPermissions).find((v) => v === permission);
     if (!isValid) {
         throw new Error('Invalid Permission Specified');
     }

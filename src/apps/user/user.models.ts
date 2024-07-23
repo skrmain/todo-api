@@ -1,6 +1,6 @@
 import { Schema, model, Types } from 'mongoose';
 
-import { dbCollections, EMAIL_REGEX, UserStatus } from '../../shared/constants';
+import { DbCollections, EMAIL_REGEX, UserStatus } from '../../common/constants';
 
 interface User {
     _id?: string | Types.ObjectId;
@@ -44,4 +44,4 @@ const UserSchema = new Schema<User>(
     { timestamps: true }
 );
 
-export const UserModel = model(dbCollections.user, UserSchema);
+export const UserModel = model(DbCollections.user, UserSchema);

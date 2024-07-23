@@ -1,36 +1,36 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { Router } from 'express';
 
-import { exists, validateReqQuery, validateReqParams } from './shared/middleware';
+import { validateReqQuery, validateReqParams } from './common/middleware';
 import {
-    NoteCreateUpdateSchema,
-    NoteIdSchema,
-    NoteQuerySchema,
-    UserNotePermissionSchema,
+    TodoCreateUpdateSchema,
+    TodoIdSchema,
+    TodoQuerySchema,
+    UserTodoPermissionSchema,
 } from './apps/todo/todo.validations';
 
-import { UserNotePermissions } from './shared/constants';
+import { UserTodoPermissions } from './common/constants';
 import {
-    addUserToNote,
-    create,
+    addUserToTodo,
     deleteOne,
     getAll,
     getOne,
-    removeUserFromNote,
+    removeUserFromTodo,
     updateOne,
+    checkTodoPermission,
+    todoExists,
 } from './apps/todo/todo.controllers';
-import { checkPermission } from './apps/permission/permission.middlewares';
+import * as todoController from './apps/todo/todo.controllers';
 import { register, login, refreshAccessToken, getAuthorizeUrl, callback, checkAuth } from './apps/auth/auth.controller';
 
-import { validateReqBody } from './shared/middleware';
+import { validateReqBody } from './common/middleware';
 import { LoginSchema, RegisterSchema, TokenRefreshSchema } from './apps/auth/auth.validations';
 import { getUserDetails, updateUserDetails } from './apps/user/user.controllers';
 import { UpdateUserDetailSchema } from './apps/user/user.validations';
 
-import noteService from './apps/todo/todo.service';
-
 const router = Router();
 
 router.get('/', (req, res) => res.send('Ok'));
+
 router.post('/register', validateReqBody(RegisterSchema), register);
 router.post('/login', validateReqBody(LoginSchema), login);
 router.post('/token', validateReqBody(TokenRefreshSchema), refreshAccessToken);
@@ -38,31 +38,28 @@ router.post('/token', validateReqBody(TokenRefreshSchema), refreshAccessToken);
 router.get('/authorize-url', getAuthorizeUrl);
 router.post('/callback', callback);
 
-router.get('/user', checkAuth, getUserDetails);
-router.patch('/user', validateReqBody(UpdateUserDetailSchema), checkAuth, updateUserDetails);
-
-const noteExists = (req: Request, res: Response, next: NextFunction) =>
-    exists(noteService, req.params.noteId, req, res, next);
-
-const checkNotePermission = (permission: any) => (req: Request, res: Response, next: NextFunction) =>
-    checkPermission(permission, req.params.noteId, req, res, next);
+router
+    .route('/user')
+    .all(checkAuth)
+    .get(getUserDetails)
+    .patch(validateReqBody(UpdateUserDetailSchema), checkAuth, updateUserDetails);
 
 router
-    .route('/notes')
-    .post(validateReqBody(NoteCreateUpdateSchema), create)
-    .get(validateReqQuery(NoteQuerySchema), getAll);
+    .route('/todos')
+    .get(validateReqQuery(TodoQuerySchema), getAll)
+    .post(validateReqBody(TodoCreateUpdateSchema), todoController.create);
 
 router
-    .route('/notes/:noteId')
-    .all(validateReqParams(NoteIdSchema), noteExists)
-    .get(checkNotePermission(UserNotePermissions.read), getOne)
-    .patch(checkNotePermission(UserNotePermissions.write), validateReqBody(NoteCreateUpdateSchema), updateOne)
-    .delete(checkNotePermission(UserNotePermissions.delete), deleteOne);
+    .route('/todos/:todoId')
+    .all(validateReqParams(TodoIdSchema), todoExists)
+    .get(checkTodoPermission(UserTodoPermissions.read), getOne)
+    .patch(checkTodoPermission(UserTodoPermissions.write), validateReqBody(TodoCreateUpdateSchema), updateOne)
+    .delete(checkTodoPermission(UserTodoPermissions.delete), deleteOne);
 
 router
-    .route('/notes/:noteId/users/:userId/permissions')
-    .all(noteExists)
-    .patch(checkNotePermission(UserNotePermissions.share), validateReqBody(UserNotePermissionSchema), addUserToNote)
-    .delete(checkNotePermission(UserNotePermissions.share), removeUserFromNote);
+    .route('/todos/:todoId/users/:userId/permissions')
+    .all(todoExists)
+    .patch(checkTodoPermission(UserTodoPermissions.share), validateReqBody(UserTodoPermissionSchema), addUserToTodo)
+    .delete(checkTodoPermission(UserTodoPermissions.share), removeUserFromTodo);
 
 export default router;

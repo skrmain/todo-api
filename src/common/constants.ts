@@ -1,14 +1,14 @@
 export const EMAIL_REGEX =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-export enum dbCollections {
+export enum DbCollections {
     user = 'users',
     todo = 'todos',
     userTodos = 'user_todos',
     permissions = 'permissions',
 }
 
-export enum NoteStatus {
+export enum TodoStatus {
     created = 'created',
     done = 'done',
     archive = 'archive',
@@ -21,7 +21,7 @@ export enum UserStatus {
     deleted = 'deleted', // deleted by user
 }
 
-export enum UserNotePermissions {
+export enum UserTodoPermissions {
     read = 'read',
     write = 'write',
     delete = 'delete',
@@ -54,8 +54,8 @@ export const MongoSortOrder = {
     desc: -1,
 };
 
-export const NoteSortByMapping = {
-    status: 'noteId.status',
-    createdAt: 'noteId.createdAt',
-    updatedAt: 'noteId.updatedAt',
+export const TodoSortByMapping = {
+    status: 'todoId.status',
+    createdAt: 'todoId.createdAt',
+    updatedAt: 'todoId.updatedAt',
 };

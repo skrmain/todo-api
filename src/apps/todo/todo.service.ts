@@ -1,22 +1,22 @@
-import { dbCollections } from '../../shared/constants';
-import { MongooseOperationsWrapper } from '../../shared/mongoose-operations-wrapper';
-import { getObjectId } from '../../shared/utils';
+import { DbCollections } from '../../common/constants';
+import { MongooseOperationsWrapper } from '../../common/mongoose-operations-wrapper';
+import { getObjectId } from '../../common/utils';
 import permissionService from '../permission/permission.service';
-import { NoteModel } from './todo.models';
+import { TodoModel } from './todo.models';
 
-class NoteService<T> extends MongooseOperationsWrapper<T> {
-    async getUserNotes({ userId, filter, pageNumber, pageSize, sortOrder, sortBy }: any) {
+class TodoService<T> extends MongooseOperationsWrapper<T> {
+    async getUserTodos({ userId, filter, pageNumber, pageSize, sortOrder, sortBy }: any) {
         const baseStages: any = [
-            { $match: { userId: getObjectId(userId), entity: 'note' } },
+            { $match: { userId: getObjectId(userId), entity: 'todo' } },
             {
                 $lookup: {
-                    from: dbCollections.todo,
+                    from: DbCollections.todo,
                     localField: 'entityId',
                     foreignField: '_id',
-                    as: 'noteId',
+                    as: 'todoId',
                 },
             },
-            { $unwind: { path: '$noteId', preserveNullAndEmptyArrays: true } },
+            { $unwind: { path: '$todoId', preserveNullAndEmptyArrays: true } },
             { $match: filter },
         ];
 
@@ -29,15 +29,15 @@ class NoteService<T> extends MongooseOperationsWrapper<T> {
                     __v: 0,
                     addedBy: 0,
                     userId: 0,
-                    'noteId.__v': 0,
+                    'todoId.__v': 0,
                 },
             },
         ]);
         const total = (await permissionService.aggregate(baseStages)).length;
-        const notes = await permissionService.aggregate(paginatedStages);
+        const todos = await permissionService.aggregate(paginatedStages);
 
-        return { total, notes };
+        return { total, todos };
     }
 }
 
-export default new NoteService(NoteModel);
+export default new TodoService(TodoModel);

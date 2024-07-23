@@ -1,10 +1,7 @@
-# ExpressJS-StoreAPI
-
-## Notes
+# todo-api
 
 ```sh
-docker compose up -d mongo
-npm run start:dev
+npm run dev
 ```
 
 ## Ref

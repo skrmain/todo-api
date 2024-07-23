@@ -1,6 +1,6 @@
 import { FilterQuery } from 'mongoose';
 
-import { MongooseOperationsWrapper } from '../../shared/mongoose-operations-wrapper';
+import { MongooseOperationsWrapper } from '../../common/mongoose-operations-wrapper';
 import { UserModel } from './user.models';
 
 class UserService<T> extends MongooseOperationsWrapper<T> {

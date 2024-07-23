@@ -1,7 +1,7 @@
 import { Response } from 'express';
 
-import { AuthRequest } from '../../shared/types';
-import { successResponse } from '../../shared/utils';
+import { AuthRequest } from '../../common/types';
+import { successResponse } from '../../common/utils';
 
 import userService from './user.service';
 
