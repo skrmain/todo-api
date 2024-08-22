@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response, ErrorRequestHandler, json } from 'express';
 import { JsonWebTokenError } from 'jsonwebtoken';
-import formidable from 'formidable';
 import Joi from 'joi';
 
 import { HttpError, InvalidHttpRequestError, NotFoundHttpRequestError } from './custom-errors';
@@ -19,46 +18,11 @@ export const requestErrorHandler: ErrorRequestHandler = (error, req, res, next) 
         statusCode = nError.status;
         error.message = nError.message;
     }
-    // if (error instanceof MValidationError) {
-    //     res.status(400);
-    //     error.fullMessage = error.message;
-    //     error.message = 'Invalid Input';
-    // } else if (error instanceof JsonWebTokenError) {
-    //     res.status(401);
-    //     error.fullMessage = error.message;
-    //     error.message = 'Invalid Token';
-    // } else if (error instanceof MCastError) {
-    //     res.status(400);
-    //     error.fullMessage = error.message;
-    //     error.message = 'Invalid Id';
-    // }
-
-    // const statusCode = res.statusCode >= 400 ? res.statusCode : 500;
-    // console.log('[handleError] ', error.message);
-    // return res.status(statusCode).send({ message: error.message, status: false });
-
     return res.status(statusCode).send({ status: false, message: error.message, error: errorDetail });
 };
 
 export const invalidPathHandler = (req: Request, res: Response) => {
     throw new NotFoundHttpRequestError(`Invalid Path. This path does not Exists. '${req.path}'`);
-};
-
-const form = formidable({
-    multiples: true,
-    // NOTE: To store only images
-    filter: ({ mimetype }) => (mimetype ? mimetype.includes('image') : false),
-});
-
-export const handleFiles = (req: Request, res: Response, next: NextFunction) => {
-    form.parse(req, (err, fields, files) => {
-        if (err) {
-            throw new Error(err);
-        }
-
-        req.body = { ...fields, ...files };
-        next();
-    });
 };
 
 export const exists = async (
