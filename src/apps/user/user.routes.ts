@@ -1,17 +1,14 @@
 import { Response, Router } from 'express';
 
-import { AuthRequest, User } from '../../common/types';
-import { successResponse } from '../../common/utils';
-import { validateReqBody } from '../../common/middleware';
-import { UpdateUserDetailSchema } from './user.validations';
-
 import userService from './user.service';
 
-class UserRouter {
-    router: Router;
-    constructor() {
-        this.router = Router();
+import { UpdateUserDetailSchema } from './user.validations';
+import { AuthRequest } from '../../common/types';
+import { successResponse } from '../../common/utils';
+import { validateReqBody } from '../../common/middleware';
 
+class UserRouter {
+    constructor(public router = Router()) {
         this.router.get('/', this.getUser);
         this.router.patch('/', validateReqBody(UpdateUserDetailSchema), this.updateUser);
     }

@@ -12,10 +12,7 @@ interface IQuery {
 }
 
 export class MongooseOperationsWrapper<T> {
-    private _model: Model<T>;
-    constructor(model: Model<T>) {
-        this._model = model;
-    }
+    constructor(private _model: Model<T>) {}
 
     getOne(filter: FilterQuery<T>, select = '') {
         return this._model.findOne(filter, select + ' -__v').lean();

@@ -7,7 +7,7 @@ enum HttpStatus {
 
 export class HttpError extends Error {
     public errorDetail?: object;
-    constructor(message: string, public status: HttpStatus) {
+    constructor(message: string, public statusCode: HttpStatus) {
         super(message);
     }
 }

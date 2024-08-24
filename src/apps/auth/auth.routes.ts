@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 
 import userService from '../user/user.service';
@@ -6,7 +6,6 @@ import userService from '../user/user.service';
 import { InvalidHttpRequestError, UnauthorizedHttpRequestError } from '../../common/custom-errors';
 import { createToken, successResponse, verifyToken } from '../../common/utils';
 import { googleOAuthCred } from '../../config';
-import { AuthRequest, User } from '../../common/types';
 import { validateReqBody } from '../../common/middleware';
 import { LoginSchema, RegisterSchema, TokenRefreshSchema } from './auth.validations';
 
@@ -22,10 +21,7 @@ export interface LoginBody {
 }
 
 class AuthRouter {
-    router: Router;
-    constructor() {
-        this.router = Router();
-
+    constructor(public router = Router()) {
         this.router.post('/register', validateReqBody(RegisterSchema), this.register);
         this.router.post('/login', validateReqBody(LoginSchema), this.login);
         this.router.post('/token', validateReqBody(TokenRefreshSchema), this.refreshAccessToken);

@@ -1,25 +1,19 @@
 import { NextFunction, Request, Response, Router } from 'express';
 
-import { exists, validateReqBody, validateReqParams, validateReqQuery } from '../../common/middleware';
-import { TodoCreateUpdateSchema, TodoIdSchema, TodoQuerySchema, UserTodoPermissionSchema } from './todo.validations';
-import { AuthRequest } from '../../common/types';
-import { successResponse } from '../../common/utils';
-import { checkPermission } from '../permission/permission.middlewares';
-
 import todoService from './todo.service';
 import permissionService from '../permission/permission.service';
+
+import { TodoCreateUpdateSchema, TodoIdSchema, TodoQuerySchema, UserTodoPermissionSchema } from './todo.validations';
+import { exists, validateReqBody, validateReqParams, validateReqQuery } from '../../common/middleware';
+import { AuthRequest } from '../../common/types';
+import { successResponse } from '../../common/utils';
+import { InvalidHttpRequestError } from '../../common/custom-errors';
+import { checkPermission } from '../permission/permission.middlewares';
 import { Permissions } from '../permission/permission.models';
 
 class TodoRouter {
-    router: Router;
-    constructor() {
-        this.router = Router();
-
+    constructor(public router = Router()) {
         this.router.get('/', validateReqQuery(TodoQuerySchema), this.getAll);
-        this.router.use((req, res, next) => {
-            console.log('Coming', req.url);
-            next();
-        });
         this.router.post('/', validateReqBody(TodoCreateUpdateSchema), this.create);
 
         this.router.use('/:todoId', validateReqParams(TodoIdSchema), this.todoExists);
@@ -88,7 +82,7 @@ class TodoRouter {
 
     private async addUserToTodo(req: AuthRequest, res: Response) {
         if (req.user?._id.toString() === req.params.userId.toString()) {
-            throw new Error('Invalid Operation');
+            throw new InvalidHttpRequestError('Invalid Operation');
         }
         const userTodo = await permissionService.getOne({
             entityId: req.params.todoId,
