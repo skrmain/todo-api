@@ -2,12 +2,13 @@ import { NextFunction, Request, Response, ErrorRequestHandler, json } from 'expr
 import { JsonWebTokenError } from 'jsonwebtoken';
 import Joi from 'joi';
 
-import { HttpError, InvalidHttpRequestError, NotFoundHttpRequestError } from './custom-errors';
-import logger from './logger';
+import { HttpError, InvalidHttpRequestError, NotFoundHttpRequestError, UnauthorizedHttpRequestError } from './custom-errors';
 import { MongooseOperationsWrapper } from './mongoose-operations-wrapper';
+import { AuthRequest, User } from './types';
+import { logger, verifyToken } from './utils';
 
 export const requestErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
-    logger.error('[error] - requestErrorHandler', { error });
+    logger.error('[error] - requestErrorHandler', { error: { message: error?.message, stack: error?.stack, ...error } });
     let statusCode = res.statusCode < 400 ? 500 : res.statusCode;
     let errorDetail;
     if (error instanceof HttpError) {
@@ -15,6 +16,10 @@ export const requestErrorHandler: ErrorRequestHandler = (error, req, res, next) 
         errorDetail = error.errorDetail;
     } else if (error instanceof JsonWebTokenError) {
         const nError = new InvalidHttpRequestError('Invalid Token');
+        statusCode = nError.status;
+        error.message = nError.message;
+    } else if (error.bsonError && error instanceof Error) {
+        const nError = new InvalidHttpRequestError('Invalid Request');
         statusCode = nError.status;
         error.message = nError.message;
     }
@@ -25,20 +30,14 @@ export const invalidPathHandler = (req: Request, res: Response) => {
     throw new NotFoundHttpRequestError(`Invalid Path. This path does not Exists. '${req.path}'`);
 };
 
-export const exists = async (
-    service: MongooseOperationsWrapper<any>,
-    entityId: string,
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
+export const exists = async (service: MongooseOperationsWrapper<any>, entityId: string, req: Request, res: Response, next: NextFunction) => {
     try {
         const isExist = await service.exists({ _id: entityId });
         if (isExist) {
             return next();
         }
         res.status(404);
-        throw new Error('Does not exists.');
+        throw new Error('Not Found.');
     } catch (error) {
         return next(error);
     }
@@ -84,4 +83,14 @@ export const parseJson = (req: Request, res: Response, next: NextFunction) => {
         error.message = 'Invalid data format.';
         return next(error);
     });
+};
+
+export const checkAuth = (req: AuthRequest, res: Response, next: NextFunction) => {
+    const authorizationHeader = req.headers.authorization;
+    if (!authorizationHeader) {
+        throw new UnauthorizedHttpRequestError('Authorization Token missing in headers');
+    }
+    const token = authorizationHeader.split('Bearer ')[1];
+    req.user = <User>verifyToken(token);
+    next();
 };

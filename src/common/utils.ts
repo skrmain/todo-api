@@ -1,14 +1,13 @@
 import { createHmac } from 'crypto';
 import { Types } from 'mongoose';
 import { sign, verify } from 'jsonwebtoken';
-
-import config from '../config';
+import winston, { format } from 'winston';
 import { CustomHelpers } from 'joi';
 
-// import { APIResponse } from './types';
+import config from '../config';
 
-export const successResponse = ({ message = 'Successful', data = {}, status = true, metadata = {} }) => {
-    return { status, message, data, ...metadata };
+export const successResponse = ({ message = 'Successful', data = {}, metadata = {} }) => {
+    return { status: true, message, data, ...metadata };
 };
 
 // export const sendFailResponse = (res: Response, responseData: APIResponse) => {
@@ -16,12 +15,6 @@ export const successResponse = ({ message = 'Successful', data = {}, status = tr
 //   return res.status(statusCode).send({ status, message, error, errors });
 // };
 
-/**
- * To create a JWT token
- * @param payload data to use as payload in token
- * @param expiry number in hours, `default` 1
- * @returns token
- */
 export const createToken = (payload: object, expiry = 1) => {
     const exp = Math.floor(Date.now() / 1000) + 60 * 60 * expiry; // In Hours
 
@@ -42,3 +35,17 @@ export const ValidateObjectId = (value: any, helper: CustomHelpers) => {
         return helper.message({ custom: error instanceof Error ? error.message : 'Invalid ObjectId' });
     }
 };
+
+export const join = (obj?: object | string | null) => {
+    if (typeof obj === 'string') return obj;
+
+    return Object.entries(obj || {})
+        .map((v) => v.join(': '))
+        .join(' || ');
+};
+
+export const logger = winston.createLogger({
+    level: 'silly',
+    format: format.combine(format.timestamp(), format.json()),
+    transports: [new winston.transports.Console()],
+});

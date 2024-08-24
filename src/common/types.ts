@@ -9,3 +9,13 @@ export interface User {
 export interface AuthRequest<P = any, ResB = any, ReqB = any, Q = any> extends Request<P, ResB, ReqB, Q> {
     user?: User;
 }
+
+export enum SortOrder {
+    asc = 'asc',
+    desc = 'desc',
+}
+
+export enum MongoSortOrder {
+    asc = 1,
+    desc = -1,
+}

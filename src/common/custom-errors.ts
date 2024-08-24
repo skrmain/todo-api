@@ -6,18 +6,15 @@ enum HttpStatus {
 }
 
 export class HttpError extends Error {
-    status: HttpStatus;
-    errorDetail: object | undefined;
-    constructor(message: string, status: HttpStatus) {
+    public errorDetail?: object;
+    constructor(message: string, public status: HttpStatus) {
         super(message);
-        this.status = status;
     }
 }
 
 export class InvalidHttpRequestError extends HttpError {
-    constructor(message: string, errorDetail?: object) {
+    constructor(message: string, public errorDetail?: object) {
         super(message, HttpStatus.INVALID);
-        this.errorDetail = errorDetail;
     }
 }
 

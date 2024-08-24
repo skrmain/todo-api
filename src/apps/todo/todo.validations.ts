@@ -1,8 +1,23 @@
 import Joi from 'joi';
 
-import { TodoStatus, UserTodoPermissions, SortOrder } from '../../common/constants';
 import { ValidateObjectId } from '../../common/utils';
-import { getPaginationParams, getSortingParams } from '../../common/common.validations';
+import { TodoStatus } from './todo.models';
+import { Permissions } from '../permission/permission.models';
+import { SortOrder } from '../../common/types';
+
+export const getPaginationParams = () => ({
+    pageNumber: Joi.number().min(1).default(1),
+    pageSize: Joi.number().min(1).max(100).default(10),
+});
+
+export const getSortingParams = (sortByParams: string[]) => ({
+    sortOrder: Joi.string()
+        .valid(...Object.values(SortOrder))
+        .default(SortOrder.desc),
+    sortBy: Joi.string()
+        .valid(...['createdAt', 'updatedAt', ...sortByParams])
+        .default('updatedAt'),
+});
 
 export const TodoCreateUpdateSchema = Joi.object({
     title: Joi.string().trim().min(3).max(20).required(),
@@ -14,7 +29,7 @@ export const TodoCreateUpdateSchema = Joi.object({
 
 export const UserTodoPermissionSchema = Joi.object({
     permissions: Joi.array()
-        .items(...Object.values(UserTodoPermissions))
+        .items(...Object.values(Permissions))
         .required()
         .min(1),
 });

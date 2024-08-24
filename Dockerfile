@@ -1,4 +1,4 @@
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 
 WORKDIR /app
 COPY package*.json ./
@@ -7,7 +7,7 @@ COPY package*.json ./
 FROM base AS local-run
 RUN npm i
 COPY . .
-CMD ["npm", "run", "start:dev"]
+CMD ["npm", "run", "dev"]
 
 
 # Build

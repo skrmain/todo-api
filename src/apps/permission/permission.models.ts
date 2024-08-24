@@ -1,6 +1,5 @@
 import { Schema, Types, model } from 'mongoose';
-
-import { DbCollections } from '../../common/constants';
+import { UserModel } from '../user/user.models';
 
 export enum Permissions {
     read = 'read',
@@ -14,7 +13,7 @@ const PermissionSchema = new Schema(
         userId: {
             type: Types.ObjectId,
             required: true,
-            ref: DbCollections.user,
+            ref: UserModel.modelName,
         },
         entity: {
             type: String,
@@ -27,7 +26,7 @@ const PermissionSchema = new Schema(
         lastUpdatedBy: {
             type: Types.ObjectId,
             required: true,
-            ref: DbCollections.user,
+            ref: UserModel.modelName,
         },
         permissions: {
             type: [String],
@@ -38,4 +37,4 @@ const PermissionSchema = new Schema(
     { timestamps: true }
 );
 
-export const PermissionModel = model(DbCollections.permissions, PermissionSchema);
+export const PermissionModel = model('permissions', PermissionSchema);

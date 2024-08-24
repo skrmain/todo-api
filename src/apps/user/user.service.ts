@@ -11,6 +11,14 @@ class UserService<T> extends MongooseOperationsWrapper<T> {
     getAll(filter: FilterQuery<T> = {}, select = '') {
         return super.getAll(filter, `-password -__v ${select}`);
     }
+
+    parseUser(user?: any) {
+        return {
+            _id: user?._id,
+            name: user?.name,
+            email: user?.email,
+        };
+    }
 }
 
 export default new UserService(UserModel);

@@ -1,6 +1,12 @@
 import { Schema, Types, model } from 'mongoose';
 
-import { TodoStatus, DbCollections } from '../../common/constants';
+import { UserModel } from '../user/user.models';
+
+export enum TodoStatus {
+    created = 'created',
+    done = 'done',
+    archive = 'archive',
+}
 
 const TodoSchema = new Schema(
     {
@@ -20,10 +26,10 @@ const TodoSchema = new Schema(
         userId: {
             type: Types.ObjectId,
             required: true,
-            ref: DbCollections.user,
+            ref: UserModel.modelName,
         },
     },
     { timestamps: true }
 );
 
-export const TodoModel = model(DbCollections.todo, TodoSchema);
+export const TodoModel = model('todos', TodoSchema);

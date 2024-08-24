@@ -2,17 +2,18 @@ services:
     local-server:
         build:
             context: .
-            target: local-run
+            # target: local-run
+            target: build-run
         ports:
             - 8000:8000
         volumes:
             - ./:/app/
         environment:
-            - MONGODB_URI=mongodb://admin:admin@mongo:27017/
+            - MONGODB_URI
 
     remote-server:
         image: skrmain/expressjs-store-api:latest
         ports:
             - 8001:8000
         environment:
-            - MONGODB_URI=mongodb://admin:admin@mongo:27017/
+            - MONGODB_URI
