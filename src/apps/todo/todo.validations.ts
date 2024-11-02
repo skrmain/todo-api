@@ -7,7 +7,7 @@ import { SortOrder } from '../../common/types';
 
 export const getPaginationParams = () => ({
     pageNumber: Joi.number().min(1).default(1),
-    pageSize: Joi.number().min(1).max(100).default(10),
+    pageSize: Joi.number().min(1).max(100).default(50),
 });
 
 export const getSortingParams = (sortByParams: string[]) => ({

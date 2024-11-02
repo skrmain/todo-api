@@ -48,7 +48,7 @@ class AuthRouter {
         // TODO: Add check in other routes if account is activated or nots
         const user = await userService.getOne({ ...details }, '-createdAt -updatedAt');
         if (!user) {
-            throw new UnauthorizedHttpRequestError('Invalid Login Credentials');
+            throw new UnauthorizedHttpRequestError('Invalid Credentials');
         }
 
         const token = createToken(user);

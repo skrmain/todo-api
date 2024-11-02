@@ -17,6 +17,7 @@ class UserService<T> extends MongooseOperationsWrapper<T> {
             _id: user?._id,
             name: user?.name,
             email: user?.email,
+            createdAt: user?.createdAt,
         };
     }
 }
