@@ -2,4 +2,4 @@
 
 ## Ref
 
-- https://hub.docker.com/r/skrmain/expressjs-todo-api
+- https://hub.docker.com/r/skrmain/todo-api

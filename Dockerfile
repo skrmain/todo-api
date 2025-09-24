@@ -20,7 +20,7 @@ RUN npm run build
 # Build run
 FROM base AS build-run
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 RUN npm pkg delete scripts.prepare && npm ci --omit=dev && npm cache clean --force
 
 COPY --from=build /app/build ./build

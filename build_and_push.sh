@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPO=skrmain/expressjs-store-api
+REPO=skrmain/todo-api
 
 echo "Builing : ${REPO}"
 docker build -t $REPO --target build-run  .

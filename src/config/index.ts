@@ -6,8 +6,8 @@ export default {
     port: process.env.PORT || 8000,
     mongodbUri: process.env.MONGODB_URI || 'mongodb://admin:admin@localhost:27017',
     dbName: process.env.DB_NAME || 'test',
-    jwtSecret: process.env.JWT_SECRET || 'secret',
-    encryptionSecret: process.env.ENCRYPTION_SECRET || 'secret',
+    jwtSecret: process.env.JWT_SECRET || 'JWT_SECRET',
+    encryptionSecret: process.env.ENCRYPTION_SECRET || 'ENCRYPTION_SECRET',
 };
 
 export const googleOAuthCred = {
