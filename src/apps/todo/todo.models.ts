@@ -2,26 +2,23 @@ import { Schema, Types, model } from 'mongoose';
 
 import { UserModel } from '../user/user.models';
 
-export enum TodoStatus {
-    created = 'created',
-    done = 'done',
-    archive = 'archive',
-}
-
 const TodoSchema = new Schema(
     {
         title: {
             type: String,
             required: true,
+            trim: true,
+            maxlength: 200,
         },
         detail: {
             type: String,
             required: false,
+            trim: true,
+            maxlength: 5000,
         },
-        status: {
-            type: String,
-            default: TodoStatus.created,
-            enum: Object.values(TodoStatus),
+        done: {
+            type: Boolean,
+            default: false,
         },
         userId: {
             type: Types.ObjectId,
@@ -29,7 +26,7 @@ const TodoSchema = new Schema(
             ref: UserModel.modelName,
         },
     },
-    { timestamps: true }
+    { timestamps: true },
 );
 
 export const TodoModel = model('todos', TodoSchema);
