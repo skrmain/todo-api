@@ -1,19 +1,32 @@
-enum HttpStatus {
+export enum HttpStatus {
     INVALID = 400,
     UNAUTHORIZED = 401,
     FORBIDDEN = 403,
     NOT_FOUND = 404,
+
+    Created = 201,
+    NoContent = 204,
+    BadRequest = 400,
+    NotFound = 404,
+    PayloadTooLarge = 413,
+    InternalServerError = 500,
 }
 
 export class HttpError extends Error {
     public errorDetail?: object;
-    constructor(message: string, public statusCode: HttpStatus) {
+    constructor(
+        message: string,
+        public statusCode: HttpStatus,
+    ) {
         super(message);
     }
 }
 
 export class InvalidHttpRequestError extends HttpError {
-    constructor(message: string, public errorDetail?: object) {
+    constructor(
+        message: string,
+        public errorDetail?: object,
+    ) {
         super(message, HttpStatus.INVALID);
     }
 }

@@ -1,37 +1,10 @@
-import { NextFunction, Request, Response, ErrorRequestHandler, json } from 'express';
-import { JsonWebTokenError } from 'jsonwebtoken';
+import { NextFunction, Request, Response, json } from 'express';
 import Joi from 'joi';
 
-import { HttpError, InvalidHttpRequestError, NotFoundHttpRequestError, UnauthorizedHttpRequestError } from './custom-errors';
+import { InvalidHttpRequestError, UnauthorizedHttpRequestError } from './custom-errors';
 import { MongooseOperationsWrapper } from './mongoose-operations-wrapper';
 import { AuthRequest, User } from './types';
-import { logger, verifyToken } from './utils';
-
-export const requestErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
-    let statusCode = 500;
-    let errorDetail;
-    if (error instanceof HttpError) {
-        statusCode = error.statusCode;
-        errorDetail = error.errorDetail;
-    } else if (error instanceof JsonWebTokenError) {
-        const nError = new InvalidHttpRequestError('Invalid Token');
-        statusCode = nError.statusCode;
-        error.message = nError.message;
-    } else if (error.bsonError && error instanceof Error) {
-        const nError = new InvalidHttpRequestError('Invalid Request');
-        statusCode = nError.statusCode;
-        error.message = nError.message;
-    } else if (error instanceof Joi.ValidationError) {
-        statusCode = res.statusCode;
-    } else {
-        logger.error('⚠️  [Server] Error', { error: { message: error?.message, stack: error?.stack, ...error } });
-    }
-    return res.status(statusCode).send({ status: false, message: error.message, error: errorDetail });
-};
-
-export const invalidPathHandler = (req: Request, res: Response) => {
-    throw new NotFoundHttpRequestError(`Invalid Path. This path does not Exists. '${req.path}'`);
-};
+import { verifyToken } from './utils';
 
 export const exists = async (service: MongooseOperationsWrapper<any>, entityId: string, req: Request, res: Response, next: NextFunction) => {
     try {

@@ -1,31 +1,21 @@
 import config from './config';
-import { connect } from 'mongoose';
-import express from 'express';
-import cors from 'cors';
 
-import { checkAuth, invalidPathHandler, parseJson, requestErrorHandler } from './common/middleware';
-import { join, logger } from './common/utils';
-
-import UserRoutes from './apps/user/user.routes';
-import AuthRouter from './apps/auth/auth.routes';
-import { todoRoutes } from './apps/todo/todo.routes';
+import { connectDb } from './db';
+import { createServer } from './server';
 
 (async () => {
-    logger.verbose(`⚡️[MongoDB] Connecting to DB: ${config.dbName}`);
-    const con = await connect(config.mongodbUri, { dbName: config.dbName });
-    logger.verbose(`⚡️[MongoDB] Connected to DB: '${con.connection.name}' || HOST: ${con.connection.host}`);
+    await connectDb(config.mongodbUri, config.dbName);
 
-    const app = express();
+    const app = createServer();
 
-    app.use(cors());
-    app.use(parseJson);
-    app.use(express.urlencoded({ extended: true }));
-    app.get('/', (req, res) => res.send('Ok'));
-    app.use('/', AuthRouter);
-    app.use('/todos', checkAuth, todoRoutes);
-    app.use('/user', checkAuth, UserRoutes);
-    app.use(invalidPathHandler);
-    app.use(requestErrorHandler);
-    const server = app.listen(config.port, () => logger.verbose('⚡️[Server]: Started Listening'));
-    logger.verbose(`⚡️[Server]: ${join(server.address())}`);
+    const server = app.listen(config.port);
+
+    server.on('listening', () => {
+        console.log(`server: Listening on '${config.port}' port`);
+    });
+
+    server.on('error', (error) => {
+        console.error(`server: Failed to listen on '${config.port}' port`, error);
+        process.exit(1);
+    });
 })();

@@ -27,7 +27,7 @@ const UserSchema = new Schema<User>(
             trim: true,
         },
     },
-    { timestamps: true }
+    { timestamps: true },
 );
 
 export const UserModel = model('users', UserSchema);

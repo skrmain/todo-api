@@ -1,7 +1,6 @@
 import { createHmac } from 'crypto';
 import { Types } from 'mongoose';
 import { sign, verify } from 'jsonwebtoken';
-import winston, { format } from 'winston';
 import { CustomHelpers } from 'joi';
 
 import config from '../config';
@@ -43,9 +42,3 @@ export const join = (obj?: object | string | null) => {
         .map((v) => v.join(': '))
         .join(' || ');
 };
-
-export const logger = winston.createLogger({
-    level: 'silly',
-    format: format.combine(format.timestamp(), format.json()),
-    transports: [new winston.transports.Console()],
-});

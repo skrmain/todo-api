@@ -1,7 +1,7 @@
 export default {
     port: process.env.PORT || 8000,
     mongodbUri: process.env.MONGODB_URI || 'mongodb://admin:admin@localhost:27017',
-    dbName: process.env.DB_NAME || 'test',
+    dbName: process.env.DB_NAME || 'todo',
     jwtSecret: process.env.JWT_SECRET || 'JWT_SECRET',
     encryptionSecret: process.env.ENCRYPTION_SECRET || 'ENCRYPTION_SECRET',
 };
