@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
-import { validateReqBody } from '../../common/middleware';
-import { LoginSchema, RegisterSchema, TokenRefreshSchema } from './auth.validations';
-import { callback, getAuthorizeUrl, login, refreshAccessToken, register } from './auth.controller';
+import { validateReqBody } from '../../common/middleware.js';
+import { LoginSchema, RegisterSchema, TokenRefreshSchema } from './auth.validations.js';
+import { callback, getAuthorizeUrl, login, refreshAccessToken, register } from './auth.controller.js';
 
 export const authRoutes = Router();
 

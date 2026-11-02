@@ -1,6 +1,6 @@
-import permissionService from '../permission/permission.service';
-import { Permissions } from '../permission/permission.models';
-import { findTodoById, insertTodo, removeTodoById, todoExistsById, updateTodoById } from './todo.repository';
+import permissionService from '../permission/permission.service.js';
+import { Permissions } from '../permission/permission.models.js';
+import { findTodoById, insertTodo, removeTodoById, todoExistsById, updateTodoById } from './todo.repository.js';
 
 type TodoListInput = {
     userId?: string;

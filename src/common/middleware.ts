@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response, json } from 'express';
 import Joi from 'joi';
 
-import { UnauthorizedHttpRequestError } from './custom-errors';
-import { AuthRequest, User } from './types';
-import { verifyToken } from './utils';
+import { UnauthorizedHttpRequestError } from './custom-errors.js';
+import { AuthRequest, User } from './types.js';
+import { verifyToken } from './utils.js';
 
 export const validateReqBody = (schema: Joi.ObjectSchema) => (req: Request, res: Response, next: NextFunction) => {
     const { value, error } = schema.validate(req.body);

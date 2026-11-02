@@ -1,7 +1,6 @@
-import config from './config';
-
-import { connectDb } from './db';
-import { createServer } from './server';
+import config from './config/index.js';
+import { connectDb } from './db/index.js';
+import { createServer } from './server.js';
 
 (async () => {
     await connectDb(config.mongodbUri, config.dbName);

@@ -1,8 +1,8 @@
 import { Response } from 'express';
 
-import { AuthRequest } from '../../common/types';
-import { successResponse } from '../../common/utils';
-import userService from './user.service';
+import { AuthRequest } from '../../common/types.js';
+import { successResponse } from '../../common/utils.js';
+import userService from './user.service.js';
 
 export async function getUser(req: AuthRequest, res: Response) {
     const user = await userService.getOne({ email: req.user?.email || '' });

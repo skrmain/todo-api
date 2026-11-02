@@ -1,8 +1,8 @@
 import { PipelineStage } from 'mongoose';
 
-import { getObjectId } from '../../common/utils';
-import { TodoModel } from '../todo/todo.models';
-import { PermissionModel } from './permission.models';
+import { getObjectId } from '../../common/utils.js';
+import { TodoModel } from '../todo/todo.models.js';
+import { PermissionModel } from './permission.models.js';
 
 type UserTodosQuery = {
     userId?: string;

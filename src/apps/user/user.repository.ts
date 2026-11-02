@@ -1,6 +1,6 @@
 import { FilterQuery, UpdateQuery } from 'mongoose';
 
-import { User, UserModel } from './user.models';
+import { User, UserModel } from './user.models.js';
 
 const userRepository = {
     getOne(filter: FilterQuery<User>, select = '') {

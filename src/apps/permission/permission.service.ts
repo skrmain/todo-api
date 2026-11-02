@@ -1,5 +1,5 @@
-import { InvalidHttpRequestError } from '../../common/custom-errors';
-import permissionRepository from './permission.repository';
+import { InvalidHttpRequestError } from '../../common/custom-errors.js';
+import permissionRepository from './permission.repository.js';
 
 class PermissionService {
     getOne(...args: Parameters<typeof permissionRepository.getOne>) {

@@ -1,5 +1,6 @@
 {
     "name": "todo-api",
+    "type": "module",
     "scripts": {
         "build": "tsc",
         "dev": "tsx watch --env-file-if-exists=.env src/index.ts",
