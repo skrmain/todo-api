@@ -1,5 +1,5 @@
 import { Schema, Types, model } from 'mongoose';
-import { UserModel } from '../user/user.models';
+import { UserModel } from '../user/user.models.js';
 
 export enum Permissions {
     read = 'read',

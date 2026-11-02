@@ -1,8 +1,8 @@
 import { NextFunction, Response } from 'express';
 
-import { InvalidHttpRequestError } from '../../common/custom-errors';
-import { AuthRequest } from '../../common/types';
-import todoService from './todo.service';
+import { InvalidHttpRequestError } from '../../common/custom-errors.js';
+import { AuthRequest } from '../../common/types.js';
+import todoService from './todo.service.js';
 
 type TodoRequest = AuthRequest<{ todoId: string }>;
 

@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
-import { ValidateObjectId } from '../../common/utils';
-import { SortOrder } from '../../common/types';
+import { ValidateObjectId } from '../../common/utils.js';
+import { SortOrder } from '../../common/types.js';
 
 export const getPaginationParams = () => ({
     pageNumber: Joi.number().min(1).default(1),

@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 
-import { AuthRequest } from '../../common/types';
-import { successResponse } from '../../common/utils';
-import permissionService from './permission.service';
+import { AuthRequest } from '../../common/types.js';
+import { successResponse } from '../../common/utils.js';
+import permissionService from './permission.service.js';
 
 type TodoPermissionRequest = AuthRequest<{ todoId: string; userId: string }>;
 

@@ -1,10 +1,9 @@
 import { NextFunction, Response } from 'express';
 
-import permissionService from './permission.service';
-
-import { AuthRequest } from '../../common/types';
-import { Permissions } from './permission.models';
-import { InvalidHttpRequestError } from '../../common/custom-errors';
+import permissionService from './permission.service.js';
+import { AuthRequest } from '../../common/types.js';
+import { Permissions } from './permission.models.js';
+import { InvalidHttpRequestError } from '../../common/custom-errors.js';
 
 type TodoRequest = AuthRequest<{ todoId: string }>;
 

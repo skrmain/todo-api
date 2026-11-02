@@ -1,4 +1,4 @@
-import userRepository from './user.repository';
+import userRepository from './user.repository.js';
 
 class UserService {
     getOne(...args: Parameters<typeof userRepository.getOne>) {

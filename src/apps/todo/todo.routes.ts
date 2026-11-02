@@ -1,12 +1,12 @@
 import { Router } from 'express';
 
-import { TodoCreateUpdateSchema, TodoIdSchema, TodoQuerySchema } from './todo.validations';
-import { validateReqBody, validateReqParams, validateReqQuery } from '../../common/middleware';
-import permissionRoutes from '../permission/permission.routes';
-import { Permissions } from '../permission/permission.models';
-import { checkEntityPermission } from '../permission/permission.middlewares';
-import { createTodo, deleteOne, getAll, getOne, updateOne } from './todo.controller';
-import { todoExists } from './todo.middlewares';
+import { TodoCreateUpdateSchema, TodoIdSchema, TodoQuerySchema } from './todo.validations.js';
+import { validateReqBody, validateReqParams, validateReqQuery } from '../../common/middleware.js';
+import permissionRoutes from '../permission/permission.routes.js';
+import { Permissions } from '../permission/permission.models.js';
+import { checkEntityPermission } from '../permission/permission.middlewares.js';
+import { createTodo, deleteOne, getAll, getOne, updateOne } from './todo.controller.js';
+import { todoExists } from './todo.middlewares.js';
 
 export const todoRoutes = Router();
 

@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
-import { validateReqBody } from '../../common/middleware';
-import { updateUser, getUser } from './user.controller';
-import { UpdateUserDetailSchema } from './user.validations';
+import { validateReqBody } from '../../common/middleware.js';
+import { updateUser, getUser } from './user.controller.js';
+import { UpdateUserDetailSchema } from './user.validations.js';
 
 export const userRoutes = Router();
 

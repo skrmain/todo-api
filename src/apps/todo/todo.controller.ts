@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 
-import { AuthRequest } from '../../common/types';
-import { successResponse } from '../../common/utils';
-import todoService from './todo.service';
+import { AuthRequest } from '../../common/types.js';
+import { successResponse } from '../../common/utils.js';
+import todoService from './todo.service.js';
 
 type TodoRequest = AuthRequest<{ todoId: string }>;
 type TodoListQuery = {

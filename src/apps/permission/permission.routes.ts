@@ -1,10 +1,10 @@
 import { Router } from 'express';
 
-import { validateReqBody } from '../../common/middleware';
-import { Permissions } from './permission.models';
-import { addUserToTodo, removeUserFromTodo } from './permission.controller';
-import { checkEntityPermission } from './permission.middlewares';
-import { UserTodoPermissionSchema } from './permission.validations';
+import { validateReqBody } from '../../common/middleware.js';
+import { Permissions } from './permission.models.js';
+import { addUserToTodo, removeUserFromTodo } from './permission.controller.js';
+import { checkEntityPermission } from './permission.middlewares.js';
+import { UserTodoPermissionSchema } from './permission.validations.js';
 
 const permissionRoutes = Router({ mergeParams: true });
 

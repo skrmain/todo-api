@@ -1,9 +1,9 @@
 import { OAuth2Client } from 'google-auth-library';
 
-import { InvalidHttpRequestError, UnauthorizedHttpRequestError } from '../../common/custom-errors';
-import { createToken, verifyToken } from '../../common/utils';
-import { googleOAuthCred } from '../../config';
-import userService from '../user/user.service';
+import { InvalidHttpRequestError, UnauthorizedHttpRequestError } from '../../common/custom-errors.js';
+import { createToken, verifyToken } from '../../common/utils.js';
+import { googleOAuthCred } from '../../config/index.js';
+import userService from '../user/user.service.js';
 
 type RegisterInput = {
     name: string;

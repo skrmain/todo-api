@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 
-import { TodoModel } from './todo.models';
+import { TodoModel } from './todo.models.js';
 
 type NewTodo = {
     title: string;

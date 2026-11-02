@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
-import { successResponse } from '../../common/utils';
-import authService from './auth.service';
+import { successResponse } from '../../common/utils.js';
+import authService from './auth.service.js';
 
 export async function register(req: Request, res: Response) {
     await authService.register(req.body);
