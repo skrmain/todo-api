@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import { HttpError, HttpStatus, InvalidHttpRequestError } from '../common/custom-errors.js';
 import jwt from 'jsonwebtoken';
-import Joi from 'joi';
+import { z } from 'zod';
 
 export function errorHandlerMiddleware(error: unknown, req: Request, res: Response, _next: NextFunction) {
     if (typeof error === 'object' && error !== null && 'type' in error) {
@@ -26,7 +26,7 @@ export function errorHandlerMiddleware(error: unknown, req: Request, res: Respon
         const nError = new InvalidHttpRequestError('Invalid Token');
         statusCode = nError.statusCode;
         error.message = nError.message;
-    } else if (error instanceof Joi.ValidationError) {
+    } else if (error instanceof z.ZodError) {
         statusCode = res.statusCode;
     } else {
         console.error('⚠️  [Server] Error', { error: { message: (error as any)?.message, stack: (error as any)?.stack, ...(error as any) } });

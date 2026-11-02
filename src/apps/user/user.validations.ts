@@ -1,5 +1,5 @@
-import Joi from 'joi';
+import { z } from 'zod';
 
-export const UpdateUserDetailSchema = Joi.object({
-    name: Joi.string().trim().min(3).max(20).required(),
-});
+export const UpdateUserDetailSchema = z.object({
+    name: z.string().trim().min(3).max(20),
+}).strict();

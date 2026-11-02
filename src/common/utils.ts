@@ -1,7 +1,6 @@
 import { createHmac } from 'crypto';
 import { Types } from 'mongoose';
 import jwt from 'jsonwebtoken';
-import { CustomHelpers } from 'joi';
 
 import config from '../config/index.js';
 
@@ -26,12 +25,12 @@ export const getObjectId = (id = '') => new Types.ObjectId(id);
 
 export const encrypt = (data: any) => createHmac('sha256', config.encryptionSecret).update(data).digest('hex');
 
-export const ValidateObjectId = (value: any, helper: CustomHelpers) => {
+export const isValidObjectId = (value: string) => {
     try {
         getObjectId(value);
         return true;
-    } catch (error) {
-        return helper.message({ custom: error instanceof Error ? error.message : 'Invalid ObjectId' });
+    } catch {
+        return false;
     }
 };
 

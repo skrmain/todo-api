@@ -1,38 +1,38 @@
 import { NextFunction, Request, Response, json } from 'express';
-import Joi from 'joi';
+import { z } from 'zod';
 
 import { UnauthorizedHttpRequestError } from './custom-errors.js';
 import { AuthRequest, User } from './types.js';
 import { verifyToken } from './utils.js';
 
-export const validateReqBody = (schema: Joi.ObjectSchema) => (req: Request, res: Response, next: NextFunction) => {
-    const { value, error } = schema.validate(req.body);
-    if (!error) {
-        req.body = value;
+export const validateReqBody = (schema: z.ZodType<any>) => (req: Request, res: Response, next: NextFunction) => {
+    const result = schema.safeParse(req.body);
+    if (result.success) {
+        req.body = result.data;
         return next();
     }
     res.status(400);
-    throw error;
+    throw result.error;
 };
 
-export const validateReqQuery = (schema: Joi.ObjectSchema) => (req: Request, res: Response, next: NextFunction) => {
-    const { value, error } = schema.validate(req.query);
-    if (!error) {
-        req.query = value;
+export const validateReqQuery = (schema: z.ZodType<any>) => (req: Request, res: Response, next: NextFunction) => {
+    const result = schema.safeParse(req.query);
+    if (result.success) {
+        req.query = result.data;
         return next();
     }
     res.status(400);
-    throw error;
+    throw result.error;
 };
 
-export const validateReqParams = (schema: Joi.ObjectSchema) => (req: Request, res: Response, next: NextFunction) => {
-    const { value, error } = schema.validate(req.params);
-    if (!error) {
+export const validateReqParams = (schema: z.ZodType<any>) => (req: Request, res: Response, next: NextFunction) => {
+    const result = schema.safeParse(req.params);
+    if (result.success) {
         // req.params = value;
         return next();
     }
     res.status(400);
-    throw error;
+    throw result.error;
 };
 
 export const parseJson = (req: Request, res: Response, next: NextFunction) => {

@@ -1,10 +1,7 @@
-import Joi from 'joi';
+import { z } from 'zod';
 
 import { Permissions } from './permission.models.js';
 
-export const UserTodoPermissionSchema = Joi.object({
-    permissions: Joi.array()
-        .items(...Object.values(Permissions))
-        .required()
-        .min(1),
-});
+export const UserTodoPermissionSchema = z.object({
+    permissions: z.array(z.enum(Permissions)).min(1),
+}).strict();
