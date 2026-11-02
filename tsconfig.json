@@ -1,19 +1,8 @@
 {
     "compilerOptions": {
-        "target": "esnext",
-        "moduleResolution": "nodenext",
-        "module": "nodenext",
-        "types": ["node"],
-
-        "sourceMap": true,
-
-        "declaration": true,
-        "declarationMap": true,
-        "incremental": true,
+        "module": "esnext",
 
         "outDir": "./dist",
-        "rootDir": "./src",
-        "tsBuildInfoFile": "./dist/.tsbuildinfo"
-    },
-    "include": ["src/**/*"]
+        "rootDir": "./src"
+    }
 }

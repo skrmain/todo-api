@@ -1,8 +1,7 @@
 import { createHmac } from 'crypto';
 import { Types } from 'mongoose';
 import jwt from 'jsonwebtoken';
-
-import config from '../config/index.js';
+import { config } from '../config/index.js';
 
 export const successResponse = ({ message = 'Successful', data = {}, metadata = {} }) => {
     return { status: true, message, data, ...metadata };
@@ -16,14 +15,14 @@ export const successResponse = ({ message = 'Successful', data = {}, metadata = 
 export const createToken = (payload: object, expiry = 1) => {
     const exp = Math.floor(Date.now() / 1000) + 60 * 60 * expiry; // In Hours
 
-    return jwt.sign({ ...payload, exp }, config.jwtSecret);
+    return jwt.sign({ ...payload, exp }, config.JWT_SECRET);
 };
 
-export const verifyToken = (token: string) => jwt.verify(token, config.jwtSecret);
+export const verifyToken = (token: string) => jwt.verify(token, config.JWT_SECRET);
 
 export const getObjectId = (id = '') => new Types.ObjectId(id);
 
-export const encrypt = (data: any) => createHmac('sha256', config.encryptionSecret).update(data).digest('hex');
+export const encrypt = (data: any) => createHmac('sha256', config.ENCRYPTION_SECRET).update(data).digest('hex');
 
 export const isValidObjectId = (value: string) => {
     try {
