@@ -6,6 +6,8 @@ import { AuthRequest } from '../../common/types';
 import { Permissions } from './permission.models';
 import { InvalidHttpRequestError } from '../../common/custom-errors';
 
+type TodoRequest = AuthRequest<{ todoId: string }>;
+
 export const checkPermission = async (permission: Permissions, entityId: string, req: AuthRequest, res: Response, next: NextFunction) => {
     const isValid = !!Object.values(Permissions).find((v) => v === permission);
     if (!isValid) {
@@ -26,3 +28,7 @@ export const checkPermission = async (permission: Permissions, entityId: string,
         return next(error);
     }
 };
+
+export const checkEntityPermission =
+    (permission: Permissions) => (req: TodoRequest, res: Response, next: NextFunction) =>
+        checkPermission(permission, req.params.todoId, req, res, next);

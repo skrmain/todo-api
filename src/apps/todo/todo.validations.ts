@@ -1,7 +1,6 @@
 import Joi from 'joi';
 
 import { ValidateObjectId } from '../../common/utils';
-import { Permissions } from '../permission/permission.models';
 import { SortOrder } from '../../common/types';
 
 export const getPaginationParams = () => ({
@@ -24,13 +23,6 @@ export const TodoCreateUpdateSchema = Joi.object({
     // status: Joi.string()
     //     .trim()
     //     .valid(...Object.values(TodoStatus)),
-});
-
-export const UserTodoPermissionSchema = Joi.object({
-    permissions: Joi.array()
-        .items(...Object.values(Permissions))
-        .required()
-        .min(1),
 });
 
 export const TodoQuerySchema = Joi.object({

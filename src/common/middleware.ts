@@ -1,23 +1,9 @@
 import { NextFunction, Request, Response, json } from 'express';
 import Joi from 'joi';
 
-import { InvalidHttpRequestError, UnauthorizedHttpRequestError } from './custom-errors';
-import { MongooseOperationsWrapper } from './mongoose-operations-wrapper';
+import { UnauthorizedHttpRequestError } from './custom-errors';
 import { AuthRequest, User } from './types';
 import { verifyToken } from './utils';
-
-export const exists = async (service: MongooseOperationsWrapper<any>, entityId: string, req: Request, res: Response, next: NextFunction) => {
-    try {
-        const isExist = await service.exists({ _id: entityId });
-        if (isExist) {
-            return next();
-        }
-        res.status(404);
-        throw new InvalidHttpRequestError('Not Found.');
-    } catch (error) {
-        return next(error);
-    }
-};
 
 export const validateReqBody = (schema: Joi.ObjectSchema) => (req: Request, res: Response, next: NextFunction) => {
     const { value, error } = schema.validate(req.body);

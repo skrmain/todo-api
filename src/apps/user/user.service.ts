@@ -1,15 +1,22 @@
-import { FilterQuery } from 'mongoose';
+import userRepository from './user.repository';
 
-import { MongooseOperationsWrapper } from '../../common/mongoose-operations-wrapper';
-import { UserModel } from './user.models';
-
-class UserService<T> extends MongooseOperationsWrapper<T> {
-    getOne(filter: FilterQuery<T>, select = '') {
-        return super.getOne(filter, `-password -__v ${select}`);
+class UserService {
+    getOne(...args: Parameters<typeof userRepository.getOne>) {
+        const [filter, select = ''] = args;
+        return userRepository.getOne(filter, `-password -__v ${select}`);
     }
 
-    getAll(filter: FilterQuery<T> = {}, select = '') {
-        return super.getAll(filter, `-password -__v ${select}`);
+    getAll(...args: Parameters<typeof userRepository.getAll>) {
+        const [filter = {}, select = ''] = args;
+        return userRepository.getAll(filter, `-password -__v ${select}`);
+    }
+
+    create(...args: Parameters<typeof userRepository.create>) {
+        return userRepository.create(...args);
+    }
+
+    updateOne(...args: Parameters<typeof userRepository.updateOne>) {
+        return userRepository.updateOne(...args);
     }
 
     parseUser(user?: any) {
@@ -22,4 +29,4 @@ class UserService<T> extends MongooseOperationsWrapper<T> {
     }
 }
 
-export default new UserService(UserModel);
+export default new UserService();

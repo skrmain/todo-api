@@ -1,6 +1,6 @@
 import { Schema, model, Types } from 'mongoose';
 
-interface User {
+export interface User {
     _id?: string | Types.ObjectId;
     createdAt?: string;
     updatedAt?: string;

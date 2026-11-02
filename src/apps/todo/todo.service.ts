@@ -1,42 +1,74 @@
-import { MongooseOperationsWrapper } from '../../common/mongoose-operations-wrapper';
-import { getObjectId } from '../../common/utils';
-import { TodoModel } from './todo.models';
-
 import permissionService from '../permission/permission.service';
+import { Permissions } from '../permission/permission.models';
+import { findTodoById, insertTodo, removeTodoById, todoExistsById, updateTodoById } from './todo.repository';
 
-class TodoService<T> extends MongooseOperationsWrapper<T> {
-    async getUserTodos({ userId, filter, pageNumber, pageSize, sortOrder, sortBy }: any) {
-        const baseStages: any = [
-            { $match: { userId: getObjectId(userId), entity: 'todo' } },
-            {
-                $lookup: {
-                    from: TodoModel.modelName,
-                    localField: 'entityId',
-                    foreignField: '_id',
-                    as: 'todoId',
-                },
-            },
-            { $unwind: { path: '$todoId', preserveNullAndEmptyArrays: true } },
-            { $match: filter },
-        ];
+type TodoListInput = {
+    userId?: string;
+    pageNumber: number;
+    pageSize: number;
+    sortOrder: string;
+    sortBy: string;
+    status?: string;
+    title?: string;
+};
 
-        const paginatedStages = baseStages.concat([
-            // { $sort: { [TodoSortByMapping[sortBy]]: MongoSortOrder[sortOrder] } },
-            { $skip: (pageNumber - 1) * pageSize },
-            { $limit: pageSize },
-            {
-                $project: {
-                    __v: 0,
-                    addedBy: 0,
-                    userId: 0,
-                    'todoId.__v': 0,
-                },
-            },
-        ]);
-        const total = (await permissionService.aggregate(baseStages)).length;
-        const todos = await permissionService.aggregate(paginatedStages);
+type TodoCreateInput = {
+    title: string;
+    detail?: string;
+};
 
-        return { total, todos };
+class TodoService {
+    async create(details: TodoCreateInput, userId?: string) {
+        const todo = await insertTodo({ ...details, userId });
+        await permissionService.create({
+            userId,
+            entity: 'todo',
+            entityId: todo._id,
+            lastUpdatedBy: userId,
+            permissions: [...Object.values(Permissions)],
+        });
+        return todo;
+    }
+
+    async getUserTodos({ userId, pageNumber, pageSize, status, title }: TodoListInput) {
+        const filter: Record<string, unknown> = {};
+        if (status) {
+            filter['todoId.status'] = status;
+        }
+        if (title) {
+            filter['todoId.title'] = { $regex: new RegExp(title, 'i') };
+        }
+
+        const { todos, total } = await permissionService.findUserTodos({
+            userId,
+            filter,
+            pageNumber,
+            pageSize,
+        });
+
+        return {
+            todos: todos.map((todo) => this.parseUserTodo(todo)),
+            total,
+        };
+    }
+
+    async getOne(id: string, userId?: string) {
+        const todo = await findTodoById(id, '-userId');
+        const todoPermissions = await permissionService.getOne({ entityId: id, userId });
+        return this.parseUserTodo({ todoId: todo, permissions: todoPermissions?.permissions });
+    }
+
+    async update(id: string, changes: Record<string, unknown>) {
+        return updateTodoById(id, changes);
+    }
+
+    async delete(id: string) {
+        await removeTodoById(id);
+        await permissionService.deleteMany({ entityId: id });
+    }
+
+    exists(id: string) {
+        return todoExistsById(id);
     }
 
     parseUserTodo(todo: any) {
@@ -50,10 +82,6 @@ class TodoService<T> extends MongooseOperationsWrapper<T> {
             permissions: todo.permissions,
         };
     }
-
-    parseUserTodos(todos: any[]) {
-        return todos.map(this.parseUserTodo);
-    }
 }
 
-export default new TodoService(TodoModel);
+export default new TodoService();
