@@ -1,8 +1,13 @@
-import { PipelineStage } from 'mongoose';
+import { PipelineStage, Types, UpdateQuery } from 'mongoose';
 
 import { getObjectId } from '../../common/utils.js';
 import { TodoModel } from '../todo/todo.models.js';
-import { PermissionModel } from './permission.models.js';
+import { Permission, PermissionModel, Permissions } from './permission.models.js';
+
+type PermissionFilter = Omit<Partial<Permission>, 'permissions'> & {
+    _id?: Types.ObjectId | string;
+    permissions?: Permissions[] | { $in: Permissions[] };
+};
 
 type UserTodosQuery = {
     userId?: string;
@@ -12,29 +17,28 @@ type UserTodosQuery = {
 };
 
 const permissionRepository = {
-    getOne(...args: Parameters<typeof PermissionModel.findOne>) {
-        const [filter, select = ''] = args;
+    getOne(filter: PermissionFilter, select = '') {
         return PermissionModel.findOne(filter, `${select} -__v`).lean();
     },
 
-    exists(...args: Parameters<typeof PermissionModel.exists>) {
-        return PermissionModel.exists(...args).lean();
+    exists(filter: PermissionFilter) {
+        return PermissionModel.exists(filter).lean();
     },
 
-    create(...args: Parameters<typeof PermissionModel.create>) {
-        return PermissionModel.create(...args);
+    create(details: Partial<Permission>) {
+        return PermissionModel.create(details);
     },
 
-    updateOne(...args: Parameters<typeof PermissionModel.updateOne>) {
-        return PermissionModel.updateOne(...args).lean();
+    updateOne(filter: PermissionFilter, update: UpdateQuery<Permission>) {
+        return PermissionModel.updateOne(filter, update).lean();
     },
 
-    deleteOne(...args: Parameters<typeof PermissionModel.deleteOne>) {
-        return PermissionModel.deleteOne(...args).lean();
+    deleteOne(filter: PermissionFilter) {
+        return PermissionModel.deleteOne(filter).lean();
     },
 
-    deleteMany(...args: Parameters<typeof PermissionModel.deleteMany>) {
-        return PermissionModel.deleteMany(...args).lean();
+    deleteMany(filter: PermissionFilter) {
+        return PermissionModel.deleteMany(filter).lean();
     },
 
     async findUserTodos({ userId, filter, pageNumber, pageSize }: UserTodosQuery) {

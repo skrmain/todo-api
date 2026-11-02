@@ -8,7 +8,15 @@ export enum Permissions {
     share = 'share',
 }
 
-const PermissionSchema = new Schema(
+export interface Permission {
+    userId: Types.ObjectId | string;
+    entity: string;
+    entityId: Types.ObjectId | string;
+    lastUpdatedBy: Types.ObjectId | string;
+    permissions: Permissions[];
+}
+
+const PermissionSchema = new Schema<Permission>(
     {
         userId: {
             type: Types.ObjectId,

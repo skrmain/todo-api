@@ -1,4 +1,5 @@
 import { InvalidHttpRequestError } from '../../common/custom-errors.js';
+import { Permissions } from './permission.models.js';
 import permissionRepository from './permission.repository.js';
 
 class PermissionService {
@@ -39,7 +40,7 @@ class PermissionService {
         todoId: string;
         userId: string;
         updatedBy?: string;
-        permissions: string[];
+        permissions: Permissions[];
     }) {
         if (updatedBy?.toString() === userId.toString()) {
             throw new InvalidHttpRequestError('Invalid Operation');

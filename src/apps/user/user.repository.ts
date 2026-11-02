@@ -1,13 +1,15 @@
-import { FilterQuery, UpdateQuery } from 'mongoose';
+import { UpdateQuery } from 'mongoose';
 
 import { User, UserModel } from './user.models.js';
 
+type UserFilter = Partial<User>;
+
 const userRepository = {
-    getOne(filter: FilterQuery<User>, select = '') {
+    getOne(filter: UserFilter, select = '') {
         return UserModel.findOne(filter, `${select} -__v`).lean();
     },
 
-    getAll(filter: FilterQuery<User> = {}, select = '') {
+    getAll(filter: UserFilter = {}, select = '') {
         return UserModel.find(filter, `${select} -__v`).lean();
     },
 
@@ -15,7 +17,7 @@ const userRepository = {
         return UserModel.create(details);
     },
 
-    updateOne(filter: FilterQuery<User>, details: UpdateQuery<User>) {
+    updateOne(filter: UserFilter, details: UpdateQuery<User>) {
         return UserModel.updateOne(filter, details).lean();
     },
 };
