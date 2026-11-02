@@ -1,19 +1,19 @@
-import Joi from 'joi';
+import { z } from 'zod';
 
-const EmailSchema = Joi.string().trim().lowercase().email().required();
-const PasswordSchema = Joi.string().trim().min(5).max(20).required();
+const EmailSchema = z.string().trim().toLowerCase().email();
+const PasswordSchema = z.string().trim().min(5).max(20);
 
-export const RegisterSchema = Joi.object({
-    name: Joi.string().trim().min(3).max(20).required(),
+export const RegisterSchema = z.object({
+    name: z.string().trim().min(3).max(20),
     email: EmailSchema,
     password: PasswordSchema,
-});
+}).strict();
 
-export const LoginSchema = Joi.object({
+export const LoginSchema = z.object({
     email: EmailSchema,
     password: PasswordSchema,
-});
+}).strict();
 
-export const TokenRefreshSchema = Joi.object({
-    refresh: Joi.string().trim().required(),
-});
+export const TokenRefreshSchema = z.object({
+    refresh: z.string().trim().min(1),
+}).strict();
