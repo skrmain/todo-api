@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { HttpError, HttpStatus, InvalidHttpRequestError } from '../common/custom-errors.js';
+import { HttpError, HttpStatus, InvalidHttpRequestError } from '../errors/custom-errors.js';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 

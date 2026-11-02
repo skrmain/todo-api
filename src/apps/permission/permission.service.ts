@@ -1,4 +1,4 @@
-import { InvalidHttpRequestError } from '../../common/custom-errors.js';
+import { InvalidHttpRequestError } from '../../errors/custom-errors.js';
 import { Permissions } from './permission.models.js';
 import permissionRepository from './permission.repository.js';
 
@@ -48,10 +48,7 @@ class PermissionService {
 
         const existingPermission = await this.getOne({ entityId: todoId, userId });
         if (existingPermission) {
-            await this.updateOne(
-                { _id: existingPermission._id },
-                { $set: { permissions: [...permissions] } },
-            );
+            await this.updateOne({ _id: existingPermission._id }, { $set: { permissions: [...permissions] } });
             return;
         }
 

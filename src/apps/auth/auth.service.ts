@@ -1,6 +1,6 @@
 import { OAuth2Client } from 'google-auth-library';
 
-import { InvalidHttpRequestError, UnauthorizedHttpRequestError } from '../../common/custom-errors.js';
+import { InvalidHttpRequestError, UnauthorizedHttpRequestError } from '../../errors/custom-errors.js';
 import { createToken, verifyToken } from '../../common/utils.js';
 import { googleOAuthCred } from '../../config/index.js';
 import userService from '../user/user.service.js';

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, json } from 'express';
 import { z } from 'zod';
 
-import { UnauthorizedHttpRequestError } from './custom-errors.js';
+import { UnauthorizedHttpRequestError } from '../errors/custom-errors.js';
 import { AuthRequest, User } from './types.js';
 import { verifyToken } from './utils.js';
 
