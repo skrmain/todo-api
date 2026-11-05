@@ -1,8 +1,6 @@
 {
     "compilerOptions": {
-        "module": "nodenext",
-
-        "outDir": "./dist",
-        "rootDir": "./src"
+        "rootDir": "./src",
+        "outDir": "./dist"
     }
 }
