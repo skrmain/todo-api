@@ -18,10 +18,6 @@ export function createServer() {
     app.use(cors());
     app.use(parseJson);
 
-    app.use(express.json({ limit: '100kb' }));
-
-    app.use(express.urlencoded({ extended: true }));
-
     app.get('/', (_req, res) => res.send({ message: 'Ok' }));
     app.use('/', authRoutes);
     app.use('/todos', checkAuth, todoRoutes);

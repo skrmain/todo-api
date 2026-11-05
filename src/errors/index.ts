@@ -1,4 +1,4 @@
-import { HttpStatus } from '../common/http-status.js';
+import { HttpStatus } from './custom-errors.js';
 
 export type AppErrorOptions = {
     message: string;

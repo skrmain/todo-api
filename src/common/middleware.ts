@@ -36,7 +36,7 @@ export const validateReqParams = (schema: z.ZodType<any>) => (req: Request, res:
 };
 
 export const parseJson = (req: Request, res: Response, next: NextFunction) => {
-    json()(req, res, (error) => {
+    json({ limit: '100kb' })(req, res, (error) => {
         if (!error) {
             return next();
         }
