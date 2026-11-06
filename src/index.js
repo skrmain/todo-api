@@ -10,6 +10,23 @@ server.on('listening', () => {
 
 server.on('error', (err) => {
     console.error('Server error:', err);
+    process.exit(1);
 });
 
 server.listen(PORT);
+
+/**
+ * Handles graceful shutdown of the server on receiving termination signals.
+ * - `SIGINT` -- handle `Ctrl+C` interrupt signal for graceful shutdown
+ * - `SIGTERM` -- handle termination signal for graceful shutdown
+ * @param {'SIGINT'|'SIGTERM'} signal
+ */
+function gracefulShutdown(signal) {
+    console.log(`Received ${signal}, shutting down gracefully...`);
+    server.close(() => {
+        process.exit(0);
+    });
+}
+
+process.on('SIGINT', (signal) => gracefulShutdown(signal));
+process.on('SIGTERM', (signal) => gracefulShutdown(signal));
