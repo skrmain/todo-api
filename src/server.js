@@ -1,10 +1,10 @@
 import http from 'node:http';
-
-function getTodos() {
-    return { todos: [] };
-}
+import { createTodoRepository } from './repositories/todoRepository.js';
+import { createTodoRouter } from './routes/todos.js';
 
 export function createServer() {
+    const handleTodoRequest = createTodoRouter(createTodoRepository());
+
     return http.createServer((req, res) => {
         console.log(`${req.method} ${req.url}`);
 
@@ -14,9 +14,9 @@ export function createServer() {
             return;
         }
 
-        if (req.method === 'GET' && req.url === '/todos') {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(getTodos()));
+        const { pathname } = new URL(req.url, 'http://localhost');
+        if (pathname === '/todos' || pathname.startsWith('/todos/')) {
+            void handleTodoRequest(req, res);
             return;
         }
 
