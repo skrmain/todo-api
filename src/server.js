@@ -1,6 +1,7 @@
 import http from 'node:http';
 import { createTodoRepository } from './repositories/todoRepository.js';
 import { createTodoRouter } from './routes/todos.js';
+import { sendJson } from './utils/index.js';
 
 export function createServer() {
     const handleTodoRequest = createTodoRouter(createTodoRepository());
@@ -9,8 +10,7 @@ export function createServer() {
         console.log(`${req.method} ${req.url}`);
 
         if (req.method === 'GET' && (req.url === '/health' || req.url === '/')) {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ status: 'ok' }));
+            sendJson(res, 200, { status: 'ok' });
             return;
         }
 
@@ -20,7 +20,6 @@ export function createServer() {
             return;
         }
 
-        res.writeHead(404, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Not found' }));
+        sendJson(res, 404, { error: 'Not found' });
     });
 }

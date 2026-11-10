@@ -1,30 +1,4 @@
-function sendJson(res, status, body) {
-    res.writeHead(status, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(body));
-}
-
-async function readJsonBody(req) {
-    const chunks = [];
-    let size = 0;
-
-    for await (const chunk of req) {
-        size += chunk.length;
-        if (size > 1_000_000) {
-            const error = new Error('Request body is too large');
-            error.statusCode = 413;
-            throw error;
-        }
-        chunks.push(chunk);
-    }
-
-    try {
-        return JSON.parse(Buffer.concat(chunks).toString('utf8'));
-    } catch {
-        const error = new Error('Invalid JSON body');
-        error.statusCode = 400;
-        throw error;
-    }
-}
+import { sendJson, readJsonBody } from '../utils/index.js';
 
 function getTodoFields(body, partial = false) {
     if (!body || typeof body !== 'object' || Array.isArray(body)) {
@@ -115,9 +89,8 @@ export function createTodoRouter(repository) {
                     sendJson(res, 400, { error: 'Invalid todo' });
                     return;
                 }
-                const changes = req.method === 'PUT'
-                    ? { title: fields.title, completed: fields.completed ?? false }
-                    : fields;
+                const changes =
+                    req.method === 'PUT' ? { title: fields.title, completed: fields.completed ?? false } : fields;
                 const todo = repository.update(id, changes);
                 if (!todo) {
                     sendJson(res, 404, { error: 'Todo not found' });
