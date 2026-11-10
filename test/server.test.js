@@ -87,3 +87,9 @@ test('unknown route returns 404', async () => {
     assert.equal(res.status, 404);
     assert.deepEqual(await res.json(), { error: 'Not found' });
 });
+
+test('unsupported method on a known route returns 405', async () => {
+    const res = await fetch(`${baseUrl}/todos`, { method: 'DELETE' });
+    assert.equal(res.status, 405);
+    assert.deepEqual(await res.json(), { error: 'Method not allowed' });
+});

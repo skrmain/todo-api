@@ -1,10 +1,17 @@
 import http from 'node:http';
-import { createTodoRepository } from './repositories/todoRepository.js';
-import { createTodoRouter } from './routes/todos.js';
+import { createTodoController } from './modules/todo/todo.controller.js';
+import { createTodoRepository } from './modules/todo/todo.repository.js';
+import { registerTodoRoutes } from './modules/todo/todo.routes.js';
+import { createTodoService } from './modules/todo/todo.service.js';
+import { createRouter } from './routes/router.js';
 import { sendJson } from './utils/index.js';
 
 export function createServer() {
-    const handleTodoRequest = createTodoRouter(createTodoRepository());
+    const router = createRouter();
+    const todoRepository = createTodoRepository();
+    const todoService = createTodoService(todoRepository);
+    const todoController = createTodoController(todoService);
+    registerTodoRoutes(router, todoController);
 
     return http.createServer((req, res) => {
         console.log(`${req.method} ${req.url}`);
@@ -14,12 +21,6 @@ export function createServer() {
             return;
         }
 
-        const { pathname } = new URL(req.url, 'http://localhost');
-        if (pathname === '/todos' || pathname.startsWith('/todos/')) {
-            void handleTodoRequest(req, res);
-            return;
-        }
-
-        sendJson(res, 404, { error: 'Not found' });
+        void router.handle(req, res);
     });
 }
