@@ -82,6 +82,16 @@ test('creating a todo requires a non-empty title', async () => {
     assert.deepEqual(await res.json(), { error: 'Invalid todo' });
 });
 
+test('malformed JSON returns a JSON 400 response', async () => {
+    const res = await fetch(`${baseUrl}/todos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{"title":',
+    });
+    assert.equal(res.status, 400);
+    assert.deepEqual(await res.json(), { error: 'Invalid JSON body' });
+});
+
 test('unknown route returns 404', async () => {
     const res = await fetch(`${baseUrl}/nope`);
     assert.equal(res.status, 404);
