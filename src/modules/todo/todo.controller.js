@@ -1,5 +1,3 @@
-import { readJsonBody, sendJson } from '../../utils/index.js';
-
 function getTodoFields(body, partial = false) {
     if (!body || typeof body !== 'object' || Array.isArray(body)) {
         return null;
@@ -29,74 +27,62 @@ function getTodoFields(body, partial = false) {
     return fields;
 }
 
-function sendRequestError(res, error) {
-    const status = error.statusCode ?? 500;
-    sendJson(res, status, { error: status === 500 ? 'Internal server error' : error.message });
-}
-
 export function createTodoController(service) {
     return {
         list(req, res) {
-            sendJson(res, 200, { todos: service.listTodos() });
+            res.json({ todos: service.listTodos() });
         },
-        async create(req, res) {
-            try {
-                const fields = getTodoFields(await readJsonBody(req));
-                if (!fields) {
-                    sendJson(res, 400, { error: 'Invalid todo' });
-                    return;
-                }
-                const todo = service.createTodo({
-                    title: fields.title,
-                    completed: fields.completed ?? false,
-                });
-                sendJson(res, 201, { todo });
-            } catch (error) {
-                sendRequestError(res, error);
+        create(req, res) {
+            const fields = getTodoFields(req.body);
+            if (!fields) {
+                res.status(400).json({ error: 'Invalid todo' });
+                return;
             }
+            const todo = service.createTodo({
+                title: fields.title,
+                completed: fields.completed ?? false,
+            });
+            res.status(201).json({ todo });
         },
-        get(req, res, { params }) {
-            const id = Number(params.id);
+        get(req, res) {
+            const id = Number(req.params.id);
             if (!Number.isSafeInteger(id)) {
-                sendJson(res, 404, { error: 'Todo not found' });
+                res.status(404).json({ error: 'Todo not found' });
                 return;
             }
 
             const todo = service.getTodo(id);
             if (!todo) {
-                sendJson(res, 404, { error: 'Todo not found' });
+                res.status(404).json({ error: 'Todo not found' });
                 return;
             }
-            sendJson(res, 200, { todo });
+            res.json({ todo });
         },
-        async update(req, res, { params }) {
-            try {
-                const isPatch = req.method === 'PATCH';
-                const fields = getTodoFields(await readJsonBody(req), isPatch);
-                if (!fields) {
-                    sendJson(res, 400, { error: 'Invalid todo' });
-                    return;
-                }
-                const changes = isPatch
-                    ? fields
-                    : { title: fields.title, completed: fields.completed ?? false };
-                const todo = service.updateTodo(Number(params.id), changes);
-                if (!todo) {
-                    sendJson(res, 404, { error: 'Todo not found' });
-                    return;
-                }
-                sendJson(res, 200, { todo });
-            } catch (error) {
-                sendRequestError(res, error);
-            }
-        },
-        delete(req, res, { params }) {
-            if (!service.deleteTodo(Number(params.id))) {
-                sendJson(res, 404, { error: 'Todo not found' });
+        update(req, res) {
+            const isPatch = req.method === 'PATCH';
+            const fields = getTodoFields(req.body, isPatch);
+            if (!fields) {
+                res.status(400).json({ error: 'Invalid todo' });
                 return;
             }
-            res.writeHead(204);
-            res.end();
+            const id = Number(req.params.id);
+            const changes = isPatch
+                ? fields
+                : { title: fields.title, completed: fields.completed ?? false };
+            const todo = Number.isSafeInteger(id) ? service.updateTodo(id, changes) : null;
+            if (!todo) {
+                res.status(404).json({ error: 'Todo not found' });
+                return;
+            }
+            res.json({ todo });
+        },
+        delete(req, res) {
+            const id = Number(req.params.id);
+            if (!Number.isSafeInteger(id) || !service.deleteTodo(id)) {
+                res.status(404).json({ error: 'Todo not found' });
+                return;
+            }
+            res.status(204).end();
         },
     };
 }

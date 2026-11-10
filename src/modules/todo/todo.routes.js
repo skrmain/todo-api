@@ -1,8 +1,16 @@
-export function registerTodoRoutes(router, controller) {
-    router.add('GET', '/todos', controller.list);
-    router.add('POST', '/todos', controller.create);
-    router.add('GET', '/todos/:id', controller.get);
-    router.add('PUT', '/todos/:id', controller.update);
-    router.add('PATCH', '/todos/:id', controller.update);
-    router.add('DELETE', '/todos/:id', controller.delete);
+import express from 'express';
+
+export function createTodoRouter(controller) {
+    const router = express.Router();
+
+    router.get('/', controller.list);
+    router.post('/', controller.create);
+    router.get('/:id', controller.get);
+    router.put('/:id', controller.update);
+    router.patch('/:id', controller.update);
+    router.delete('/:id', controller.delete);
+    router.all('/', (req, res) => res.status(405).json({ error: 'Method not allowed' }));
+    router.all('/:id', (req, res) => res.status(405).json({ error: 'Method not allowed' }));
+
+    return router;
 }
