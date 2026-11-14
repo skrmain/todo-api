@@ -3,17 +3,17 @@ import request from 'supertest';
 
 import { createServer } from '../src/server.js';
 
-const server = createServer();
+const app = createServer();
 
 describe('api: health', () => {
     it('health', async () => {
-        const response = await request(server).get('/');
+        const response = await request(app).get('/');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ status: 'ok' });
     });
     it('not-found', async () => {
-        const response = await request(server).get('/path-that-does-not-exists');
+        const response = await request(app).get('/path-that-does-not-exists');
 
         expect(response.status).toBe(404);
         expect(response.body).toEqual({ error: 'Not found' });
