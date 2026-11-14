@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import request from 'supertest';
 
-import { createServer } from '../src/server.js';
-
-const app = createServer();
+import app from './../src/app.js';
 
 describe('api: health', () => {
     it('health', async () => {
