@@ -1,16 +1,20 @@
-import { createServer as createHttpServer } from 'node:http';
+import express from 'express';
 
 export function createServer() {
-    return createHttpServer((req, res) => {
+    const app = express();
+
+    app.use((req, res, next) => {
         console.log(`${req.method} ${req.url}`);
-
-        if (req.method === 'GET' && req.url === '/') {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ status: 'ok' }));
-            return;
-        }
-
-        res.writeHead(404, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Not found' }));
+        next();
     });
+
+    app.get('/', (req, res) => {
+        res.json({ status: 'ok' });
+    });
+
+    app.use((_req, res) => {
+        res.status(404).json({ error: 'Not found' });
+    });
+
+    return app;
 }

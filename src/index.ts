@@ -2,7 +2,8 @@ import { createServer } from './server.js';
 
 const PORT = process.env.PORT || 8000;
 
-const server = createServer();
+const app = createServer();
+const server = app.listen(PORT);
 
 server.on('listening', () => {
     console.log(`Server is listening on port ${PORT}`);
@@ -12,8 +13,6 @@ server.on('error', (err) => {
     console.error('Server error:', err);
     process.exit(1);
 });
-
-server.listen(PORT);
 
 /**
  * Handles graceful shutdown of the server on receiving termination signals.
