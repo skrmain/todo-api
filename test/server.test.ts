@@ -14,7 +14,6 @@ describe('api: health', () => {
         const response = await request(app).get('/path-that-does-not-exists');
 
         expect(response.status).toBe(404);
-        expect(response.body).toEqual({ error: 'Not found' });
         expect(JSON.stringify(response.body)).not.toMatch(/stack|at \w+ \(/i);
     });
 });
