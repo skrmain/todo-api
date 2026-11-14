@@ -1,10 +1,10 @@
 import app from './app.js';
-import config from './config/index.js';
+import { env } from './config/index.js';
 
-const server = app.listen(config.PORT);
+const server = app.listen(env.PORT);
 
 server.on('listening', () => {
-    console.log(`PID: ${process.pid} | Server is listening on port ${config.PORT}`);
+    console.log(`PID: ${process.pid} | Server is listening on port ${env.PORT}`);
 });
 
 server.on('error', (err) => {

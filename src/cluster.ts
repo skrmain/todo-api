@@ -1,12 +1,12 @@
 import cluster from 'node:cluster';
-import config from './config/index.js';
+import { env } from './config/index.js';
 
 if (cluster.isPrimary) {
-    console.log(`Primary ${process.pid} starting ${config.WORKERS} workers`);
+    console.log(`Primary ${process.pid} starting ${env.WORKERS} workers`);
 
     let shuttingDown = false;
 
-    for (let i = 0; i < config.WORKERS; i++) cluster.fork();
+    for (let i = 0; i < env.WORKERS; i++) cluster.fork();
 
     cluster.on('exit', (worker, code) => {
         if (shuttingDown) return;
